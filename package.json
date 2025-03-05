@@ -1,0 +1,8 @@
+{
+  "name": "bonappetit",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/MariahSunilAlexiose/dashbite.git",
+  "author": "Mariah Sunil Alexiose <mariah.sunilalexiose@gmail.com>",
+  "license": "MIT"
+}
