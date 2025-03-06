@@ -12,6 +12,8 @@
     "eslint-config-prettier": "^10.0.2",
     "eslint-plugin-react": "^7.37.4",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11"
   },
@@ -21,6 +23,14 @@
   "scripts": {
     "lint": "eslint . && eslint --fix",
     "prettier": "prettier --write .",
-    "format": "eslint . && eslint --fix && prettier --write ."
+    "format": "eslint . && eslint --fix && prettier --write .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,json,css,scss,md}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
   }
 }
