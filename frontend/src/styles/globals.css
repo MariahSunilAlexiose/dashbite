@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@import "./fonts.css";
+
+@custom-variant dark (&: where(.dark, .dark *));
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+  --color-red-90: #7f1d1d;
+  --color-red-10: #ef4444;
+  --color-blue-10: #f8fafc;
+  --color-blue-20: #f1f5f9;
+  --color-blue-30: #e2e8f0;
+  --color-blue-40: #8fb5f3;
+  --color-blue-50: #3b82f6;
+  --color-blue-60: #2563eb;
+  --color-blue-70: #1d4ed8;
+  --color-blue-80: #1e293b;
+  --color-blue-90: #0f172a;
+  --color-gray-10: #94a3b8;
+  --color-gray-20: #64748b;
+  --color-white: #ffffff;
+  --color-black: #020817;
+
+  --font-sf_display: "SFDisplay", "sans-serif";
+  --font-sf_text: "SFText", "sans-serif";
+
+  --color-background: var(--color-blue-10);
+  --color-foreground: var(--color-blue-90);
+
+  --color-primary: var(--color-blue-60);
+  --color-primary-foreground: var(--color-blue-10);
+
+  --color-accent: var(--color-blue-20);
+  --color-accent-foreground: var(--color-blue-90);
+
+  --color-muted-foreground: var(--color-gray-20);
+
+  --color-destructive: var(--color-red-10);
+  --color-destructive-foreground: var(--color-blue-10);
+
+  --color-border: var(--color-blue-30);
+  --color-ring: var(--color-blue-60);
+}
+
+.dark {
+  --color-background: var(--color-blue-90);
+  --color-foreground: var(--color-blue-10);
+
+  --color-primary: var(--color-blue-50);
+  --color-primary-foreground: var(--color-blue-90);
+
+  --color-accent: var(--color-blue-80);
+  --color-accent-foreground: var(--color-blue-10);
+
+  --color-muted-foreground: var(--color-gray-10);
+
+  --color-destructive: var(--color-red-90);
+  --color-destructive-foreground: var(--color-blue-10);
+
+  --color-border: var(--color-blue-80);
+  --color-ring: var(--color-blue-70);
+}
+
+@layer base {
+  * {
+    @apply border-border m-0 scroll-smooth p-0;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sf_text;
+  }
+  main,
+  nav {
+    @apply mx-auto my-12 max-w-6xl;
+  }
+  h1 {
+    @apply font-sf_display scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
+  }
+  h2 {
+    @apply font-sf_display scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;
+  }
+  h3 {
+    @apply font-sf_display scroll-m-20 text-2xl font-semibold tracking-tight;
+  }
+  h4 {
+    @apply font-sf_display scroll-m-20 text-xl font-semibold tracking-tight;
+  }
+  p {
+    @apply font-sf_text leading-7 [&:not(:first-child)]:mt-6;
+  }
+  .large {
+    @apply font-sf_text text-lg font-semibold;
+  }
+  .small {
+    @apply font-sf_text text-sm font-medium leading-none;
+  }
+  .muted {
+    @apply text-muted-foreground font-sf_text text-sm;
+  }
+}
