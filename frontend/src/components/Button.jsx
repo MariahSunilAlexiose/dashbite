@@ -1,24 +1,10 @@
 import React from "react"
 
-import { ButtonVariants } from "../constants.js"
+import PropTypes from "prop-types"
 
-interface ButtonProps {
-  variant?:
-    | "default"
-    | "destructive"
-    | "outline"
-    | "accent"
-    | "ghost"
-    | "link"
-    | "success"
-  size?: "default" | "sm" | "lg" | "icon"
-  children: React.ReactNode
-  type?: "submit" | "reset" | "button"
-  className?: string
-  onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-}
+import { ButtonVariants } from "@/constants"
 
-const Button: React.FC<ButtonProps> = ({
+const Button = ({
   variant = "default",
   size = "default",
   children,
@@ -35,6 +21,25 @@ const Button: React.FC<ButtonProps> = ({
       {children}
     </button>
   )
+}
+
+Button.propTypes = {
+  variant: PropTypes.oneOf([
+    "default",
+    "destructive",
+    "outline",
+    "accent",
+    "ghost",
+    "link",
+    "success",
+  ]),
+  size: PropTypes.oneOf(["default", "sm", "lg", "icon"]),
+  children: PropTypes.node.isRequired,
+  type: PropTypes.oneOf(["submit", "reset", "button"]),
+  className: PropTypes.string,
+  onClick: PropTypes.func,
+  setMobileMenu: PropTypes.func.isRequired,
+  theme: PropTypes.string.isRequired,
 }
 
 export default Button
