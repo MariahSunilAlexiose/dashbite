@@ -1,4 +1,4 @@
-import logoBlue from "./logo_blue.png"
-import logoWhite from "./logo_white.png"
+import logoWhite from "./dark_mode/logo.png"
+import logoBlue from "./logo.png"
 
 export { logoWhite, logoBlue }
