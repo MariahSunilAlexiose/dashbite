@@ -2,11 +2,18 @@ import React from "react"
 
 import PropTypes from "prop-types"
 
-const Avatar = ({ image, title }) => {
+const Avatar = ({ image, title, onClick, isSelected }) => {
   return (
-    <div className="flex flex-col gap-4 text-center">
+    <div
+      className="flex cursor-pointer flex-col gap-4 text-center"
+      onClick={onClick}
+    >
       <div className="flex content-center items-center justify-center">
-        <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full">
+        <div
+          className={`flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full ${
+            isSelected ? "outline-primary outline-offset-5 outline-8" : ""
+          }`}
+        >
           {image ? (
             <img
               src={image}
@@ -28,6 +35,8 @@ const Avatar = ({ image, title }) => {
 Avatar.propTypes = {
   image: PropTypes.string,
   title: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  isSelected: PropTypes.boolean,
 }
 
 export default Avatar

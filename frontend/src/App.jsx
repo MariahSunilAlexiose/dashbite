@@ -1,16 +1,16 @@
 import React from "react"
 
-import { Header, Navbar } from "@cmp"
+import { Navbar } from "@cmp"
 import { ThemeProvider } from "@providers"
-import { Categories } from "@sections"
+import { Header, Menu } from "@sections"
 
 function App() {
   return (
     <ThemeProvider>
-      <div className="flex flex-col gap-6 px-6 lg:px-8">
+      <div className="flex flex-col gap-6 px-6 lg:px-20">
         <Navbar />
         <Header />
-        <Categories />
+        <Menu />
       </div>
     </ThemeProvider>
   )
