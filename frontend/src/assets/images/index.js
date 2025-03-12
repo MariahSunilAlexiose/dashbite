@@ -1,3 +1,4 @@
+import AppStore from "./app_store.png"
 import ApplePie from "./apple_pie.jpg"
 import BaconBurger from "./bacon_burger.jpg"
 import BagelCreamCheese from "./bagel_cream_cheese.jpg"
@@ -37,6 +38,7 @@ import OrangeJuice from "./orange_juice.jpg"
 import Pancakes from "./pancakes.jpg"
 import PepperoniPizza from "./pepperoni_pizza.jpg"
 import Pizza from "./pizza.jpg"
+import PlayStore from "./play_store.png"
 import Popcorn from "./popcorn.jpg"
 import Pretzels from "./pretzels.jpg"
 import SeafoodPlatter from "./seafood_platter.jpg"
@@ -52,6 +54,8 @@ import VeggiePizza from "./veggie_pizza.jpg"
 import Waffles from "./waffles.jpg"
 
 export {
+  PlayStore,
+  AppStore,
   Pancakes,
   Waffles,
   Omelette,

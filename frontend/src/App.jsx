@@ -2,7 +2,7 @@ import React from "react"
 
 import { Navbar } from "@cmp"
 import { ThemeProvider } from "@providers"
-import { Header, Menu } from "@sections"
+import { Download, Header, Menu } from "@sections"
 
 function App() {
   return (
@@ -11,6 +11,7 @@ function App() {
         <Navbar />
         <Header />
         <Menu />
+        <Download />
       </div>
     </ThemeProvider>
   )
