@@ -58,12 +58,11 @@
   * {
     @apply border-border m-0 scroll-smooth p-0;
   }
-
   body {
     @apply bg-background text-foreground font-sf_text;
   }
   h1 {
-    @apply font-sf_display scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
+    @apply font-sf_display scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-6xl xl:text-7xl;
   }
   h2 {
     @apply font-sf_display scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;

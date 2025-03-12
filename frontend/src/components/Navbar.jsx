@@ -87,7 +87,7 @@ const Navbar = () => {
   return (
     <header>
       <nav
-        className="mx-auto my-6 flex max-w-7xl items-center justify-between px-6 lg:px-8"
+        className="mx-auto mt-6 flex max-w-7xl items-center justify-between"
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
@@ -132,7 +132,6 @@ const Navbar = () => {
             </a>
           ))}
         </div>
-
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4">
           <div className="flex content-center gap-4">
             <img
