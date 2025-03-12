@@ -1,3 +1,3 @@
-import ThemeToggle from "./ThemeToggle"
+import Button from "./Button"
 
-export { ThemeToggle }
+export { Button }
