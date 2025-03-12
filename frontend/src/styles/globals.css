@@ -29,18 +29,14 @@
   --color-foreground: var(--color-blue-90);
 
   --color-primary: var(--color-blue-60);
-  --color-primary-foreground: var(--color-blue-10);
 
   --color-accent: var(--color-blue-20);
-  --color-accent-foreground: var(--color-blue-90);
 
-  --color-muted-foreground: var(--color-gray-20);
+  --color-muted: var(--color-gray-20);
 
   --color-destructive: var(--color-red-10);
-  --color-destructive-foreground: var(--color-blue-10);
 
   --color-border: var(--color-blue-30);
-  --color-ring: var(--color-blue-60);
 }
 
 .dark {
@@ -48,18 +44,14 @@
   --color-foreground: var(--color-blue-10);
 
   --color-primary: var(--color-blue-50);
-  --color-primary-foreground: var(--color-blue-90);
 
   --color-accent: var(--color-blue-80);
-  --color-accent-foreground: var(--color-blue-10);
 
-  --color-muted-foreground: var(--color-gray-10);
+  --color-muted: var(--color-gray-10);
 
   --color-destructive: var(--color-red-90);
-  --color-destructive-foreground: var(--color-blue-10);
 
   --color-border: var(--color-blue-80);
-  --color-ring: var(--color-blue-70);
 }
 
 @layer base {
@@ -69,10 +61,6 @@
 
   body {
     @apply bg-background text-foreground font-sf_text;
-  }
-  main,
-  nav {
-    @apply mx-auto my-12 max-w-6xl;
   }
   h1 {
     @apply font-sf_display scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
@@ -96,6 +84,6 @@
     @apply font-sf_text text-sm font-medium leading-none;
   }
   .muted {
-    @apply text-muted-foreground font-sf_text text-sm;
+    @apply text-muted font-sf_text text-sm;
   }
 }
