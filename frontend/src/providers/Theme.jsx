@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react"
 
+import { dark, light, ThemeContext } from "@context"
 import PropTypes from "prop-types"
-
-import { dark, light, ThemeContext } from "@/context"
 
 export function useTheme() {
   const [theme, setTheme] = useState(() => {
