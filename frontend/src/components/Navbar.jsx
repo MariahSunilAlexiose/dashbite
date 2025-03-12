@@ -14,16 +14,11 @@ import {
   XMarkIcon,
   XMarkWhiteIcon,
 } from "@icons"
-import { logoBlue, logoWhite } from "@img"
+import { LogoBlue, LogoWhite } from "@img"
 import { useTheme } from "@providers"
 import PropTypes from "prop-types"
 
-const links = [
-  { href: "#", label: "Home" },
-  { href: "#", label: "Menu" },
-  { href: "#", label: "About" },
-  { href: "#", label: "Contact" },
-]
+import { navbarLinks } from "@/constants"
 
 const MobileNavBar = ({ setMobileMenu, theme }) => (
   <div className="lg:hidden">
@@ -46,7 +41,7 @@ const MobileNavBar = ({ setMobileMenu, theme }) => (
       </div>
       <div className="mt-6 flow-root">
         <div className="space-y-2">
-          {links.map((link, index) => (
+          {navbarLinks.map((link, index) => (
             <a
               key={index}
               href={link.href}
@@ -95,7 +90,7 @@ const Navbar = () => {
             <span className="sr-only">DashBite</span>
             <img
               className="h-18 w-auto"
-              src={theme === light ? logoBlue : logoWhite}
+              src={theme === light ? LogoBlue : LogoWhite}
               alt="DashBite Logo"
               width={10}
               height={10}
@@ -118,7 +113,7 @@ const Navbar = () => {
           </button>
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
-          {links.map((link, index) => (
+          {navbarLinks.map((link, index) => (
             <a
               key={index}
               href={link.href}

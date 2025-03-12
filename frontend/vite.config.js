@@ -15,6 +15,7 @@ export default defineConfig({
       "@cmp": path.resolve(__dirname, "./src/components"),
       "@context": path.resolve(__dirname, "./src/context"),
       "@providers": path.resolve(__dirname, "./src/providers"),
+      "@sections": path.resolve(__dirname, "./src/sections"),
     },
   },
 })

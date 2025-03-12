@@ -1,3 +1,14 @@
+import {
+  Beverages,
+  Breakfast,
+  Burgers,
+  Desserts,
+  Pizza,
+  Seafood,
+  Snacks,
+  Soups,
+} from "@img"
+
 export const ButtonVariants = {
   variant: {
     default: "bg-primary text-white shadow hover:bg-primary/85",
@@ -18,3 +29,21 @@ export const ButtonVariants = {
     icon: "h-5 w-9",
   },
 }
+
+export const navbarLinks = [
+  { href: "#", label: "Home" },
+  { href: "#", label: "Menu" },
+  { href: "#", label: "About" },
+  { href: "#", label: "Contact" },
+]
+
+export const categoryLinks = [
+  { label: "Breakfast", image: Breakfast },
+  { label: "Beverages", image: Beverages },
+  { label: "Pizza", image: Pizza },
+  { label: "Burgers", image: Burgers },
+  { label: "Seafood", image: Seafood },
+  { label: "Snacks", image: Snacks },
+  { label: "Soups", image: Soups },
+  { label: "Desserts", image: Desserts },
+]
