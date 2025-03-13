@@ -27,19 +27,23 @@ const Card = ({ title, image, description, rating, price }) => {
         ) : (
           <div className="absolute bottom-4 right-4">
             <div className="dark:bg-blue-30 flex items-center justify-center gap-2 rounded-full bg-white p-2">
-              <img
-                src={MinusIcon}
-                alt="Minus Icon"
-                className="h-5 w-5 cursor-pointer"
-                onClick={() => setItemCount((prev) => prev - 1)}
-              />
+              <div className="bg-red-10 cursor-pointer rounded-full p-1">
+                <img
+                  src={MinusIcon}
+                  alt="Minus Icon"
+                  className="h-5 w-5 cursor-pointer"
+                  onClick={() => setItemCount((prev) => prev - 1)}
+                />
+              </div>
               <p className="text-blue-90 m-0 p-0">{itemCount}</p>
-              <img
-                src={PlusDarkIcon}
-                alt="PlusIcon"
-                className="h-5 w-5 cursor-pointer"
-                onClick={() => setItemCount((prev) => prev + 1)}
-              />
+              <div className="bg-accent cursor-pointer rounded-full p-1">
+                <img
+                  src={PlusDarkIcon}
+                  alt="PlusIcon"
+                  className="h-5 w-5 cursor-pointer"
+                  onClick={() => setItemCount((prev) => prev + 1)}
+                />
+              </div>
             </div>
           </div>
         )}
