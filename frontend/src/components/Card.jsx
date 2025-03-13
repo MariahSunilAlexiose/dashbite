@@ -1,12 +1,13 @@
-import React, { useState } from "react"
+import React, { useContext } from "react"
 
+import { StoreContext } from "@context"
 import { MinusIcon, PlusDarkIcon, PlusIcon } from "@icons"
 import PropTypes from "prop-types"
 
 import { ratings } from "@/constants"
 
-const Card = ({ title, image, description, rating, price }) => {
-  const [itemCount, setItemCount] = useState(0)
+const Card = ({ id, title, image, description, rating, price }) => {
+  const { cartItems, addToCart, removeFromCart } = useContext(StoreContext)
   return (
     <div className="bg-border text-foreground flex flex-col rounded-xl border shadow">
       <div className="relative">
@@ -15,13 +16,13 @@ const Card = ({ title, image, description, rating, price }) => {
           alt={title}
           className="h-[330px] w-[500px] rounded-t-xl object-cover"
         />
-        {!itemCount ? (
+        {!cartItems[id] ? (
           <div className="dark:bg-blue-30 absolute bottom-6 right-5 cursor-pointer rounded-full bg-white p-1 shadow-md">
             <img
               src={PlusIcon}
               alt="Plus Icon"
               className="h-5 w-5"
-              onClick={() => setItemCount((prev) => prev + 1)}
+              onClick={() => addToCart(id)}
             />
           </div>
         ) : (
@@ -32,16 +33,16 @@ const Card = ({ title, image, description, rating, price }) => {
                   src={MinusIcon}
                   alt="Minus Icon"
                   className="h-5 w-5 cursor-pointer"
-                  onClick={() => setItemCount((prev) => prev - 1)}
+                  onClick={() => removeFromCart(id)}
                 />
               </div>
-              <p className="text-blue-90 m-0 p-0">{itemCount}</p>
+              <p className="text-blue-90 m-0 p-0">{cartItems[id]}</p>
               <div className="bg-accent cursor-pointer rounded-full p-1">
                 <img
                   src={PlusDarkIcon}
                   alt="PlusIcon"
                   className="h-5 w-5 cursor-pointer"
-                  onClick={() => setItemCount((prev) => prev + 1)}
+                  onClick={() => addToCart(id)}
                 />
               </div>
             </div>
@@ -74,6 +75,7 @@ const Card = ({ title, image, description, rating, price }) => {
 }
 
 Card.propTypes = {
+  id: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
