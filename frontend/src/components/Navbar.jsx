@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { Button } from "@cmp"
 import { dark, light } from "@context"
@@ -72,6 +73,7 @@ MobileNavBar.propTypes = {
 }
 
 const Navbar = () => {
+  const navigate = useNavigate()
   const { theme, setTheme } = useTheme()
   const [mobileMenu, setMobileMenu] = useState(false)
   const [activeLink, setActiveLink] = useState("")
@@ -86,7 +88,7 @@ const Navbar = () => {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
+          <a href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">DashBite</span>
             <img
               className="h-18 w-auto"
@@ -150,7 +152,9 @@ const Navbar = () => {
               className="cursor-pointer"
             />
           </div>
-          <Button className="rounded-full!">Login</Button>
+          <Button onClick={() => navigate("/login")} className="rounded-full!">
+            Login
+          </Button>
           <div
             onClick={toggleTheme}
             className="cursor-pointer content-center"

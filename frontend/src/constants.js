@@ -65,7 +65,7 @@ export const ButtonVariants = {
     destructive:
       "bg-destructive text-background shadow-sm hover:bg-destructive/85",
     outline:
-      "border rounded border-input bg-background shadow-sm hover:bg-accent hover:text-foreground",
+      "border rounded border-muted bg-background shadow-sm hover:bg-accent hover:text-foreground",
     accent: "bg-accent text-foreground shadow-sm hover:bg-accent/85",
     ghost: "rounded hover:bg-accent/80 hover:text-foreground",
     link: "text-primary hover:text-primary/85 underline-offset-4 hover:underline",

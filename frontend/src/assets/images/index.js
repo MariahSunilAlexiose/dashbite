@@ -26,6 +26,7 @@ import IceCreamSundae from "./icecream_sundae.jpg"
 import IcedTea from "./iced_tea.jpg"
 import LentilSoup from "./lentil_soup.jpg"
 import LobsterTail from "./lobster_tail.jpg"
+import LoginSignup from "./login_signup.jpg"
 import LogoBlue from "./logo.png"
 import MargheritaPizza from "./margherita_pizza.jpg"
 import Milkshake from "./milkshake.jpg"
@@ -54,6 +55,7 @@ import VeggiePizza from "./veggie_pizza.jpg"
 import Waffles from "./waffles.jpg"
 
 export {
+  LoginSignup,
   PlayStore,
   AppStore,
   Pancakes,

@@ -1,6 +1,9 @@
 import Avatar from "./Avatar"
 import Button from "./Button"
 import Card from "./Card"
+import Checkbox from "./Checkbox"
+import Input from "./Input"
+import Label from "./Label"
 import Navbar from "./Navbar"
 
-export { Card, Avatar, Navbar, Button }
+export { Label, Input, Checkbox, Card, Avatar, Navbar, Button }
