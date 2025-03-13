@@ -1,9 +1,12 @@
 import {
+  FacebookIcon,
+  LinkedinIcon,
   Rating1Icon,
   Rating2Icon,
   Rating3Icon,
   Rating4Icon,
   Rating5Icon,
+  TwitterXIcon,
 } from "@icons"
 import {
   ApplePie,
@@ -96,11 +99,31 @@ export const categoryLinks = [
 ]
 
 export const ratings = [
-  { label: "Ratings 1", image: Rating1Icon, number: 1 },
-  { label: "Ratings 2", image: Rating2Icon, number: 2 },
-  { label: "Ratings 3", image: Rating3Icon, number: 3 },
-  { label: "Ratings 4", image: Rating4Icon, number: 4 },
-  { label: "Ratings 5", image: Rating5Icon, number: 5 },
+  {
+    label: "Ratings 1",
+    image: Rating1Icon,
+    number: 1,
+  },
+  {
+    label: "Ratings 2",
+    image: Rating2Icon,
+    number: 2,
+  },
+  {
+    label: "Ratings 3",
+    image: Rating3Icon,
+    number: 3,
+  },
+  {
+    label: "Ratings 4",
+    image: Rating4Icon,
+    number: 4,
+  },
+  {
+    label: "Ratings 5",
+    image: Rating5Icon,
+    number: 5,
+  },
 ]
 
 export const dishes = [
@@ -479,5 +502,41 @@ export const dishes = [
     rating: 4,
     description: "Fudgy chocolate brownies with a hint of espresso.",
     category: "Desserts",
+  },
+]
+
+export const icons = [
+  { image: LinkedinIcon, alt: "Linkedin Icon" },
+  { image: TwitterXIcon, alt: "Twitter X Icon" },
+  { image: FacebookIcon, alt: "Facebook Icon" },
+]
+
+export const footerLinks = [
+  {
+    title: "Company",
+    links: [
+      { name: "About us", href: "/" },
+      { name: "Contact Us", href: "/" },
+      { name: "Careers", href: "/" },
+      { name: "Press", href: "/" },
+    ],
+  },
+  {
+    title: "Help",
+    links: [
+      { name: "FAQs", href: "/" },
+      { name: "How it works", href: "/" },
+      { name: "Privacy policy", href: "/" },
+    ],
+  },
+  {
+    title: "Get in touch",
+    links: [
+      {
+        name: "customerservice@dashbite.com",
+        href: "mailto:customerservice@dashbite.com",
+      },
+      { name: "1-800-267-8097", href: "tel:18002678097" },
+    ],
   },
 ]

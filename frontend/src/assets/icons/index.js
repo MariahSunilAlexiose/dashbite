@@ -1,8 +1,11 @@
 import Bars3Icon from "./bars-3.svg"
+import CopyrightIcon from "./copyright-sign.svg"
 import Bars3WhiteIcon from "./dark_mode/bars-3.svg"
 import MagnifyingGlassWhiteIcon from "./dark_mode/magnifying-glass.svg"
 import ShoppingCartWhiteIcon from "./dark_mode/shopping-cart.svg"
 import XMarkWhiteIcon from "./dark_mode/x-mark.svg"
+import FacebookIcon from "./facebook.png"
+import LinkedinIcon from "./linkedin.png"
 import MagnifyingGlassBlackIcon from "./magnifying-glass.svg"
 import MoonIcon from "./moon.svg"
 import PlusIcon from "./plus.svg"
@@ -13,9 +16,14 @@ import Rating4Icon from "./rating-4.png"
 import Rating5Icon from "./rating-5.png"
 import ShoppingCartBlackIcon from "./shopping-cart.svg"
 import SunIcon from "./sun.svg"
+import TwitterXIcon from "./twitter-x.png"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  TwitterXIcon,
+  FacebookIcon,
+  LinkedinIcon,
+  CopyrightIcon,
   PlusIcon,
   Rating5Icon,
   Rating4Icon,

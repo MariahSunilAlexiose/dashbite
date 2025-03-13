@@ -1,5 +1,6 @@
 import Download from "./Download"
+import Footer from "./Footer"
 import Header from "./Header"
 import Menu from "./Menu"
 
-export { Download, Menu, Header }
+export { Footer, Download, Menu, Header }
