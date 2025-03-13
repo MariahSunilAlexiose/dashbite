@@ -6,8 +6,10 @@
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @theme {
+  --color-red-10: #ffd1d1;
+  --color-red-20: #ef4444;
+  --color-red-30: #ff0000;
   --color-red-90: #7f1d1d;
-  --color-red-10: #ef4444;
   --color-blue-10: #f8fafc;
   --color-blue-20: #f1f5f9;
   --color-blue-30: #e2e8f0;
@@ -34,7 +36,7 @@
 
   --color-muted: var(--color-gray-20);
 
-  --color-destructive: var(--color-red-10);
+  --color-destructive: var(--color-red-20);
 
   --color-border: var(--color-blue-30);
 }
