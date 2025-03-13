@@ -8,12 +8,14 @@ import "@styles/globals.css"
 
 import { BrowserRouter } from "react-router-dom"
 
-import { ThemeProvider } from "@providers"
+import { StoreProvider, ThemeProvider } from "@providers"
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ThemeProvider>
-      <App />
+      <StoreProvider>
+        <App />
+      </StoreProvider>
     </ThemeProvider>
   </BrowserRouter>
 )

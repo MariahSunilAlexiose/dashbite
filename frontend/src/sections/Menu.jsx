@@ -1,11 +1,13 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 
 import { Avatar, Card } from "@cmp"
+import { StoreContext } from "@context"
 
-import { categoryLinks, dishes } from "@/constants"
+import { categoryLinks } from "@/constants"
 
 const Menu = () => {
   const [selectedAvatar, setSelectedAvatar] = useState(null)
+  const { dishes } = useContext(StoreContext)
   const handleAvatarClick = (label) => {
     setSelectedAvatar(label)
   }
