@@ -85,4 +85,7 @@
   .muted {
     @apply text-muted font-sf_text text-sm;
   }
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
