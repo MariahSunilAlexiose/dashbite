@@ -1,8 +1,8 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button } from "@cmp"
-import { dark, light } from "@context"
+import { dark, light, StoreContext } from "@context"
 import {
   Bars3Icon,
   Bars3WhiteIcon,
@@ -21,7 +21,7 @@ import PropTypes from "prop-types"
 
 import { navbarLinks } from "@/constants"
 
-const MobileNavBar = ({ setMobileMenu, theme }) => (
+const MobileNavBar = ({ setMobileMenu, theme, navigate, cartItems }) => (
   <div className="lg:hidden">
     <div className="fixed inset-0 z-10" />
     <div className="bg-background sm:ring-border fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1">
@@ -53,13 +53,26 @@ const MobileNavBar = ({ setMobileMenu, theme }) => (
           ))}
         </div>
         <div className="-mx-3 flex content-center justify-between px-3 py-2">
-          <img
-            src={theme === dark ? ShoppingCartWhiteIcon : ShoppingCartBlackIcon}
-            alt="Shopping Cart Icon"
-            width={24}
-            height={24}
-            className="cursor-pointer"
-          />
+          <div className="flex items-center justify-center">
+            <div className="relative">
+              <img
+                src={
+                  theme === dark ? ShoppingCartWhiteIcon : ShoppingCartBlackIcon
+                }
+                alt="Shopping Cart Icon"
+                width={24}
+                height={24}
+                className="cursor-pointer"
+                onClick={() => navigate("/cart")}
+              />
+              {Object.keys(cartItems).length > 0 && (
+                <div
+                  className="bg-red-90 absolute right-0 top-0 h-2 w-2 rounded-full"
+                  style={{ transform: "translate(50%, -50%)" }}
+                />
+              )}
+            </div>
+          </div>
           <Button className="rounded-full!">Login</Button>
         </div>
       </div>
@@ -70,6 +83,8 @@ const MobileNavBar = ({ setMobileMenu, theme }) => (
 MobileNavBar.propTypes = {
   setMobileMenu: PropTypes.func.isRequired,
   theme: PropTypes.string.isRequired,
+  navigate: PropTypes.func.isRequired,
+  cartItems: PropTypes.object.isRequired,
 }
 
 const Navbar = () => {
@@ -80,6 +95,7 @@ const Navbar = () => {
   const toggleTheme = () => {
     setTheme(theme === dark ? light : dark)
   }
+  const { cartItems } = useContext(StoreContext)
 
   return (
     <header>
@@ -142,15 +158,28 @@ const Navbar = () => {
               height={24}
               className="cursor-pointer"
             />
-            <img
-              src={
-                theme === dark ? ShoppingCartWhiteIcon : ShoppingCartBlackIcon
-              }
-              alt="Shopping Cart Icon"
-              width={24}
-              height={24}
-              className="cursor-pointer"
-            />
+            <div className="flex items-center justify-center">
+              <div className="relative">
+                <img
+                  src={
+                    theme === dark
+                      ? ShoppingCartWhiteIcon
+                      : ShoppingCartBlackIcon
+                  }
+                  alt="Shopping Cart Icon"
+                  width={24}
+                  height={24}
+                  className="cursor-pointer"
+                  onClick={() => navigate("/cart")}
+                />
+                {Object.keys(cartItems).length > 0 && (
+                  <div
+                    className="bg-red-90 absolute right-0 top-0 h-2 w-2 rounded-full"
+                    style={{ transform: "translate(50%, -50%)" }}
+                  />
+                )}
+              </div>
+            </div>
           </div>
           <Button onClick={() => navigate("/login")} className="rounded-full!">
             Login
@@ -170,7 +199,12 @@ const Navbar = () => {
         </div>
       </nav>
       {mobileMenu && (
-        <MobileNavBar setMobileMenu={setMobileMenu} theme={theme} />
+        <MobileNavBar
+          setMobileMenu={setMobileMenu}
+          theme={theme}
+          navigate={navigate}
+          cartItems={cartItems}
+        />
       )}
     </header>
   )

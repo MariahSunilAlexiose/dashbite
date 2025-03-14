@@ -5,5 +5,17 @@ import Checkbox from "./Checkbox"
 import Input from "./Input"
 import Label from "./Label"
 import Navbar from "./Navbar"
+import RadioInput from "./RadioInput"
+import Table from "./Table"
 
-export { Label, Input, Checkbox, Card, Avatar, Navbar, Button }
+export {
+  RadioInput,
+  Table,
+  Label,
+  Input,
+  Checkbox,
+  Card,
+  Avatar,
+  Navbar,
+  Button,
+}

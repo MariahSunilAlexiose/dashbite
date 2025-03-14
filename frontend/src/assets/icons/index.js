@@ -18,10 +18,14 @@ import Rating4Icon from "./rating-4.png"
 import Rating5Icon from "./rating-5.png"
 import ShoppingCartBlackIcon from "./shopping-cart.svg"
 import SunIcon from "./sun.svg"
+import TicketIcon from "./ticket.svg"
+import TrashIcon from "./trash.svg"
 import TwitterXIcon from "./twitter-x.png"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  TicketIcon,
+  TrashIcon,
   MinusIcon,
   TwitterXIcon,
   FacebookIcon,

@@ -540,3 +540,21 @@ export const footerLinks = [
     ],
   },
 ]
+
+export const shippingOptions = [
+  {
+    title: "Free shipping",
+    value: "free_shipping",
+    cost: "$0.00",
+  },
+  {
+    title: "Express shipping",
+    value: "express_shipping",
+    cost: "+$15.00",
+  },
+  {
+    title: "Pick up",
+    value: "pick_up",
+    cost: "%5.00",
+  },
+]
