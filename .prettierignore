@@ -5,3 +5,6 @@ yarn.lock
 frontend/node_modules/**
 frontend/yarn.lock
 frontend/src/fonts
+admin/node_modules/**
+admin/yarn.lock
+admin/src/fonts
