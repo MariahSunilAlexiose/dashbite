@@ -20,4 +20,15 @@ const addDish = async (req, res) => {
   }
 }
 
-export { addDish }
+// list dishes
+const listDishes = async (req, res) => {
+  try {
+    const dishes = await dishModel.find({})
+    res.json({ success: true, data: dishes })
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: "Error" })
+  }
+}
+
+export { addDish, listDishes }
