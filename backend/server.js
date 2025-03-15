@@ -2,6 +2,7 @@ import cors from "cors"
 import express from "express"
 
 import { connectDB } from "./config/db.js"
+import dishRouter from "./routes/food.js"
 
 // app config
 const app = express()
@@ -21,3 +22,5 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Server started on http://localhost:${port}`)
 })
+
+app.use("/api/dish", dishRouter)
