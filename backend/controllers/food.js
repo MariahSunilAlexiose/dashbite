@@ -1,3 +1,5 @@
+import fs from "fs"
+
 import dishModel from "../models/food.js"
 
 // add dish item
@@ -31,4 +33,17 @@ const listDishes = async (req, res) => {
   }
 }
 
-export { addDish, listDishes }
+// remove dishes
+const removeDish = async (req, res) => {
+  try {
+    const dish = await dishModel.findById(req.body.id)
+    fs.unlink(`uploads/${dish.image}`, () => {})
+    await dishModel.findByIdAndDelete(req.body.id)
+    res.json({ success: true, message: "Dish Removed" })
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: "Error" })
+  }
+}
+
+export { addDish, listDishes, removeDish }
