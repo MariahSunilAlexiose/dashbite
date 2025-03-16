@@ -11,6 +11,10 @@ export function useTheme() {
     return light
   })
 
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === dark ? light : dark))
+  }
+
   useEffect(() => {
     const setSystemTheme = () => {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
@@ -40,7 +44,7 @@ export function useTheme() {
     }
   }, [theme])
 
-  return { theme, setTheme }
+  return { theme, setTheme, toggleTheme }
 }
 
 ThemeProvider.propTypes = {
@@ -48,9 +52,10 @@ ThemeProvider.propTypes = {
 }
 
 export function ThemeProvider({ children }) {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, toggleTheme } = useTheme()
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   )

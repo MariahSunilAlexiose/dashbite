@@ -1,17 +1,15 @@
 import React, { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { Button } from "@cmp"
+import { Button, ThemeToggle } from "@cmp"
 import { dark, light, StoreContext } from "@context"
 import {
   Bars3Icon,
   Bars3WhiteIcon,
   MagnifyingGlassBlackIcon,
   MagnifyingGlassWhiteIcon,
-  MoonIcon,
   ShoppingCartBlackIcon,
   ShoppingCartWhiteIcon,
-  SunIcon,
   XMarkIcon,
   XMarkWhiteIcon,
 } from "@icons"
@@ -89,12 +87,9 @@ MobileNavBar.propTypes = {
 
 const Navbar = () => {
   const navigate = useNavigate()
-  const { theme, setTheme } = useTheme()
+  const { theme, toggleTheme } = useTheme()
   const [mobileMenu, setMobileMenu] = useState(false)
   const [activeLink, setActiveLink] = useState("")
-  const toggleTheme = () => {
-    setTheme(theme === dark ? light : dark)
-  }
   const { cartItems } = useContext(StoreContext)
 
   return (
@@ -184,18 +179,7 @@ const Navbar = () => {
           <Button onClick={() => navigate("/login")} className="rounded-full!">
             Login
           </Button>
-          <div
-            onClick={toggleTheme}
-            className="cursor-pointer content-center"
-            style={{ transition: "background 0.3s ease-in-out" }}
-          >
-            <img
-              src={theme === dark ? SunIcon : MoonIcon}
-              alt="Sun Icon"
-              width={24}
-              height={24}
-            />
-          </div>
+          <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
         </div>
       </nav>
       {mobileMenu && (
