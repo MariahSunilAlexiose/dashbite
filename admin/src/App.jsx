@@ -1,12 +1,12 @@
 import React from "react"
-
-import { ThemeToggle } from "@cmp"
+import { Routes } from "react-router-dom"
 
 function App() {
   return (
     <div>
-      <h1 className="text-primary">DashBite Admin Panel</h1>
-      <ThemeToggle />
+      <div className="flex flex-col px-6 pb-6 lg:px-20">
+        <Routes></Routes>
+      </div>
     </div>
   )
 }

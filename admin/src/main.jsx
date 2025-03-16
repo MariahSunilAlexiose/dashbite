@@ -1,15 +1,18 @@
 import React from "react"
+import { BrowserRouter } from "react-router-dom"
 
 import { createRoot } from "react-dom/client"
 
 import App from "./App.jsx"
 
-import "./styles/globals.css"
+import "@styles/globals.css"
 
 import { ThemeProvider } from "@providers"
 
 createRoot(document.getElementById("root")).render(
-  <ThemeProvider>
-    <App />
-  </ThemeProvider>
+  <BrowserRouter>
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  </BrowserRouter>
 )
