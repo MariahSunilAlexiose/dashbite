@@ -1,3 +1,4 @@
+import Sidebar from "./Sidebar"
 import ThemeToggle from "./ThemeToggle"
 
-export { ThemeToggle }
+export { Sidebar, ThemeToggle }
