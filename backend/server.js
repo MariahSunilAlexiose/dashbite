@@ -23,7 +23,7 @@ app.listen(port, () => {
   console.log(`Server started on http://localhost:${port}`)
 })
 
-app.use("/api/dishes", dishRouter)
+app.use("/api/dish", dishRouter)
 
 // route to see image (ROUTE: /images/[image_name])
 app.use("/images", express.static("uploads"))

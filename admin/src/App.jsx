@@ -1,16 +1,20 @@
 import React from "react"
-import { Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 
 import { Sidebar } from "@cmp"
+import { AddDish, Dishes } from "@pages"
 
 import { sidebarItems } from "@/constants"
 
 function App() {
   return (
-    <div>
+    <div className="flex h-screen">
       <Sidebar items={sidebarItems} />
-      <div className="flex flex-col px-6 pb-6 lg:px-20">
-        <Routes></Routes>
+      <div className="flex-1 px-5 pt-6 lg:px-20">
+        <Routes>
+          <Route path="/dishes" element={<Dishes />} />
+          <Route path="/dishes/add_form" element={<AddDish />} />
+        </Routes>
       </div>
     </div>
   )
