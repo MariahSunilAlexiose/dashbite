@@ -7,12 +7,14 @@ import App from "./App.jsx"
 
 import "@styles/globals.css"
 
-import { ThemeProvider } from "@providers"
+import { ThemeProvider, ToastProvider } from "@providers"
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ThemeProvider>
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
     </ThemeProvider>
   </BrowserRouter>
 )

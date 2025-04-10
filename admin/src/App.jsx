@@ -1,7 +1,7 @@
 import React from "react"
 import { Route, Routes } from "react-router-dom"
 
-import { Sidebar } from "@cmp"
+import { Sidebar, Toasts } from "@cmp"
 import { AddDish, Dishes } from "@pages"
 
 import { sidebarItems } from "@/constants"
@@ -9,6 +9,7 @@ import { sidebarItems } from "@/constants"
 function App() {
   return (
     <div className="flex h-screen">
+      <Toasts />
       <Sidebar items={sidebarItems} />
       <div className="flex-1 px-5 pt-6 lg:px-20">
         <Routes>

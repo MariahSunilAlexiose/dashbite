@@ -2,6 +2,7 @@ import React, { useState } from "react"
 
 import { Button, DropDown, Input, Label, TextArea } from "@cmp"
 import { UploadAreaImg } from "@img"
+import { useToast } from "@providers"
 import axios from "axios"
 
 import { categories } from "@/constants"
@@ -9,7 +10,9 @@ import { categories } from "@/constants"
 const AddDish = () => {
   const [formData, setFormData] = useState({})
   const [image, setImage] = useState(false)
+  const { addToast } = useToast()
   console.log(formData)
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -18,7 +21,9 @@ const AddDish = () => {
           "Content-Type": "multipart/form-data",
         },
       })
+      addToast("success", "Success", "Food Added")
       setFormData({})
+      setImage(false)
     } catch (err) {
       console.error("Error in adding:", err)
     }
@@ -56,7 +61,7 @@ const AddDish = () => {
             <Label>Category</Label>
             <DropDown
               options={categories}
-              defaultValue={categories[0]}
+              defaultValue={formData.category}
               onChange={(status) => {
                 setFormData((prevFormData) => ({
                   ...prevFormData,
@@ -71,6 +76,7 @@ const AddDish = () => {
             <Input
               name="name"
               type="text"
+              value={formData.name || ""}
               onChange={(e) => {
                 setFormData((prevFormData) => ({
                   ...prevFormData,
@@ -85,6 +91,7 @@ const AddDish = () => {
           <Label>Description</Label>
           <TextArea
             placeholder=""
+            value={formData.description || ""}
             onChange={(e) => {
               setFormData((prevFormData) => ({
                 ...prevFormData,
@@ -99,6 +106,7 @@ const AddDish = () => {
             <Input
               name="price"
               type="number"
+              value={formData.price || ""}
               onChange={(e) => {
                 setFormData((prevFormData) => ({
                   ...prevFormData,
@@ -117,6 +125,7 @@ const AddDish = () => {
             <Input
               name="rating"
               type="number"
+              value={formData.rating || ""}
               onChange={(e) => {
                 setFormData((prevFormData) => ({
                   ...prevFormData,
