@@ -1,22 +1,53 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { Button } from "@cmp"
+import { Button, Table } from "@cmp"
 import { PlusIcon } from "@icons"
+import { useToast } from "@providers"
+import axios from "axios"
+
+import { backendURL } from "@/constants"
 
 const Dishes = () => {
   const navigate = useNavigate()
+  const [list, setList] = useState([])
+  const { addToast } = useToast()
+
+  const fetchList = async () => {
+    try {
+      const response = await axios.get(`${backendURL}/dish/`)
+      const cleanedDishesData = response.data.data.map((item) => {
+        // eslint-disable-next-line no-unused-vars
+        const { __v, _id, image, ...rest } = item
+        return { image, ...rest }
+      })
+      setList(cleanedDishesData)
+    } catch (err) {
+      console.error("Error in listing dishes:", err)
+      addToast("error", "Error", "Error in listing dish")
+    }
+  }
+
+  useEffect(() => {
+    fetchList()
+  })
+
+  console.log(list)
+
   return (
     <div className="py-10">
       <div className="flex items-center justify-between">
         <h2>Dishes</h2>
         <Button
-          size="icon"
+          size="sm"
           variant="success"
           onClick={() => navigate("/dishes/add_form")}
         >
           <img alt="Plus Icon" src={PlusIcon} width={20} height={20} />
         </Button>
+      </div>
+      <div className="pt-7">
+        <Table data={list} tableName="dishes" />
       </div>
     </div>
   )

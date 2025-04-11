@@ -5,7 +5,7 @@ import { UploadAreaImg } from "@img"
 import { useToast } from "@providers"
 import axios from "axios"
 
-import { categories } from "@/constants"
+import { backendURL, categories } from "@/constants"
 
 const AddDish = () => {
   const [formData, setFormData] = useState({})
@@ -16,7 +16,7 @@ const AddDish = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await axios.post("http://localhost:4000/api/dish/add", formData, {
+      await axios.post(`${backendURL}/dish/add`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -26,6 +26,7 @@ const AddDish = () => {
       setImage(false)
     } catch (err) {
       console.error("Error in adding:", err)
+      addToast("error", "Error", "Error in adding dish")
     }
   }
   return (

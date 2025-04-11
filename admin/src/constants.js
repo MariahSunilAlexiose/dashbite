@@ -8,6 +8,10 @@ import {
   UtensilsCrossedWhiteIcon,
 } from "@icons"
 
+export const backendURL = "http://localhost:4000/api"
+
+export const backendImgURL = "http://localhost:4000/images"
+
 export const sidebarItems = [
   {
     icon: UtensilsCrossedIcon,
@@ -75,4 +79,21 @@ export const ToastVariants = {
     styles: "bg-blue-300 text-blue-800",
     icon: { img: InformationCircleIcon, name: "Information Circle Icon" },
   },
+}
+
+export const keyMapping = {
+  name: "Name",
+  description: "Description",
+  price: "Price",
+  category: "Category",
+  rating: "Rating",
+}
+
+export const formatDate = (dateString) => {
+  const options = { day: "numeric", month: "short", year: "numeric" }
+  const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
+    new Date(dateString)
+  )
+  const [month, day, year] = formattedDate.replace(",", "").split(" ")
+  return `${day} ${month} ${year}`
 }
