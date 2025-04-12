@@ -18,7 +18,7 @@ const Dishes = () => {
       const response = await axios.get(`${backendURL}/dish/`)
       const cleanedDishesData = response.data.data.map((item) => {
         // eslint-disable-next-line no-unused-vars
-        const { __v, _id, image, ...rest } = item
+        const { __v, image, ...rest } = item
         return { image, ...rest }
       })
       setList(cleanedDishesData)
@@ -31,8 +31,6 @@ const Dishes = () => {
   useEffect(() => {
     fetchList()
   })
-
-  console.log(list)
 
   return (
     <div className="py-10">

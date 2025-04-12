@@ -14,8 +14,6 @@ export const useToast = () => {
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([])
 
-  console.log(toasts)
-
   const addToast = (type, title, description) => {
     const id = Math.random().toString(36).substring(7)
     setToasts([...toasts, { id, type, title, description }])

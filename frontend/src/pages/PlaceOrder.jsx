@@ -6,7 +6,6 @@ import { CartSummary, Input } from "@cmp"
 const PlaceOrder = () => {
   const location = useLocation()
   const { selectedValue } = location.state || {}
-  console.log(selectedValue)
   return (
     <div className="flex justify-between gap-2">
       <div className="w-2/3 p-6">

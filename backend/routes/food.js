@@ -17,6 +17,6 @@ const upload = multer({ storage: storage })
 
 dishRouter.post("/add", upload.single("image"), addDish)
 dishRouter.get("/", listDishes)
-dishRouter.post("/remove", removeDish)
+dishRouter.delete("/remove", removeDish)
 
 export default dishRouter

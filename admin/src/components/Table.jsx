@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+import { useToast } from "@providers"
 import axios from "axios"
 import PropTypes from "prop-types"
 
@@ -8,21 +9,28 @@ import { backendImgURL, backendURL, formatDate, keyMapping } from "@/constants"
 
 import { Pagination } from "."
 
-const handleDelete = async () => {
+const handleDelete = async ({ addToast, foodID }) => {
   try {
-    await axios.delete(`${backendURL}/dish/remove`)
+    await axios.delete(`${backendURL}/dish/remove`, { data: { id: foodID } })
+    addToast("success", "Success", "Removed dish")
     window.location.reload()
   } catch (err) {
     console.log("Error deleting data:", err)
+    addToast("error", "Error", "Error in listing dish")
   }
 }
 
 const Table = ({ tableName, data }) => {
+  const { addToast } = useToast()
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(5)
   const lastItemIndex = currentPage * itemsPerPage
   const firstItemIndex = lastItemIndex - itemsPerPage
+
+  // eslint-disable-next-line no-unused-vars
+  const filteredData = data.map(({ _id, ...rest }) => rest)
+
   const currentItems = data.slice(firstItemIndex, lastItemIndex)
 
   const dataMap = new Map()
@@ -39,7 +47,7 @@ const Table = ({ tableName, data }) => {
       <table className="w-full items-center justify-center text-sm">
         <thead className="[&_tr]:border-b">
           <tr className="border-b transition-colors">
-            {Object.keys(data[0])
+            {Object.keys(filteredData[0])
               .map((key) => keyMapping[key] || key)
               .map((header) => (
                 <th
@@ -57,7 +65,7 @@ const Table = ({ tableName, data }) => {
               key={index}
               className="cursor-pointer border-b transition-colors hover:bg-[#f1f5f9]"
             >
-              {Object.keys(data[0]).map((header) => (
+              {Object.keys(filteredData[0]).map((header) => (
                 <td key={header} className="w-1/6 p-2 align-middle">
                   {header === "unitPrice" ||
                   header === "price" ||
@@ -85,7 +93,7 @@ const Table = ({ tableName, data }) => {
                     navigate("/edit_form", {
                       state: {
                         tableName,
-                        dataToBeUpdated: data.find((d) => d.id === row.id),
+                        dataToBeUpdated: data.find((d) => d._id === row._id),
                       },
                     })
                   }}
@@ -96,7 +104,7 @@ const Table = ({ tableName, data }) => {
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleDelete()
+                    handleDelete({ addToast, foodID: row._id })
                   }}
                   className="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-700"
                 >
