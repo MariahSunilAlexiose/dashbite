@@ -15,13 +15,17 @@ import ImageIcon from "./image.svg"
 import InformationCircleIcon from "./information-circle.svg"
 import Logo from "./logo.png"
 import MoonIcon from "./moon.svg"
+import PencilIcon from "./pencil.svg"
 import PlusIcon from "./plus.svg"
 import ShoppingCartIcon from "./shopping-cart.svg"
 import SunIcon from "./sun.svg"
+import TrashIcon from "./trash.svg"
 import UtensilsCrossedIcon from "./utensils-crossed.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  PencilIcon,
+  TrashIcon,
   ChevronRightIcon,
   ChevronLeftIcon,
   EllipsisHorizontalIcon,

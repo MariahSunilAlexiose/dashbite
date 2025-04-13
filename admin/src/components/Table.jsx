@@ -1,6 +1,8 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+import { Button } from "@cmp"
+import { PencilIcon, TrashIcon } from "@icons"
 import { useToast } from "@providers"
 import axios from "axios"
 import PropTypes from "prop-types"
@@ -86,30 +88,31 @@ const Table = ({ tableName, data }) => {
                   )}
                 </td>
               ))}
-              <td className="w-1/6 p-2 align-middle">
-                <button
+              <td className="flex gap-3 py-8 align-middle">
+                <Button
+                  size="icon"
                   onClick={(e) => {
                     e.stopPropagation()
-                    navigate("/edit_form", {
+                    navigate("/dishes/edit_form", {
                       state: {
                         tableName,
                         dataToBeUpdated: data.find((d) => d._id === row._id),
                       },
                     })
                   }}
-                  className="mr-1 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-700"
                 >
-                  Edit
-                </button>
-                <button
+                  <img src={PencilIcon} alt="Pencil Icon" className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="icon"
                   onClick={(e) => {
                     e.stopPropagation()
                     handleDelete({ addToast, foodID: row._id })
                   }}
-                  className="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-700"
                 >
-                  Delete
-                </button>
+                  <img src={TrashIcon} alt="Trash Icon" className="h-4 w-4" />
+                </Button>
               </td>
             </tr>
           ))}
