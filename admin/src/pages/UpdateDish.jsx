@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 
 import { Button, DropDown, Input, Label, TextArea } from "@cmp"
 import { TrashIcon } from "@icons"
@@ -6,47 +7,66 @@ import { UploadAreaImg } from "@img"
 import { useToast } from "@providers"
 import axios from "axios"
 
-import { backendURL, categories } from "@/constants"
+import { backendImgURL, backendURL, categories } from "@/constants"
 
-const AddDish = () => {
-  const [formData, setFormData] = useState({})
+const UpdateDish = () => {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { dataToBeUpdated } = location.state || {}
+  const [formData, setFormData] = useState(dataToBeUpdated)
   const [image, setImage] = useState(false)
   const { addToast } = useToast()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    e.stopPropagation()
     try {
-      await axios.post(`${backendURL}/dish/add`, formData, {
+      await axios.post(`${backendURL}/dish/update`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
-      addToast("success", "Success", "Food Added")
-      setFormData({})
-      setImage(false)
+      navigate(-1)
     } catch (err) {
-      console.error("Error in adding:", err)
-      addToast("error", "Error", "Error in adding dish")
+      console.error("Error in updating:", err)
+      addToast("error", "Error", "Error in updating the dish")
     }
   }
+
+  console.log(formData)
+
   return (
     <div>
-      <h2>Add Dish</h2>
+      <h2>Update Dish</h2>
       <div className="flex flex-col gap-3">
         <div>
           <Label>Upload Image</Label>
           <div className="flex items-center gap-3">
             <label htmlFor="image">
-              <img
-                src={image ? URL.createObjectURL(image) : UploadAreaImg}
-                alt="Upload Area Image"
-                className="w-32 cursor-pointer"
-              />
+              <div className="flex items-center justify-center">
+                <img
+                  src={
+                    image
+                      ? URL.createObjectURL(image)
+                      : formData.image
+                        ? `${backendImgURL}/${formData.image}`
+                        : UploadAreaImg
+                  }
+                  alt={formData.name || "Image"}
+                  className="w-32 cursor-pointer"
+                />
+              </div>
             </label>
             <Button
               variant="destructive"
               size="icon"
-              onClick={() => setImage(false)}
+              onClick={() => {
+                setImage(false)
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  image: null,
+                }))
+              }}
             >
               <img src={TrashIcon} alt="Trash Icon" className="h-4 w-4" />
             </Button>
@@ -96,6 +116,7 @@ const AddDish = () => {
             />
           </div>
         </div>
+
         <div>
           <Label>Description</Label>
           <TextArea
@@ -150,11 +171,11 @@ const AddDish = () => {
           </div>
         </div>
         <div className="flex justify-end">
-          <Button onClick={handleSubmit}>Add Dish</Button>
+          <Button onClick={handleSubmit}>Update Dish</Button>
         </div>
       </div>
     </div>
   )
 }
 
-export default AddDish
+export default UpdateDish

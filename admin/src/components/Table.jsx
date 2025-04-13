@@ -93,7 +93,7 @@ const Table = ({ tableName, data }) => {
                   size="icon"
                   onClick={(e) => {
                     e.stopPropagation()
-                    navigate("/dishes/edit_form", {
+                    navigate("/dishes/update_form", {
                       state: {
                         tableName,
                         dataToBeUpdated: data.find((d) => d._id === row._id),
