@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 
-import { store, StoreContext } from "@context"
+import { StoreContext } from "@context"
+import axios from "axios"
 import PropTypes from "prop-types"
 
 export const StoreProvider = (props) => {
@@ -12,6 +13,8 @@ export const StoreProvider = (props) => {
   const [token, setToken] = useState("")
 
   const url = "http://localhost:4000"
+
+  const [dishes, setDishes] = useState([])
 
   // Save cartItems to localStorage whenever it changes
   useEffect(() => {
@@ -49,7 +52,7 @@ export const StoreProvider = (props) => {
     for (const item in cartItems) {
       if (cartItems[item] > 0) {
         // Convert item (string) to a number for comparison
-        let itemInfo = store.dishes.find((dish) => dish._id === item)
+        let itemInfo = dishes.find((dish) => dish._id === item)
         if (itemInfo) {
           totalAmt += itemInfo.price * cartItems[item]
         }
@@ -57,8 +60,24 @@ export const StoreProvider = (props) => {
     }
     return totalAmt
   }
+
+  const fetchDishes = async () => {
+    const response = await axios.get(`${url}/api/dish/`)
+    setDishes(response.data.data)
+  }
+
+  useEffect(() => {
+    async function loadData() {
+      await fetchDishes()
+      if (localStorage.getItem("token")) {
+        setToken(localStorage.getItem("token"))
+      }
+    }
+    loadData()
+  }, [])
+
   const context = {
-    store,
+    dishes,
     cartItems,
     setCartItems,
     addToCart,

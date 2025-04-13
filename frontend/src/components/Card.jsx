@@ -7,12 +7,12 @@ import PropTypes from "prop-types"
 import { ratings } from "@/constants"
 
 const Card = ({ id, title, image, description, rating, price }) => {
-  const { cartItems, addToCart, removeFromCart } = useContext(StoreContext)
+  const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
   return (
     <div className="bg-border text-foreground flex flex-col rounded-xl border shadow">
       <div className="relative">
         <img
-          src={image}
+          src={url + "/images/" + image}
           alt={title}
           className="h-[330px] w-[500px] rounded-t-xl object-cover"
         />

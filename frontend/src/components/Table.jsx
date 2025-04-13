@@ -1,6 +1,7 @@
-import React from "react"
+import React, { useContext } from "react"
 
 import { Button } from "@cmp"
+import { StoreContext } from "@context"
 import { MinusIcon, PlusDarkIcon, TrashIcon } from "@icons"
 import PropTypes from "prop-types"
 
@@ -32,11 +33,12 @@ TableRow.propTypes =
 
 const Table = ({
   cartItems,
-  store,
+  dishes,
   addToCart,
   deleteFromCart,
   removeFromCart,
 }) => {
+  const { url } = useContext(StoreContext)
   return (
     <div className="relative w-full overflow-x-auto p-4">
       <h2 className="mb-4 text-lg font-bold">My Cart</h2>
@@ -52,13 +54,13 @@ const Table = ({
             </TableRow>
           </thead>
           <tbody>
-            {store.dishes.map((dish) =>
+            {dishes.map((dish) =>
               cartItems[dish._id] > 0 ? (
                 <TableRow key={dish._id} className="border-b">
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <img
-                        src={dish.image}
+                        src={url + "/images/" + dish.image}
                         alt={dish.name}
                         className="h-8 w-8 rounded object-cover"
                       />
@@ -119,16 +121,14 @@ const Table = ({
 
 Table.propTypes = {
   cartItems: PropTypes.object.isRequired,
-  store: PropTypes.shape({
-    dishes: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        image: PropTypes.string,
-        price: PropTypes.number.isRequired,
-      })
-    ).isRequired,
-  }).isRequired,
+  dishes: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      image: PropTypes.string,
+      price: PropTypes.number.isRequired,
+    })
+  ).isRequired,
   addToCart: PropTypes.func.isRequired,
   deleteFromCart: PropTypes.func.isRequired,
   removeFromCart: PropTypes.func.isRequired,

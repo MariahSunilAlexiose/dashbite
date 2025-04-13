@@ -7,7 +7,7 @@ import { categoryLinks } from "@/constants"
 
 const Menu = () => {
   const [selectedAvatar, setSelectedAvatar] = useState(null)
-  const { store } = useContext(StoreContext)
+  const { dishes } = useContext(StoreContext)
   const handleAvatarClick = (label) => {
     setSelectedAvatar(label)
   }
@@ -36,7 +36,7 @@ const Menu = () => {
       <div>
         <h2>Top Dishes</h2>
         <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {store.dishes
+          {dishes
             .filter((dish) =>
               selectedAvatar ? dish.category === selectedAvatar : true
             )

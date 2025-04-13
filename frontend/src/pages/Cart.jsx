@@ -5,14 +5,14 @@ import { StoreContext } from "@context"
 import { TicketIcon } from "@icons"
 
 const Cart = () => {
-  const { cartItems, store, addToCart, deleteFromCart, removeFromCart } =
+  const { cartItems, dishes, addToCart, deleteFromCart, removeFromCart } =
     useContext(StoreContext)
 
   return (
     <div className="flex flex-col gap-6 pt-10 md:flex-row">
       <Table
         cartItems={cartItems}
-        store={store}
+        dishes={dishes}
         addToCart={addToCart}
         deleteFromCart={deleteFromCart}
         removeFromCart={removeFromCart}
