@@ -1,5 +1,7 @@
+import ArrowLeftStartOnRectangleIcon from "./arrow-left-start-on-rectangle.svg"
 import Bars3Icon from "./bars-3.svg"
 import CheckCircleIcon from "./check-circle.svg"
+import ChevronDownIcon from "./chevron-down.svg"
 import CopyrightIcon from "./copyright-sign.svg"
 import Bars3WhiteIcon from "./dark_mode/bars-3.svg"
 import MagnifyingGlassWhiteIcon from "./dark_mode/magnifying-glass.svg"
@@ -19,14 +21,20 @@ import Rating2Icon from "./rating-2.png"
 import Rating3Icon from "./rating-3.png"
 import Rating4Icon from "./rating-4.png"
 import Rating5Icon from "./rating-5.png"
+import ShoppingBagIcon from "./shopping-bag.svg"
 import ShoppingCartBlackIcon from "./shopping-cart.svg"
 import SunIcon from "./sun.svg"
 import TicketIcon from "./ticket.svg"
 import TrashIcon from "./trash.svg"
 import TwitterXIcon from "./twitter-x.png"
+import UserIcon from "./user.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  ShoppingBagIcon,
+  ArrowLeftStartOnRectangleIcon,
+  UserIcon,
+  ChevronDownIcon,
   InformationCircleIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,

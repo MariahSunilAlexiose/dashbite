@@ -5,10 +5,13 @@ import PropTypes from "prop-types"
 
 export const StoreProvider = (props) => {
   const [cartItems, setCartItems] = useState(() => {
-    // Load initial cartItems from localStorage if available
     const storedCartItems = localStorage.getItem("cartItems")
     return storedCartItems ? JSON.parse(storedCartItems) : {}
   })
+
+  const [token, setToken] = useState("")
+
+  const url = "http://localhost:4000"
 
   // Save cartItems to localStorage whenever it changes
   useEffect(() => {
@@ -46,7 +49,7 @@ export const StoreProvider = (props) => {
     for (const item in cartItems) {
       if (cartItems[item] > 0) {
         // Convert item (string) to a number for comparison
-        let itemInfo = store.dishes.find((dish) => dish._id === Number(item))
+        let itemInfo = store.dishes.find((dish) => dish._id === item)
         if (itemInfo) {
           totalAmt += itemInfo.price * cartItems[item]
         }
@@ -54,7 +57,6 @@ export const StoreProvider = (props) => {
     }
     return totalAmt
   }
-
   const context = {
     store,
     cartItems,
@@ -63,6 +65,9 @@ export const StoreProvider = (props) => {
     removeFromCart,
     deleteFromCart,
     getTotalCartAmt,
+    token,
+    setToken,
+    url,
   }
 
   return (

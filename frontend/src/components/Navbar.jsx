@@ -6,6 +6,7 @@ import { dark, light, StoreContext } from "@context"
 import {
   Bars3Icon,
   Bars3WhiteIcon,
+  ChevronDownIcon,
   MagnifyingGlassBlackIcon,
   MagnifyingGlassWhiteIcon,
   ShoppingCartBlackIcon,
@@ -17,7 +18,7 @@ import { LogoBlue, LogoWhite } from "@img"
 import { useTheme } from "@providers"
 import PropTypes from "prop-types"
 
-import { navbarLinks } from "@/constants"
+import { navbarLinks, popoverItems } from "@/constants"
 
 const MobileNavBar = ({ setMobileMenu, theme, navigate, cartItems }) => (
   <div className="lg:hidden">
@@ -71,7 +72,9 @@ const MobileNavBar = ({ setMobileMenu, theme, navigate, cartItems }) => (
               )}
             </div>
           </div>
-          <Button className="rounded-full!">Login</Button>
+          <Button className="rounded-full!" onClick={() => navigate("/login")}>
+            Login
+          </Button>
         </div>
       </div>
     </div>
@@ -90,8 +93,13 @@ const Navbar = () => {
   const { theme, toggleTheme } = useTheme()
   const [mobileMenu, setMobileMenu] = useState(false)
   const [activeLink, setActiveLink] = useState("")
-  const { cartItems } = useContext(StoreContext)
-
+  const [popover, setPopover] = useState(false)
+  const { cartItems, token, setToken } = useContext(StoreContext)
+  const logout = () => {
+    localStorage.removeItem("token")
+    setToken("")
+    navigate("/")
+  }
   return (
     <header>
       <nav
@@ -175,10 +183,72 @@ const Navbar = () => {
                 )}
               </div>
             </div>
+            {token && (
+              <div
+                className="relative cursor-pointer"
+                onClick={() => setPopover(!popover)}
+              >
+                <div className="flex items-center justify-center gap-1">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
+                    <img
+                      src="https://ui-avatars.com/api/?name=admin"
+                      alt="User Profile"
+                      className="aspect-square h-full w-full"
+                    />
+                  </div>
+                  <img
+                    src={ChevronDownIcon}
+                    alt="Chevron Down Icon"
+                    className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+                      popover ? "rotate-180" : ""
+                    }`}
+                    aria-hidden="true"
+                  />
+                </div>
+                {popover && (
+                  <div className="bg-background absolute -left-8 top-full z-10 mt-3 max-w-md overflow-hidden rounded-3xl shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in">
+                    <div className="p-4">
+                      {popoverItems.map((item) => (
+                        <div
+                          key={item.name}
+                          className="hover:bg-accent group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6"
+                          onClick={item.name === "Logout" && logout}
+                        >
+                          <div className="bg-accent group-hover:bg-background flex h-11 w-11 flex-none items-center justify-center rounded-lg">
+                            <img
+                              alt="Product Icon"
+                              src={item.icon}
+                              width={10}
+                              height={10}
+                              className="text-foreground h-6 w-6 group-hover:text-indigo-600"
+                              aria-hidden="true"
+                            />
+                          </div>
+                          <div className="flex-auto">
+                            <a
+                              href={item.href}
+                              className="text-foreground block font-semibold"
+                            >
+                              {item.name}
+                              <span className="absolute inset-0" />
+                            </a>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-          <Button onClick={() => navigate("/login")} className="rounded-full!">
-            Login
-          </Button>
+          {!token && (
+            <Button
+              onClick={() => navigate("/login")}
+              className="rounded-full!"
+            >
+              Login
+            </Button>
+          )}
           <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
         </div>
       </nav>
@@ -188,6 +258,8 @@ const Navbar = () => {
           theme={theme}
           navigate={navigate}
           cartItems={cartItems}
+          setPopover={setPopover}
+          popover={popover}
         />
       )}
     </header>

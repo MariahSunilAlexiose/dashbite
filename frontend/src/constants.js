@@ -1,4 +1,5 @@
 import {
+  ArrowLeftStartOnRectangleIcon,
   CheckCircleIcon,
   ExclamationTriangleIcon,
   FacebookIcon,
@@ -9,7 +10,9 @@ import {
   Rating3Icon,
   Rating4Icon,
   Rating5Icon,
+  ShoppingBagIcon,
   TwitterXIcon,
+  UserIcon,
 } from "@icons"
 import {
   ApplePie,
@@ -147,6 +150,12 @@ export const ToastVariants = {
     icon: { img: InformationCircleIcon, name: "Information Circle Icon" },
   },
 }
+
+export const popoverItems = [
+  { href: "#", name: "Profile", icon: UserIcon },
+  { href: "#", name: "Orders", icon: ShoppingBagIcon },
+  { href: "#", name: "Logout", icon: ArrowLeftStartOnRectangleIcon },
+]
 
 export const dishes = [
   // Breakfast

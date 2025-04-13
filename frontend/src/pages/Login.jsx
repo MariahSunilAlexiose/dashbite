@@ -1,11 +1,40 @@
-import React from "react"
+import React, { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button, Checkbox, Input, Label } from "@cmp"
+import { StoreContext } from "@context"
 import { LoginSignup } from "@img"
+import { useToast } from "@providers"
+import axios from "axios"
 
 const Login = () => {
+  const { addToast } = useToast()
   const navigate = useNavigate()
+  const { url, setToken } = useContext(StoreContext)
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  })
+  const onChangeHandler = (e) => {
+    const name = e.target.name
+    const value = e.target.value
+    setData((data) => ({ ...data, [name]: value }))
+  }
+  const onLogin = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await axios.post(`${url}/apiuser/login`, data)
+      setToken(response.data.token)
+      localStorage.setItem("token", response.data.token)
+    } catch (err) {
+      console.error(err)
+      addToast(
+        "error",
+        "error",
+        err.response?.data?.message || "An error occurred"
+      )
+    }
+  }
   return (
     <div className="flex items-center justify-center">
       <div className="relative m-6 flex flex-col space-y-8 rounded-2xl shadow-2xl md:flex-row md:space-y-0">
@@ -16,11 +45,21 @@ const Login = () => {
           </p>
           <div className="py-4">
             <Label htmlFor="password">Email</Label>
-            <Input type="email" />
+            <Input
+              type="email"
+              onChange={onChangeHandler}
+              value={data.email}
+              name="email"
+            />
           </div>
           <div className="py-4">
             <Label htmlFor="password">Password</Label>
-            <Input type="password" />
+            <Input
+              type="password"
+              onChange={onChangeHandler}
+              value={data.password}
+              name="password"
+            />
           </div>
           <div className="flex w-full justify-between py-4">
             <div className="mr-24">
@@ -31,6 +70,7 @@ const Login = () => {
           <Button
             variant="ghost"
             className="bg-foreground hover:bg-blue-80 text-background hover:text-background! dark:hover:bg-blue-30"
+            onClick={(e) => onLogin(e)}
           >
             Sign in
           </Button>
