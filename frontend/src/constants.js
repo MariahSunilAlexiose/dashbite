@@ -1,5 +1,8 @@
 import {
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
   FacebookIcon,
+  InformationCircleIcon,
   LinkedinIcon,
   Rating1Icon,
   Rating2Icon,
@@ -125,6 +128,25 @@ export const ratings = [
     number: 5,
   },
 ]
+
+export const ToastVariants = {
+  success: {
+    styles: "bg-green-300 text-green-800",
+    title: "Success",
+    description: "This action has been successfully implemented!",
+    icon: { img: CheckCircleIcon, name: "Check Circle Icon" },
+  },
+  error: {
+    styles: "bg-red-300 text-red-800",
+    title: "Action Failed",
+    description: "This action has failed!",
+    icon: { img: ExclamationTriangleIcon, name: "Exclamation Circle Icon" },
+  },
+  info: {
+    styles: "bg-blue-300 text-blue-800",
+    icon: { img: InformationCircleIcon, name: "Information Circle Icon" },
+  },
+}
 
 export const dishes = [
   // Breakfast

@@ -9,8 +9,10 @@ import Navbar from "./Navbar"
 import RadioInput from "./RadioInput"
 import Table from "./Table"
 import ThemeToggle from "./ThemeToggle"
+import Toast from "./Toast"
 
 export {
+  Toast,
   ThemeToggle,
   CartSummary,
   RadioInput,

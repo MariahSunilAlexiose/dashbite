@@ -1,11 +1,14 @@
 import Bars3Icon from "./bars-3.svg"
+import CheckCircleIcon from "./check-circle.svg"
 import CopyrightIcon from "./copyright-sign.svg"
 import Bars3WhiteIcon from "./dark_mode/bars-3.svg"
 import MagnifyingGlassWhiteIcon from "./dark_mode/magnifying-glass.svg"
 import PlusDarkIcon from "./dark_mode/plus.svg"
 import ShoppingCartWhiteIcon from "./dark_mode/shopping-cart.svg"
 import XMarkWhiteIcon from "./dark_mode/x-mark.svg"
+import ExclamationTriangleIcon from "./exclamation-triangle.svg"
 import FacebookIcon from "./facebook.png"
+import InformationCircleIcon from "./information-circle.svg"
 import LinkedinIcon from "./linkedin.png"
 import MagnifyingGlassBlackIcon from "./magnifying-glass.svg"
 import MinusIcon from "./minus.svg"
@@ -24,6 +27,9 @@ import TwitterXIcon from "./twitter-x.png"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  InformationCircleIcon,
+  ExclamationTriangleIcon,
+  CheckCircleIcon,
   TicketIcon,
   TrashIcon,
   MinusIcon,
