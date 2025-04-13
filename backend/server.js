@@ -3,6 +3,9 @@ import express from "express"
 
 import { connectDB } from "./config/db.js"
 import dishRouter from "./routes/food.js"
+import userRouter from "./routes/user.js"
+
+import "dotenv/config.js"
 
 // app config
 const app = express()
@@ -27,3 +30,5 @@ app.use("/api/dish", dishRouter)
 
 // route to see image (ROUTE: /images/[image_name])
 app.use("/images", express.static("uploads"))
+
+app.use("/api/user", userRouter)
