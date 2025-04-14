@@ -17,7 +17,7 @@ const Cart = () => {
         deleteFromCart={deleteFromCart}
         removeFromCart={removeFromCart}
       />
-      {Object.keys(cartItems).length > 0 && (
+      {cartItems && (
         <div className="flex flex-col gap-10">
           {/* Coupon code */}
           <div>

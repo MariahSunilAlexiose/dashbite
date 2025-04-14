@@ -8,6 +8,9 @@ import { ratings } from "@/constants"
 
 const Card = ({ id, title, image, description, rating, price }) => {
   const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
+  const cartItemCount =
+    cartItems && cartItems[id] !== undefined ? cartItems[id] : 0
+  console.log(cartItems)
   return (
     <div className="bg-border text-foreground flex flex-col rounded-xl border shadow">
       <div className="relative">
@@ -16,7 +19,7 @@ const Card = ({ id, title, image, description, rating, price }) => {
           alt={title}
           className="h-[330px] w-[500px] rounded-t-xl object-cover"
         />
-        {!cartItems[id] ? (
+        {cartItemCount == 0 ? (
           <div className="dark:bg-blue-30 absolute bottom-6 right-5 cursor-pointer rounded-full bg-white p-1 shadow-md">
             <img
               src={PlusIcon}
@@ -36,11 +39,11 @@ const Card = ({ id, title, image, description, rating, price }) => {
                   onClick={() => removeFromCart(id)}
                 />
               </div>
-              <p className="text-blue-90 m-0 p-0">{cartItems[id]}</p>
+              <p className="text-blue-90 m-0 p-0">{cartItemCount}</p>
               <div className="bg-accent cursor-pointer rounded-full p-1">
                 <img
                   src={PlusDarkIcon}
-                  alt="PlusIcon"
+                  alt="Plus Icon"
                   className="h-5 w-5 cursor-pointer"
                   onClick={() => addToCart(id)}
                 />

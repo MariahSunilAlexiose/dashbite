@@ -42,7 +42,7 @@ const Table = ({
   return (
     <div className="relative w-full overflow-x-auto p-4">
       <h2 className="mb-4 text-lg font-bold">My Cart</h2>
-      {Object.keys(cartItems).length > 0 ? (
+      {cartItems ? (
         <table className="w-full table-auto border-collapse text-sm">
           <thead>
             <TableRow className="border-b">

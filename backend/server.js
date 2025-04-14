@@ -2,6 +2,7 @@ import cors from "cors"
 import express from "express"
 
 import { connectDB } from "./config/db.js"
+import cartRouter from "./routes/cart.js"
 import dishRouter from "./routes/food.js"
 import userRouter from "./routes/user.js"
 
@@ -32,3 +33,4 @@ app.use("/api/dish", dishRouter)
 app.use("/images", express.static("uploads"))
 
 app.use("/api/user", userRouter)
+app.use("/api/cart", cartRouter)

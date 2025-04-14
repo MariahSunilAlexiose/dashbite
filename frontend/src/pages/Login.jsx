@@ -23,7 +23,7 @@ const Login = () => {
   const onLogin = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post(`${url}/apiuser/login`, data)
+      const response = await axios.post(`${url}/api/user/login`, data)
       setToken(response.data.token)
       localStorage.setItem("token", response.data.token)
     } catch (err) {

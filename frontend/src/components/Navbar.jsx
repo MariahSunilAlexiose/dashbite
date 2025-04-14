@@ -175,7 +175,7 @@ const Navbar = () => {
                   className="cursor-pointer"
                   onClick={() => navigate("/cart")}
                 />
-                {Object.keys(cartItems).length > 0 && (
+                {cartItems && Object.keys(cartItems).length > 0 && (
                   <div
                     className="bg-red-90 absolute right-0 top-0 h-2 w-2 rounded-full"
                     style={{ transform: "translate(50%, -50%)" }}
