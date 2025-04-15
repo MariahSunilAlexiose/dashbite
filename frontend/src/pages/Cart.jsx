@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 
-import { CartSummary, Input, Table } from "@cmp"
+import { CartSummary, CartTable, Input } from "@cmp"
 import { StoreContext } from "@context"
 import { TicketIcon } from "@icons"
 
@@ -10,7 +10,7 @@ const Cart = () => {
 
   return (
     <div className="flex flex-col gap-6 pt-10 md:flex-row">
-      <Table
+      <CartTable
         cartItems={cartItems}
         dishes={dishes}
         addToCart={addToCart}

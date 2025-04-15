@@ -74,4 +74,30 @@ const verifyOrder = async (req, res) => {
   }
 }
 
-export { placeOrder, verifyOrder }
+const userOrders = async (req, res) => {
+  try {
+    const orders = await orderModel.find({ userID: req.body.userID })
+    res.json({ success: true, data: orders })
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: "Error!" })
+  }
+}
+
+const getOrderByID = async (req, res) => {
+  try {
+    const { orderID } = req.params
+    const order = await orderModel.findById(orderID)
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" })
+    }
+
+    res.status(200).json(order)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server error", error: err.message })
+  }
+}
+
+export { getOrderByID, userOrders, placeOrder, verifyOrder }

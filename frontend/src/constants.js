@@ -153,7 +153,7 @@ export const ToastVariants = {
 
 export const popoverItems = [
   { href: "#", name: "Profile", icon: UserIcon },
-  { href: "#", name: "Orders", icon: ShoppingBagIcon },
+  { href: "/myorders", name: "Orders", icon: ShoppingBagIcon },
   { href: "#", name: "Logout", icon: ArrowLeftStartOnRectangleIcon },
 ]
 
@@ -589,3 +589,12 @@ export const shippingOptions = [
     cost: "%5.00",
   },
 ]
+
+export const formatDate = (dateString) => {
+  const options = { day: "numeric", month: "short", year: "numeric" }
+  const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
+    new Date(dateString)
+  )
+  const [month, day, year] = formattedDate.replace(",", "").split(" ")
+  return `${day} ${month} ${year}`
+}

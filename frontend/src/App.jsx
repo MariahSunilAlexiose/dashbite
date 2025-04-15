@@ -2,7 +2,7 @@ import React from "react"
 import { Route, Routes } from "react-router-dom"
 
 import { Navbar } from "@cmp"
-import { Cart, Home, Login, PlaceOrder, Signup, Verify } from "@pages"
+import { Cart, Home, Login, MyOrders, PlaceOrder, Signup, Verify } from "@pages"
 import { Footer } from "@sections"
 
 function App() {
@@ -17,6 +17,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
           <Route path="/verify" element={<Verify />} />
+          <Route path="/myorders" element={<MyOrders />} />
         </Routes>
       </div>
       <Footer />

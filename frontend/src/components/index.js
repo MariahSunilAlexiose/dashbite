@@ -2,21 +2,23 @@ import Avatar from "./Avatar"
 import Button from "./Button"
 import Card from "./Card"
 import CartSummary from "./CartSummary"
+import CartTable from "./CartTable"
 import Checkbox from "./Checkbox"
 import Input from "./Input"
 import Label from "./Label"
 import Navbar from "./Navbar"
+import OrderTable from "./OrderTable"
 import RadioInput from "./RadioInput"
-import Table from "./Table"
 import ThemeToggle from "./ThemeToggle"
 import Toast from "./Toast"
 
 export {
+  OrderTable,
   Toast,
   ThemeToggle,
   CartSummary,
   RadioInput,
-  Table,
+  CartTable,
   Label,
   Input,
   Checkbox,
