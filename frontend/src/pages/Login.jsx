@@ -26,6 +26,7 @@ const Login = () => {
       const response = await axios.post(`${url}/api/user/login`, data)
       setToken(response.data.token)
       localStorage.setItem("token", response.data.token)
+      navigate("/")
     } catch (err) {
       console.error(err)
       addToast(

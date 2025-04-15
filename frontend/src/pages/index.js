@@ -3,5 +3,6 @@ import Home from "./Home"
 import Login from "./Login"
 import PlaceOrder from "./PlaceOrder"
 import Signup from "./Signup"
+import Verify from "./Verify"
 
-export { PlaceOrder, Cart, Signup, Login, Home }
+export { Verify, PlaceOrder, Cart, Signup, Login, Home }

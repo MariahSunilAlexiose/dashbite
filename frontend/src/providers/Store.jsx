@@ -22,8 +22,7 @@ export const StoreProvider = (props) => {
       const response = await axios.get(url + "/api/cart/", {
         headers: { token: userToken },
       })
-      console.log("Fetched Cart Data:", response.data.cartData)
-      setCartItems(response.data.cartData) // Update state with API data
+      setCartItems(response.data.cartData)
     } catch (error) {
       console.error("Error fetching cart data:", error)
     }

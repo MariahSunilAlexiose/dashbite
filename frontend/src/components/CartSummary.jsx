@@ -3,13 +3,17 @@ import { useNavigate } from "react-router-dom"
 
 import { Button, RadioInput } from "@cmp"
 import { StoreContext } from "@context"
+import { useToast } from "@providers"
+import axios from "axios"
 import PropTypes from "prop-types"
 
 import { shippingOptions } from "@/constants"
 
-const CartSummary = ({ deliveryValue }) => {
-  const { getTotalCartAmt } = useContext(StoreContext)
+const CartSummary = ({ deliveryValue, deliveryInfo }) => {
+  const { getTotalCartAmt, dishes, cartItems, url, token } =
+    useContext(StoreContext)
   const navigate = useNavigate()
+  const { addToast } = useToast()
 
   const [selectedValue, setSelectedValue] = useState(
     deliveryValue || "free_shipping"
@@ -22,6 +26,33 @@ const CartSummary = ({ deliveryValue }) => {
     adjustedTotal += 15
   } else if (selectedValue === "pick_up") {
     adjustedTotal -= totalCartAmt * 0.05
+  }
+
+  const placeOrder = async (e) => {
+    e.preventDefault()
+    let orderItems = []
+    dishes.map((item) => {
+      if (cartItems[item._id] > 0) {
+        let itemInfo = item
+        itemInfo["quantity"] = cartItems[item._id]
+        orderItems.push(itemInfo)
+      }
+    })
+    let orderData = {
+      address: deliveryInfo,
+      items: orderItems,
+      amount: adjustedTotal,
+      deliveryType: selectedValue,
+    }
+    let response = await axios.post(url + "/api/order/place", orderData, {
+      headers: { token },
+    })
+    if (response.data.success) {
+      const { session_url } = response.data
+      window.location.replace(session_url)
+    } else {
+      addToast("error", "Error", "Error in placing the order")
+    }
   }
 
   return (
@@ -59,8 +90,15 @@ const CartSummary = ({ deliveryValue }) => {
       <div className="pt-3">
         <Button
           variant="ghost"
-          onClick={() => navigate("/order", { state: { selectedValue } })}
           className="bg-foreground hover:bg-blue-80 text-background hover:text-background! dark:hover:bg-blue-30 w-full"
+          onClick={(e) => {
+            if (deliveryValue) {
+              placeOrder(e)
+            } else {
+              e.preventDefault()
+              navigate("/order", { state: { selectedValue } })
+            }
+          }}
         >
           {deliveryValue ? "Proceed to Payment" : "Checkout"}
         </Button>
@@ -71,6 +109,28 @@ const CartSummary = ({ deliveryValue }) => {
 
 CartSummary.propTypes = {
   deliveryValue: PropTypes.string,
+  data: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    street: PropTypes.string.isRequired,
+    city: PropTypes.string.isRequired,
+    state: PropTypes.string.isRequired,
+    zipcode: PropTypes.string.isRequired,
+    country: PropTypes.string.isRequired,
+    phone: PropTypes.number.isRequired,
+  }).isRequired,
+  deliveryInfo: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    street: PropTypes.string.isRequired,
+    city: PropTypes.string.isRequired,
+    state: PropTypes.string.isRequired,
+    zipcode: PropTypes.string.isRequired,
+    country: PropTypes.string.isRequired,
+    phone: PropTypes.number.isRequired,
+  }),
 }
 
 export default CartSummary

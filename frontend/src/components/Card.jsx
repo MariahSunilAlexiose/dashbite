@@ -10,7 +10,6 @@ const Card = ({ id, title, image, description, rating, price }) => {
   const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
   const cartItemCount =
     cartItems && cartItems[id] !== undefined ? cartItems[id] : 0
-  console.log(cartItems)
   return (
     <div className="bg-border text-foreground flex flex-col rounded-xl border shadow">
       <div className="relative">

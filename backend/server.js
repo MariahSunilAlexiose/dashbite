@@ -4,6 +4,7 @@ import express from "express"
 import { connectDB } from "./config/db.js"
 import cartRouter from "./routes/cart.js"
 import dishRouter from "./routes/food.js"
+import orderRouter from "./routes/order.js"
 import userRouter from "./routes/user.js"
 
 import "dotenv/config.js"
@@ -34,3 +35,4 @@ app.use("/images", express.static("uploads"))
 
 app.use("/api/user", userRouter)
 app.use("/api/cart", cartRouter)
+app.use("/api/order", orderRouter)

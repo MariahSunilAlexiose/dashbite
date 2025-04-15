@@ -33,8 +33,6 @@ const UpdateDish = () => {
     }
   }
 
-  console.log(formData)
-
   return (
     <div>
       <h2>Update Dish</h2>
