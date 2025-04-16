@@ -20,72 +20,160 @@ import PropTypes from "prop-types"
 
 import { navbarLinks, popoverItems } from "@/constants"
 
-const MobileNavBar = ({ setMobileMenu, theme, navigate, cartItems }) => (
-  <div className="lg:hidden">
-    <div className="fixed inset-0 z-10" />
-    <div className="bg-background sm:ring-border fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1">
-      <div className="flex items-center justify-end">
-        <button
-          type="button"
-          className="-m-2.5 cursor-pointer rounded-md p-2.5 text-gray-700"
-          onClick={() => setMobileMenu(false)}
-        >
-          <span className="sr-only">Close menu</span>
-          <img
-            src={theme === dark ? XMarkWhiteIcon : XMarkIcon}
-            alt="Close Icon"
-            className="h-6 w-6"
-            aria-hidden="true"
-          />
-        </button>
-      </div>
-      <div className="mt-6 flow-root">
-        <div className="space-y-2">
-          {navbarLinks.map((link, index) => (
-            <a
-              key={index}
-              href={link.href}
-              className="text-foreground hover:bg-accent -mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
-            >
-              {link.label}
-            </a>
-          ))}
+const logout = ({ setToken, navigate }) => {
+  localStorage.removeItem("token")
+  setToken("")
+  navigate("/")
+}
+
+const MobileNavBar = ({
+  setMobileMenu,
+  theme,
+  navigate,
+  cartItems,
+  mobilePopover,
+  setMobilePopover,
+  token,
+}) => {
+  console.log(mobilePopover)
+  return (
+    <div className="lg:hidden">
+      <div className="fixed inset-0 z-10" />
+      <div className="bg-background sm:ring-border fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1">
+        <div className="flex items-center justify-end">
+          <button
+            type="button"
+            className="-m-2.5 cursor-pointer rounded-md p-2.5 text-gray-700"
+            onClick={() => setMobileMenu(false)}
+          >
+            <span className="sr-only">Close menu</span>
+            <img
+              src={theme === dark ? XMarkWhiteIcon : XMarkIcon}
+              alt="Close Icon"
+              className="h-6 w-6"
+              aria-hidden="true"
+            />
+          </button>
         </div>
-        <div className="-mx-3 flex content-center justify-between px-3 py-2">
-          <div className="flex items-center justify-center">
-            <div className="relative">
-              <img
-                src={
-                  theme === dark ? ShoppingCartWhiteIcon : ShoppingCartBlackIcon
-                }
-                alt="Shopping Cart Icon"
-                width={24}
-                height={24}
-                className="cursor-pointer"
-                onClick={() => navigate("/cart")}
-              />
-              {Object.keys(cartItems).length > 0 && (
-                <div
-                  className="bg-red-90 absolute right-0 top-0 h-2 w-2 rounded-full"
-                  style={{ transform: "translate(50%, -50%)" }}
+        <div className="mt-6 flow-root">
+          <div className="space-y-2">
+            {navbarLinks.map((link, index) => (
+              <a
+                key={index}
+                href={link.href}
+                className="text-foreground hover:bg-accent -mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+          {token && (
+            <div className="hover:bg-accent -mx-3 rounded-lg px-3 py-2">
+              <div
+                className="flex items-center justify-between"
+                onClick={() => setMobilePopover(!mobilePopover)}
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
+                  <img
+                    src="https://ui-avatars.com/api/?name=admin"
+                    alt="User Profile"
+                    className="aspect-square h-full w-full"
+                  />
+                </div>
+                <img
+                  src={ChevronDownIcon}
+                  alt="Chevron Down Icon"
+                  className={`text-muted-foreground h-4 w-4 shrink-0 transition-transform duration-200 ${mobilePopover ? "rotate-180" : ""}`}
+                  aria-hidden="true"
                 />
+              </div>
+              {mobilePopover && (
+                <div className="p-4">
+                  {popoverItems.map((item) => (
+                    <div
+                      key={item.name}
+                      className="hover:bg-accent group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6"
+                      onClick={item.name === "Logout" ? logout : undefined}
+                    >
+                      <div className="bg-accent group-hover:bg-background flex h-11 w-11 flex-none items-center justify-center rounded-lg">
+                        <img
+                          alt="Product Icon"
+                          src={item.icon}
+                          width={10}
+                          height={10}
+                          className="text-foreground h-6 w-6 group-hover:text-indigo-600"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="flex-auto">
+                        <a
+                          href={item.href}
+                          className="text-foreground block font-semibold"
+                        >
+                          {item.name}
+                          <span className="absolute inset-0" />
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
+          )}
+          <div className="-mx-3 flex content-center justify-between px-3 py-2">
+            <div className="flex items-center justify-center">
+              <div className="relative">
+                <img
+                  src={
+                    theme === dark
+                      ? ShoppingCartWhiteIcon
+                      : ShoppingCartBlackIcon
+                  }
+                  alt="Shopping Cart Icon"
+                  width={24}
+                  height={24}
+                  className="cursor-pointer"
+                  onClick={() => navigate("/cart")}
+                />
+                {Object.keys(cartItems).length > 0 && (
+                  <div
+                    className="bg-red-90 absolute right-0 top-0 h-2 w-2 rounded-full"
+                    style={{ transform: "translate(50%, -50%)" }}
+                  />
+                )}
+              </div>
+            </div>
+            {!token && (
+              <Button
+                className="rounded-full!"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </Button>
+            )}
           </div>
-          <Button className="rounded-full!" onClick={() => navigate("/login")}>
-            Login
-          </Button>
         </div>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 MobileNavBar.propTypes = {
   setMobileMenu: PropTypes.func.isRequired,
   theme: PropTypes.string.isRequired,
   navigate: PropTypes.func.isRequired,
   cartItems: PropTypes.object.isRequired,
+  mobilePopover: PropTypes.boolean,
+  setMobilePopover: PropTypes.func,
+  token: PropTypes.string.isRequired,
+  setToken: PropTypes.func.isRequired,
+  popoverItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      href: PropTypes.string.isRequired,
+      icon: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 }
 
 const Navbar = () => {
@@ -95,6 +183,7 @@ const Navbar = () => {
   const [activeLink, setActiveLink] = useState("")
   const [popover, setPopover] = useState(false)
   const { cartItems, token, setToken } = useContext(StoreContext)
+  const [mobilePopover, setMobilePopover] = useState(false)
   const logout = () => {
     localStorage.removeItem("token")
     setToken("")
@@ -212,7 +301,7 @@ const Navbar = () => {
                         <div
                           key={item.name}
                           className="hover:bg-accent group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6"
-                          onClick={item.name === "Logout" && logout}
+                          onClick={item.name === "Logout" ? logout : undefined}
                         >
                           <div className="bg-accent group-hover:bg-background flex h-11 w-11 flex-none items-center justify-center rounded-lg">
                             <img
@@ -258,8 +347,10 @@ const Navbar = () => {
           theme={theme}
           navigate={navigate}
           cartItems={cartItems}
-          setPopover={setPopover}
-          popover={popover}
+          mobilePopover={mobilePopover}
+          setMobilePopover={setMobilePopover}
+          token={token}
+          setToken={setToken}
         />
       )}
     </header>

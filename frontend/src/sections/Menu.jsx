@@ -21,7 +21,7 @@ const Menu = () => {
           mission is to satisfy your cravings and elevate your dining
           experience, one delicious meal at a time.
         </p>
-        <div className="mt-6 flex gap-7 overflow-x-scroll">
+        <div className="mt-6 flex gap-1.5 overflow-x-scroll">
           {categoryLinks.map((link, index) => (
             <Avatar
               key={index}

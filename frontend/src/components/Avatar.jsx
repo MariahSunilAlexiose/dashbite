@@ -5,7 +5,7 @@ import PropTypes from "prop-types"
 const Avatar = ({ image, title, onClick, isSelected }) => {
   return (
     <div
-      className="flex cursor-pointer flex-col gap-4 text-center"
+      className="m-5 flex cursor-pointer flex-col gap-4 text-center"
       onClick={onClick}
     >
       <div className="flex content-center items-center justify-center">
