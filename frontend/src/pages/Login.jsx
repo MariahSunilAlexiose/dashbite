@@ -24,6 +24,10 @@ const Login = () => {
     e.preventDefault()
     try {
       const response = await axios.post(`${url}/api/user/login`, data)
+      if (!response.data.success) {
+        addToast("error", "Error", response.data.message)
+        return
+      }
       setToken(response.data.token)
       localStorage.setItem("token", response.data.token)
       navigate("/")

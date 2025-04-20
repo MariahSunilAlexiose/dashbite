@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom"
 
 import { Button } from "@cmp"
 import { StoreContext } from "@context"
+import { useToast } from "@providers"
 import axios from "axios"
 
 import { formatDate } from "@/constants"
@@ -17,17 +18,25 @@ const Verify = () => {
   const navigate = useNavigate()
 
   const verifyPayment = async () => {
+    const { addToast } = useToast()
     try {
       const verifyRes = await axios.post(
         url + "/api/order/verify",
         { success, orderID },
         { headers: { token } }
       )
-
+      if (!verifyRes.data.success) {
+        addToast("error", "Error", verifyRes.data.message)
+        return
+      }
       if (verifyRes.status === 200) {
         const orderRes = await axios.get(url + "/api/order/" + orderID, {
           headers: { token },
         })
+        if (!orderRes.data.success) {
+          addToast("error", "Error", orderRes.data.message)
+          return
+        }
         setOrder(orderRes.data)
       } else {
         console.error("Payment verification failed")

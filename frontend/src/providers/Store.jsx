@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react"
 
 import { StoreContext } from "@context"
+import { useToast } from "@providers"
 import axios from "axios"
 import PropTypes from "prop-types"
 
 export const StoreProvider = (props) => {
+  const { addToast } = useToast()
   const [cartItems, setCartItems] = useState(() => {
     const storedCartItems = localStorage.getItem("cartItems")
     return storedCartItems ? JSON.parse(storedCartItems) : {}
@@ -22,6 +24,10 @@ export const StoreProvider = (props) => {
       const response = await axios.get(url + "/api/cart/", {
         headers: { token: userToken },
       })
+      if (!response.data.success) {
+        addToast("error", "Error", response.data.message)
+        return
+      }
       setCartItems(response.data.cartData)
     } catch (error) {
       console.error("Error fetching cart data:", error)
@@ -32,6 +38,10 @@ export const StoreProvider = (props) => {
   const fetchDishes = async () => {
     try {
       const response = await axios.get(`${url}/api/dish/`)
+      if (!response.data.success) {
+        addToast("error", "Error", response.data.message)
+        return
+      }
       setDishes(response.data.data)
     } catch (error) {
       console.error("Error fetching dishes:", error)
@@ -42,7 +52,6 @@ export const StoreProvider = (props) => {
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems))
   }, [cartItems])
-
   // Fetch data on mount (cart and dishes)
   useEffect(() => {
     const storedToken = localStorage.getItem("token")
@@ -59,11 +68,15 @@ export const StoreProvider = (props) => {
       [itemID]: (prev[itemID] || 0) + 1,
     }))
     if (token) {
-      await axios.post(
+      const response = await axios.post(
         url + "/api/cart/add",
         { itemID },
         { headers: { token } }
       )
+      if (!response.data.success) {
+        addToast("error", "Error", response.data.message)
+        return
+      }
     }
   }
 
@@ -78,11 +91,15 @@ export const StoreProvider = (props) => {
       }
     })
     if (token) {
-      await axios.post(
+      const response = await axios.post(
         url + "/api/cart/remove",
         { itemID },
         { headers: { token } }
       )
+      if (!response.data.success) {
+        addToast("error", "Error", response.data.message)
+        return
+      }
     }
   }
 
@@ -92,10 +109,14 @@ export const StoreProvider = (props) => {
       return rest
     })
     if (token) {
-      await axios.delete(url + "/api/cart/delete", {
+      const response = await axios.delete(url + "/api/cart/delete", {
         headers: { token },
         data: { itemID },
       })
+      if (!response.data.success) {
+        addToast("error", "Error", response.data.message)
+        return
+      }
     }
   }
 

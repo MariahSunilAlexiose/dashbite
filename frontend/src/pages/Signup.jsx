@@ -25,8 +25,13 @@ const Signup = () => {
     e.preventDefault()
     try {
       const response = await axios.post(`${url}/api/user/register`, data)
+      if (!response.data.success) {
+        addToast("error", "Error", response.data.message)
+        return
+      }
       setToken(response.data.token)
       localStorage.setItem("token", response.data.token)
+      navigate("/profile")
     } catch (err) {
       console.error(err)
       addToast(

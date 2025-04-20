@@ -44,13 +44,16 @@ const CartSummary = ({ deliveryValue, deliveryInfo }) => {
       amount: adjustedTotal,
       deliveryType: selectedValue,
     }
-    let response = await axios.post(url + "/api/order/place", orderData, {
-      headers: { token },
-    })
-    if (response.data.success) {
-      const { session_url } = response.data
-      window.location.replace(session_url)
-    } else {
+    try {
+      let response = await axios.post(url + "/api/order/place", orderData, {
+        headers: { token },
+      })
+      if (!response.data.success) {
+        addToast("error", "Error", response.data.message)
+        return
+      }
+      window.location.replace(response.data.session_url)
+    } catch {
       addToast("error", "Error", "Error in placing the order")
     }
   }
