@@ -2,9 +2,11 @@ import express from "express"
 import multer from "multer"
 
 import {
+  addAddresses,
   getUser,
   loginUser,
   registerUser,
+  updateAddresses,
   updateProfilePic,
   updateUser,
 } from "../controllers/user.js"
@@ -32,5 +34,7 @@ userRouter.put(
   authMiddleware,
   updateProfilePic
 )
+userRouter.post("/add/:userID/address", authMiddleware, addAddresses)
+userRouter.post("/update/:userID/address", authMiddleware, updateAddresses)
 
 export default userRouter

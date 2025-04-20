@@ -1,3 +1,4 @@
+import Address from "./Address"
 import Cart from "./Cart"
 import Home from "./Home"
 import Login from "./Login"
@@ -7,4 +8,14 @@ import Profile from "./Profile"
 import Signup from "./Signup"
 import Verify from "./Verify"
 
-export { Profile, MyOrders, Verify, PlaceOrder, Cart, Signup, Login, Home }
+export {
+  Address,
+  Profile,
+  MyOrders,
+  Verify,
+  PlaceOrder,
+  Cart,
+  Signup,
+  Login,
+  Home,
+}

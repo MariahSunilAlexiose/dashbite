@@ -16,6 +16,7 @@ import LinkedinIcon from "./linkedin.png"
 import MagnifyingGlassBlackIcon from "./magnifying-glass.svg"
 import MinusIcon from "./minus.svg"
 import MoonIcon from "./moon.svg"
+import PencilSquareIcon from "./pencil-square.svg"
 import PlusIcon from "./plus.svg"
 import Rating1Icon from "./rating-1.png"
 import Rating2Icon from "./rating-2.png"
@@ -32,6 +33,7 @@ import UserIcon from "./user.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  PencilSquareIcon,
   CameraIcon,
   ShoppingBagIcon,
   ArrowLeftStartOnRectangleIcon,

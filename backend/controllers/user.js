@@ -180,4 +180,61 @@ const updateProfilePic = async (req, res) => {
   }
 }
 
-export { loginUser, registerUser, getUser, updateUser, updateProfilePic }
+// Add or update addresses
+const addAddresses = async (req, res) => {
+  const { userID } = req.params
+  const { shippingAddress, billingAddress } = req.body
+
+  try {
+    const user = await userModel.findById(userID)
+    if (!user) {
+      return res.json({ success: false, message: "User not found!" })
+    }
+
+    user.shippingAddress = shippingAddress
+    user.billingAddress = billingAddress
+
+    const updatedUser = await user.save()
+    res.json({ success: true, user: updatedUser })
+  } catch (error) {
+    console.error("Error adding addresses:", error)
+    res.json({ success: false, message: "Error adding addresses!" })
+  }
+}
+
+// Update addresses
+const updateAddresses = async (req, res) => {
+  const { userID } = req.params
+  const { shippingAddress, billingAddress } = req.body
+
+  try {
+    const user = await userModel.findById(userID)
+    if (!user) {
+      return res.json({ success: false, message: "User not found!" })
+    }
+
+    if (shippingAddress) {
+      user.shippingAddress = { ...user.shippingAddress, ...shippingAddress }
+    }
+
+    if (billingAddress) {
+      user.billingAddress = { ...user.billingAddress, ...billingAddress }
+    }
+
+    const updatedUser = await user.save()
+    res.json({ success: true, user: updatedUser })
+  } catch (error) {
+    console.error("Error updating addresses:", error)
+    res.json({ success: false, message: "Error updating addresses!" })
+  }
+}
+
+export {
+  loginUser,
+  registerUser,
+  getUser,
+  updateUser,
+  updateProfilePic,
+  addAddresses,
+  updateAddresses,
+}
