@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button, ThemeToggle } from "@cmp"
@@ -11,20 +11,15 @@ import {
   MagnifyingGlassWhiteIcon,
   ShoppingCartBlackIcon,
   ShoppingCartWhiteIcon,
+  UserIcon,
   XMarkIcon,
   XMarkWhiteIcon,
 } from "@icons"
 import { LogoBlue, LogoWhite } from "@img"
-import { useTheme } from "@providers"
+import { useTheme, useToast } from "@providers"
 import PropTypes from "prop-types"
 
-import { navbarLinks, popoverItems } from "@/constants"
-
-const logout = ({ setToken, navigate }) => {
-  localStorage.removeItem("token")
-  setToken("")
-  navigate("/")
-}
+import { getuser, logout, navbarLinks, popoverItems } from "@/constants"
 
 const MobileNavBar = ({
   setMobileMenu,
@@ -34,8 +29,20 @@ const MobileNavBar = ({
   mobilePopover,
   setMobilePopover,
   token,
+  setToken,
 }) => {
-  console.log(mobilePopover)
+  const { addToast } = useToast()
+  const [user, setUser] = useState({})
+  const { url, userID } = useContext(StoreContext)
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const fetchedUser = await getuser({ url, userID, token, addToast })
+      if (fetchedUser) {
+        setUser(fetchedUser)
+      }
+    }
+    fetchUserData()
+  }, [token, userID])
   return (
     <div className="lg:hidden">
       <div className="fixed inset-0 z-10" />
@@ -75,9 +82,9 @@ const MobileNavBar = ({
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
                   <img
-                    src="https://ui-avatars.com/api/?name=admin"
+                    src={url + "/images/" + user.profilePic || UserIcon}
                     alt="User Profile"
-                    className="aspect-square h-full w-full"
+                    className="aspect-square h-full w-full object-cover"
                   />
                 </div>
                 <img
@@ -93,7 +100,11 @@ const MobileNavBar = ({
                     <div
                       key={item.name}
                       className="hover:bg-accent group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6"
-                      onClick={item.name === "Logout" ? logout : undefined}
+                      onClick={
+                        item.name === "Logout"
+                          ? () => logout({ setToken, navigate })
+                          : undefined
+                      }
                     >
                       <div className="bg-accent group-hover:bg-background flex h-11 w-11 flex-none items-center justify-center rounded-lg">
                         <img
@@ -184,11 +195,18 @@ const Navbar = () => {
   const [popover, setPopover] = useState(false)
   const { cartItems, token, setToken } = useContext(StoreContext)
   const [mobilePopover, setMobilePopover] = useState(false)
-  const logout = () => {
-    localStorage.removeItem("token")
-    setToken("")
-    navigate("/")
-  }
+  const { addToast } = useToast()
+  const [user, setUser] = useState({})
+  const { url, userID } = useContext(StoreContext)
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const fetchedUser = await getuser({ url, userID, token, addToast })
+      if (fetchedUser) {
+        setUser(fetchedUser)
+      }
+    }
+    fetchUserData()
+  }, [token, userID])
   return (
     <header>
       <nav
@@ -280,9 +298,16 @@ const Navbar = () => {
                 <div className="flex items-center justify-center gap-1">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
                     <img
-                      src="https://ui-avatars.com/api/?name=admin"
+                      src={
+                        user.profilePic &&
+                        user.profilePic.startsWith(
+                          "https://ui-avatars.com/api/?name="
+                        )
+                          ? user.profilePic
+                          : `${url}/images/${user.profilePic || UserIcon}`
+                      }
                       alt="User Profile"
-                      className="aspect-square h-full w-full"
+                      className="aspect-square h-full w-full object-cover"
                     />
                   </div>
                   <img
@@ -301,7 +326,11 @@ const Navbar = () => {
                         <div
                           key={item.name}
                           className="hover:bg-accent group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6"
-                          onClick={item.name === "Logout" ? logout : undefined}
+                          onClick={
+                            item.name === "Logout"
+                              ? () => logout({ setToken, navigate })
+                              : undefined
+                          }
                         >
                           <div className="bg-accent group-hover:bg-background flex h-11 w-11 flex-none items-center justify-center rounded-lg">
                             <img

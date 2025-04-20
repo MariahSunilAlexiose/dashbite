@@ -64,6 +64,7 @@ import {
   VeggiePizza,
   Waffles,
 } from "@img"
+import axios from "axios"
 
 export const ButtonVariants = {
   variant: {
@@ -152,7 +153,7 @@ export const ToastVariants = {
 }
 
 export const popoverItems = [
-  { href: "#", name: "Profile", icon: UserIcon },
+  { href: "/profile", name: "Profile", icon: UserIcon },
   { href: "/myorders", name: "Orders", icon: ShoppingBagIcon },
   { href: "#", name: "Logout", icon: ArrowLeftStartOnRectangleIcon },
 ]
@@ -597,4 +598,29 @@ export const formatDate = (dateString) => {
   )
   const [month, day, year] = formattedDate.replace(",", "").split(" ")
   return `${day} ${month} ${year}`
+}
+
+export const logout = ({ setToken, navigate }) => {
+  localStorage.removeItem("token")
+  setToken("")
+  navigate("/")
+}
+
+export const getuser = async ({ url, userID, token, addToast }) => {
+  try {
+    if (!token) {
+      return
+    }
+    const userRes = await axios.get(`${url}/api/user/${userID}`, {
+      headers: { token },
+    })
+    if (!userRes.data.success) {
+      addToast("error", "Error", userRes.data.message)
+      return
+    }
+    return userRes.data.user
+  } catch (error) {
+    console.error("Failed to fetch user:", error)
+    addToast("error", "Error", "Failed to fetch user!")
+  }
 }

@@ -25,7 +25,7 @@ const loginUser = async (req, res) => {
 }
 
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET)
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" })
 }
 
 // register user
@@ -35,6 +35,13 @@ const registerUser = async (req, res) => {
     const exists = await userModel.findOne({ email })
     if (exists) {
       return res.json({ success: false, message: "User already exists!" })
+    }
+
+    if (name == "") {
+      return res.json({
+        success: false,
+        message: "Please enter a name!",
+      })
     }
 
     if (!validator.isEmail(email)) {
@@ -58,6 +65,7 @@ const registerUser = async (req, res) => {
       name: name,
       email: email,
       password: hashedPassword,
+      profilePic: `https://ui-avatars.com/api/?name=${name}`,
     })
 
     const user = await newUser.save()
@@ -69,4 +77,20 @@ const registerUser = async (req, res) => {
   }
 }
 
-export { loginUser, registerUser }
+// get user
+const getUser = async (req, res) => {
+  const { userID } = req.params
+
+  try {
+    const user = await userModel.findById(userID).select("-password")
+    if (!user) {
+      return res.json({ success: false, message: "User not found!" })
+    }
+
+    res.json({ success: true, user })
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: "Error retrieving user!" })
+  }
+}
+export { loginUser, registerUser, getUser }
