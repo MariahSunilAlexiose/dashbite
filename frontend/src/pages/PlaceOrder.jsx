@@ -36,6 +36,7 @@ const PlaceOrder = () => {
               name="firstName"
               onChange={onChangeHandler}
               value={deliveryInfo.firstName}
+              required
             />
             <Input
               type="name"
@@ -43,6 +44,7 @@ const PlaceOrder = () => {
               name="lastName"
               onChange={onChangeHandler}
               value={deliveryInfo.lastName}
+              required
             />
           </div>
           <Input
@@ -51,6 +53,7 @@ const PlaceOrder = () => {
             name="email"
             onChange={onChangeHandler}
             value={deliveryInfo.email}
+            required
           />
           <Input
             type="text"
@@ -58,6 +61,7 @@ const PlaceOrder = () => {
             name="street"
             onChange={onChangeHandler}
             value={deliveryInfo.street}
+            required
           />
           <div className="flex gap-4">
             <Input
@@ -66,6 +70,7 @@ const PlaceOrder = () => {
               name="city"
               onChange={onChangeHandler}
               value={deliveryInfo.city}
+              required
             />
             <Input
               type="text"
@@ -73,6 +78,7 @@ const PlaceOrder = () => {
               name="state"
               onChange={onChangeHandler}
               value={deliveryInfo.state}
+              required
             />
           </div>
           <div className="flex gap-4">
@@ -82,6 +88,7 @@ const PlaceOrder = () => {
               name="zipcode"
               onChange={onChangeHandler}
               value={deliveryInfo.zipcode}
+              required
             />
             <Input
               type="text"
@@ -89,6 +96,7 @@ const PlaceOrder = () => {
               name="country"
               onChange={onChangeHandler}
               value={deliveryInfo.country}
+              required
             />
           </div>
           <Input
@@ -97,6 +105,7 @@ const PlaceOrder = () => {
             name="phone"
             onChange={onChangeHandler}
             value={deliveryInfo.phone}
+            required
           />
         </div>
       </div>

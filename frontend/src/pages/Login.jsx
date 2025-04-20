@@ -55,6 +55,7 @@ const Login = () => {
               onChange={onChangeHandler}
               value={data.email}
               name="email"
+              required
             />
           </div>
           <div className="py-4">
@@ -64,6 +65,7 @@ const Login = () => {
               onChange={onChangeHandler}
               value={data.password}
               name="password"
+              required
             />
           </div>
           <div className="flex w-full justify-between py-4">
