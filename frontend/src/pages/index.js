@@ -3,7 +3,8 @@ import Home from "./Home"
 import Login from "./Login"
 import MyOrders from "./MyOrders"
 import PlaceOrder from "./PlaceOrder"
+import Profile from "./Profile"
 import Signup from "./Signup"
 import Verify from "./Verify"
 
-export { MyOrders, Verify, PlaceOrder, Cart, Signup, Login, Home }
+export { Profile, MyOrders, Verify, PlaceOrder, Cart, Signup, Login, Home }

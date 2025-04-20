@@ -96,6 +96,60 @@ const getUser = async (req, res) => {
   }
 }
 
+// update user
+const updateUser = async (req, res) => {
+  const { userID } = req.params
+  const { name, email, oldPassword, newPassword } = req.body
+
+  try {
+    const user = await userModel.findById(userID)
+    if (!user) {
+      return res.json({ success: false, message: "User not found!" })
+    }
+
+    if (name) {
+      user.name = name
+    }
+
+    if (email) {
+      if (!validator.isEmail(email)) {
+        return res.json({
+          success: false,
+          message: "Please enter a valid email!",
+        })
+      }
+      user.email = email
+    }
+
+    if (oldPassword) {
+      const isMatch = await bcrypt.compare(oldPassword, user.password)
+      if (!isMatch) {
+        return res.json({
+          success: false,
+          message: "Old password is incorrect!",
+        })
+      }
+    }
+
+    if (newPassword) {
+      if (newPassword.length < 8) {
+        return res.json({
+          success: false,
+          message: "Please enter a strong password!",
+        })
+      }
+      const salt = await bcrypt.genSalt(10)
+      user.password = await bcrypt.hash(newPassword, salt)
+    }
+
+    const updatedUser = await user.save()
+    res.json({ success: true, user: updatedUser })
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: "Error updating user!" })
+  }
+}
+
 const updateProfilePic = async (req, res) => {
   const { userID } = req.params
   const { file } = req
@@ -126,4 +180,4 @@ const updateProfilePic = async (req, res) => {
   }
 }
 
-export { loginUser, registerUser, getUser, updateProfilePic }
+export { loginUser, registerUser, getUser, updateUser, updateProfilePic }

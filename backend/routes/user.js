@@ -6,6 +6,7 @@ import {
   loginUser,
   registerUser,
   updateProfilePic,
+  updateUser,
 } from "../controllers/user.js"
 import authMiddleware from "../middleware/auth.js"
 
@@ -24,6 +25,7 @@ const upload = multer({ storage: storage })
 userRouter.post("/register", registerUser)
 userRouter.post("/login", loginUser)
 userRouter.get("/:userID", authMiddleware, getUser)
+userRouter.put("/update/:userID", authMiddleware, updateUser)
 userRouter.put(
   "/update/:userID/profilePic",
   upload.single("profilePic"),
