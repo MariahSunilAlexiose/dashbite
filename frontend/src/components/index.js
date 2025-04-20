@@ -11,9 +11,11 @@ import OrderTable from "./OrderTable"
 import RadioInput from "./RadioInput"
 import ThemeToggle from "./ThemeToggle"
 import Toast from "./Toast"
+import Toasts from "./Toasts"
 
 export {
   OrderTable,
+  Toasts,
   Toast,
   ThemeToggle,
   CartSummary,
