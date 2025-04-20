@@ -1,3 +1,5 @@
+import fs from "fs"
+
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import validator from "validator"
@@ -93,4 +95,35 @@ const getUser = async (req, res) => {
     res.json({ success: false, message: "Error retrieving user!" })
   }
 }
-export { loginUser, registerUser, getUser }
+
+const updateProfilePic = async (req, res) => {
+  const { userID } = req.params
+  const { file } = req
+  try {
+    console.log(req.file)
+    if (!file) {
+      return res.json({ success: false, message: "No file provided!" })
+    }
+
+    const user = await userModel.findById(userID)
+    if (!user) {
+      return res.json({ success: false, message: "User not found!" })
+    }
+
+    if (user.profilePic) {
+      fs.unlink(`uploads/${user.profilePic}`, (err) => {
+        if (err) console.error("Error removing old profile picture:", err)
+      })
+    }
+
+    user.profilePic = file.filename
+    await user.save()
+
+    res.json({ success: true, profilePic: user.profilePic })
+  } catch (error) {
+    console.error("Error updating profile picture:", error)
+    res.json({ success: false, message: "Error updating profile picture!" })
+  }
+}
+
+export { loginUser, registerUser, getUser, updateProfilePic }

@@ -1,5 +1,6 @@
 import ArrowLeftStartOnRectangleIcon from "./arrow-left-start-on-rectangle.svg"
 import Bars3Icon from "./bars-3.svg"
+import CameraIcon from "./camera.svg"
 import CheckCircleIcon from "./check-circle.svg"
 import ChevronDownIcon from "./chevron-down.svg"
 import CopyrightIcon from "./copyright-sign.svg"
@@ -31,6 +32,7 @@ import UserIcon from "./user.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  CameraIcon,
   ShoppingBagIcon,
   ArrowLeftStartOnRectangleIcon,
   UserIcon,

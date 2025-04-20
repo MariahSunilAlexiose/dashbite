@@ -1,3 +1,4 @@
+import AccountCard from "./AccountCard"
 import Avatar from "./Avatar"
 import Button from "./Button"
 import Card from "./Card"
@@ -14,6 +15,7 @@ import Toast from "./Toast"
 import Toasts from "./Toasts"
 
 export {
+  AccountCard,
   OrderTable,
   Toasts,
   Toast,

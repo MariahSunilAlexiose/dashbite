@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 
-import { OrderTable } from "@cmp"
+import { AccountCard, OrderTable } from "@cmp"
 import { StoreContext } from "@context"
 import { useToast } from "@providers"
 import axios from "axios"
@@ -26,9 +26,17 @@ const MyOrders = () => {
     }
   }, [token])
   return (
-    <div className="flex flex-col items-center py-10">
-      <h3>My Order History</h3>
-      <OrderTable orders={orders} />
+    <div>
+      <h2 className="text-center">My Account</h2>
+      <div className="flex-center flex gap-10 p-10">
+        <div className="w-1/6">
+          <AccountCard />
+        </div>
+        <div>
+          <h4>My Order History</h4>
+          <OrderTable orders={orders} />
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { StoreContext } from "@context"
 import { useToast } from "@providers"
 import axios from "axios"
+import { jwtDecode } from "jwt-decode"
 import PropTypes from "prop-types"
 
 export const StoreProvider = (props) => {
   const { addToast } = useToast()
+  const navigate = useNavigate()
   const [cartItems, setCartItems] = useState(() => {
     const storedCartItems = localStorage.getItem("cartItems")
     return storedCartItems ? JSON.parse(storedCartItems) : {}
   })
 
   const [token, setToken] = useState("")
+  const [userID, setUserID] = useState(null)
 
   const url = "http://localhost:4000"
 
@@ -48,17 +52,33 @@ export const StoreProvider = (props) => {
     }
   }
 
+  const getUserID = async () => {
+    const storedToken = localStorage.getItem("token")
+    if (storedToken) {
+      try {
+        const decodedToken = jwtDecode(storedToken)
+        if (decodedToken?.id) {
+          setToken(storedToken)
+          setUserID(decodedToken.id)
+          loadCartData(storedToken)
+        } else {
+          console.error("Decoded token missing ID.")
+          navigate("/login")
+        }
+      } catch (error) {
+        console.error("Invalid token:", error)
+        navigate("/login")
+      }
+    }
+  }
+
   // Save cartItems to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems))
   }, [cartItems])
-  // Fetch data on mount (cart and dishes)
+
   useEffect(() => {
-    const storedToken = localStorage.getItem("token")
-    if (storedToken) {
-      setToken(storedToken)
-      loadCartData(storedToken)
-    }
+    getUserID()
     fetchDishes()
   }, [])
 
@@ -144,6 +164,7 @@ export const StoreProvider = (props) => {
     token,
     setToken,
     url,
+    userID,
   }
 
   return (
