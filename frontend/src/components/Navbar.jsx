@@ -82,7 +82,14 @@ const MobileNavBar = ({
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
                   <img
-                    src={url + "/images/" + user.profilePic || UserIcon}
+                    src={
+                      user.profilePic &&
+                      user.profilePic.startsWith(
+                        "https://ui-avatars.com/api/?name="
+                      )
+                        ? user.profilePic
+                        : `${url}/images/${user.profilePic || UserIcon}`
+                    }
                     alt="User Profile"
                     className="aspect-square h-full w-full object-cover"
                   />
