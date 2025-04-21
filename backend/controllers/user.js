@@ -83,6 +83,10 @@ const registerUser = async (req, res) => {
 const getUser = async (req, res) => {
   const { userID } = req.params
 
+  if (!userID || userID === "null") {
+    return res.status(400).json({ success: false, message: "Invalid User ID" })
+  }
+
   try {
     const user = await userModel.findById(userID).select("-password")
     if (!user) {
