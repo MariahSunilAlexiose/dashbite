@@ -76,7 +76,9 @@ const verifyOrder = async (req, res) => {
 
 const userOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({ userID: req.body.userID })
+    const orders = await orderModel
+      .find({ userID: req.body.userID })
+      .sort({ date: -1 })
     res.json({ success: true, data: orders })
   } catch (error) {
     console.log(error)
