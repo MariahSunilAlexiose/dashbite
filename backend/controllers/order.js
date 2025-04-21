@@ -89,13 +89,20 @@ const userOrders = async (req, res) => {
 const getOrderByID = async (req, res) => {
   try {
     const { orderID } = req.params
-    const order = await orderModel.findById(orderID)
+    const { userID } = req.body
 
+    const order = await orderModel.findById(orderID)
     if (!order) {
       return res.status(404).json({ message: "Order not found" })
     }
 
-    res.status(200).json(order)
+    if (order.userID.toString() !== userID) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to access this order" })
+    }
+
+    res.json({ success: true, data: order })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: "Server error", error: err.message })
