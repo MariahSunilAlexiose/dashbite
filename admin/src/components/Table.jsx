@@ -16,9 +16,8 @@ const handleDelete = async ({ addToast, foodID }) => {
     await axios.delete(`${backendURL}/dish/remove`, { data: { id: foodID } })
     addToast("success", "Success", "Removed dish")
     window.location.reload()
-  } catch (err) {
-    console.log("Error deleting data:", err)
-    addToast("error", "Error", "Error in listing dish")
+  } catch (error) {
+    addToast("error", "Error", `Error in deleting dish: ${error}`)
   }
 }
 

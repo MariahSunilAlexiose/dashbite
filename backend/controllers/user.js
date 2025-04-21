@@ -158,7 +158,6 @@ const updateProfilePic = async (req, res) => {
   const { userID } = req.params
   const { file } = req
   try {
-    console.log(req.file)
     if (!file) {
       return res.json({ success: false, message: "No file provided!" })
     }
