@@ -28,11 +28,11 @@ const MyOrders = () => {
   return (
     <div>
       <h2 className="text-center">My Account</h2>
-      <div className="flex-center flex gap-10 p-10">
+      <div className="flex-center flex gap-10 py-10">
         <div className="w-1/6">
           <AccountCard />
         </div>
-        <div>
+        <div className="w-full">
           <h4>My Order History</h4>
           <OrderTable orders={orders} />
         </div>

@@ -54,7 +54,7 @@ const AccountCard = () => {
     fetchUserData()
   }, [token, userID])
   return (
-    <div className="bg-blue-30 p-5">
+    <div className="bg-accent p-5">
       <div className="relative flex flex-col items-center gap-1">
         <div>
           <div className="h-15 w-15 relative flex shrink-0 items-center justify-center overflow-hidden rounded-full">
@@ -69,7 +69,7 @@ const AccountCard = () => {
               className="aspect-square h-full w-full object-cover"
             />
           </div>
-          <div className="bg-foreground hover:bg-gray-20 absolute bottom-7 right-11 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full">
+          <div className="bg-gray-20 hover:bg-gray-20 absolute bottom-7 right-11 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full">
             <input
               id="profilePictureUpload"
               type="file"

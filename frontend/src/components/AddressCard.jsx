@@ -14,7 +14,7 @@ const AddressCard = ({
   handleSave,
 }) => {
   return (
-    <div className="w-full max-w-sm rounded-lg border border-gray-300 p-4">
+    <div className="border-muted w-full max-w-sm rounded-lg border p-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold">{title}</h3>
         <Button
@@ -46,14 +46,14 @@ const AddressCard = ({
         )}
       </div>
       {addressData && Object.keys(addressData).length > 0 && (
-        <>
-          <p className="m-0 text-gray-600">{addressData.name}</p>
-          <p className="m-0 text-gray-600">{addressData.phone}</p>
-          <p className="m-0 text-gray-600">
+        <div className="text-muted">
+          <p className="m-0">{addressData.name}</p>
+          <p className="m-0">{addressData.phone}</p>
+          <p className="m-0">
             {addressData.street}, {addressData.city}, {addressData.state},{" "}
             {addressData.zip}, {addressData.country}
           </p>
-        </>
+        </div>
       )}
     </div>
   )
