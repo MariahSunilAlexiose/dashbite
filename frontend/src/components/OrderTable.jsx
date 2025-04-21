@@ -16,9 +16,9 @@ const OrderTable = ({ orders }) => {
           <table className="w-full table-auto border-collapse text-sm">
             <thead>
               <TableRow className="border-b">
+                <TableHead>Date</TableHead>
                 <TableHead>OrderID</TableHead>
                 <TableHead>Items</TableHead>
-                <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Amount</TableHead>
               </TableRow>
@@ -26,6 +26,7 @@ const OrderTable = ({ orders }) => {
             <tbody>
               {orders.map((order) => (
                 <TableRow key={order._id} className="border-b">
+                  <TableCell>{formatDate(order.date)}</TableCell>
                   <TableCell>{order._id}</TableCell>
                   <TableCell>
                     <div className="flex items-center justify-center gap-2">
@@ -44,7 +45,6 @@ const OrderTable = ({ orders }) => {
                         ))}
                     </div>
                   </TableCell>
-                  <TableCell>{formatDate(order.date)}</TableCell>
                   <TableCell>{order.status}</TableCell>
                   <TableCell>${order.amount}</TableCell>
                 </TableRow>
