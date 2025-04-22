@@ -7,7 +7,9 @@ const Home = () => {
     <div className="flex flex-col gap-6 pt-6">
       <Header />
       <Menu />
-      <Download />
+      <div className="py-15">
+        <Download />
+      </div>
     </div>
   )
 }
