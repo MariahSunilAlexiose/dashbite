@@ -15,6 +15,8 @@ import {
 } from "@pages"
 import { Footer } from "@sections"
 
+import ProtectedRoute from "./ProtectedRoute"
+
 function App() {
   return (
     <div>
@@ -27,10 +29,38 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
-          <Route path="/verify" element={<Verify />} />
-          <Route path="/myorders" element={<MyOrders />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/address" element={<Address />} />
+          <Route
+            path="/myorders"
+            element={
+              <ProtectedRoute>
+                <MyOrders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/address"
+            element={
+              <ProtectedRoute>
+                <Address />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/verify"
+            element={
+              <ProtectedRoute>
+                <Verify />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
       <Footer />
