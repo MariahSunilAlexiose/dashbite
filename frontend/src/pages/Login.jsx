@@ -31,6 +31,9 @@ const Login = () => {
       setToken(response.data.token)
       localStorage.setItem("token", response.data.token)
       navigate("/")
+      setTimeout(() => {
+        window.location.reload()
+      }, 100)
     } catch (err) {
       console.error(err)
       addToast(
