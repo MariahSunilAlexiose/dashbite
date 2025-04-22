@@ -19,7 +19,6 @@ const placeOrder = async (req, res) => {
       deliveryType: req.body.deliveryType,
     })
     await newOrder.save()
-    await userModel.findByIdAndUpdate(req.body.userID, { cartData: {} })
     const line_items = req.body.items.map((item) => ({
       price_data: {
         currency: "CAD",
@@ -63,6 +62,13 @@ const verifyOrder = async (req, res) => {
   try {
     if (success == "true") {
       await orderModel.findByIdAndUpdate(orderID, { payment: true })
+      const order = await orderModel.findById(orderID)
+      console.log(order)
+      if (!order) {
+        console.error("Order not found.")
+        return
+      }
+      await userModel.findByIdAndUpdate(order.userID, { cartData: {} })
       res.json({ success: true, message: "Paid" })
     } else {
       await orderModel.findByIdAndDelete(orderID)
