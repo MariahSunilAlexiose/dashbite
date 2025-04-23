@@ -89,20 +89,24 @@ const Order = () => {
           </div>
         </div>
         {/* Shipping Address */}
-        <div className="pr-45 flex flex-col">
-          <h4>Shipping Address</h4>
-          <p className="m-0">
-            {shippingAddress.firstName}
-            {shippingAddress.lastName}
-          </p>
-          <p className="m-0">{shippingAddress.email}</p>
-          <p className="m-0">{shippingAddress.phone}</p>
-          <p className="m-0">
-            {shippingAddress.street},{shippingAddress.city},
-            {shippingAddress.state},{shippingAddress.zipcode},
-            {shippingAddress.country}
-          </p>
-        </div>
+        {shippingAddress && shippingAddress.length >= 0 && (
+          <div className="pr-35 flex flex-col">
+            <h4>Shipping Address</h4>
+            <p className="m-0">
+              {shippingAddress.firstName}
+              {shippingAddress.lastName}
+            </p>
+            <p className="m-0">{shippingAddress.email}</p>
+            <p className="m-0">{shippingAddress.phone}</p>
+            <p className="m-0">
+              {shippingAddress.street}, {shippingAddress.city},
+            </p>
+            <p className="m-0">
+              {shippingAddress.state}, {shippingAddress.zipcode},{" "}
+              {shippingAddress.country}
+            </p>
+          </div>
+        )}
       </div>
       {/* Order Details */}
       <div>
