@@ -21,7 +21,7 @@ export default function Sidebar({ items }) {
   const [activeIndex, setActiveIndex] = useState(null)
 
   return (
-    <aside className="h-screen">
+    <aside>
       <nav className="bg-blue-20 dark:bg-blue-80 inline-flex h-full flex-col border-r shadow-sm">
         <div className="flex items-center justify-between p-4 pb-2">
           <div onClick={() => navigate("/")}>
