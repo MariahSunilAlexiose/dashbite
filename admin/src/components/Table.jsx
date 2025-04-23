@@ -67,7 +67,15 @@ const Table = ({ tableName, data }) => {
               className="cursor-pointer border-b transition-colors hover:bg-[#f1f5f9]"
             >
               {Object.keys(filteredData[0]).map((header) => (
-                <td key={header} className="w-1/6 p-2 align-middle">
+                <td
+                  key={header}
+                  className="w-1/6 p-2 align-middle"
+                  onClick={() => {
+                    if (tableName === "orders") {
+                      navigate(`/orders/${row["_id"]}`)
+                    }
+                  }}
+                >
                   {header === "unitPrice" ||
                   header === "price" ||
                   header === "amount" ||
@@ -117,7 +125,7 @@ const Table = ({ tableName, data }) => {
                   )}
                 </td>
               ))}
-              <td className="flex gap-3 py-8 align-middle">
+              <td className="flex items-center justify-center gap-3 py-8 align-middle">
                 <Button
                   size="icon"
                   onClick={(e) => {

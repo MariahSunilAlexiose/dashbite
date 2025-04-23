@@ -20,10 +20,12 @@ import PlusIcon from "./plus.svg"
 import ShoppingCartIcon from "./shopping-cart.svg"
 import SunIcon from "./sun.svg"
 import TrashIcon from "./trash.svg"
+import UserIcon from "./user.svg"
 import UtensilsCrossedIcon from "./utensils-crossed.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  UserIcon,
   PencilIcon,
   TrashIcon,
   ChevronRightIcon,

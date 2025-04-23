@@ -94,6 +94,7 @@ export const keyMapping = {
   payment: "Payment Status",
   deliveryType: "Delivery Type",
   items: "Items",
+  quantity: "Quantity",
 }
 
 export const formatDate = (dateString) => {
