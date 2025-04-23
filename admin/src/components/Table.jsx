@@ -70,6 +70,7 @@ const Table = ({ tableName, data }) => {
                 <td key={header} className="w-1/6 p-2 align-middle">
                   {header === "unitPrice" ||
                   header === "price" ||
+                  header === "amount" ||
                   header === "salary" ? (
                     `$${row[header]}`
                   ) : header === "date" ? (
@@ -82,6 +83,35 @@ const Table = ({ tableName, data }) => {
                         className="h-16 w-16 object-cover"
                       />
                     </div>
+                  ) : header === "payment" ? (
+                    row[header] ? (
+                      "Paid"
+                    ) : (
+                      "Not Paid"
+                    )
+                  ) : header === "deliveryType" ? (
+                    row[header] === "free_shipping" ? (
+                      "Free shipping"
+                    ) : row[header] === "express_shipping" ? (
+                      "Express Shipping"
+                    ) : (
+                      "Pick up"
+                    )
+                  ) : header === "items" ? (
+                    <div className="flex items-center justify-center gap-2">
+                      {row.items.map((item, key) => (
+                        <div key={key} className="relative h-8 w-8">
+                          <img
+                            src={`${backendImgURL}/${item.image}`}
+                            alt={item.name}
+                            className="h-full w-full rounded"
+                          />
+                          <div className="bg-foreground text-background absolute -right-2 -top-2 rounded-full px-2.5 py-1 text-xs font-bold shadow-md">
+                            {item.quantity}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   ) : (
                     row[header]
                   )}
@@ -92,7 +122,7 @@ const Table = ({ tableName, data }) => {
                   size="icon"
                   onClick={(e) => {
                     e.stopPropagation()
-                    navigate("/dishes/update_form", {
+                    navigate(`/${tableName}/update_form`, {
                       state: {
                         tableName,
                         dataToBeUpdated: data.find((d) => d._id === row._id),

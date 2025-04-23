@@ -7,3 +7,5 @@ backend/yarn.lock
 backend/uploads/**
 admin/node_modules/**
 admin/yarn.lock
+backend/.env
+admin/.env

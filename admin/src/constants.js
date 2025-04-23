@@ -87,6 +87,13 @@ export const keyMapping = {
   price: "Price",
   category: "Category",
   rating: "Rating",
+  userID: "User ID",
+  amount: "Amount",
+  status: "Status",
+  date: "Date",
+  payment: "Payment Status",
+  deliveryType: "Delivery Type",
+  items: "Items",
 }
 
 export const formatDate = (dateString) => {
