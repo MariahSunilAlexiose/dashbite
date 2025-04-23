@@ -3,31 +3,28 @@ import userModel from "../models/user.js"
 
 const getOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({}).sort({ createdAt: -1 }) // Fetch all orders
+    const orders = await orderModel.find({}).sort({ createdAt: -1 })
 
     const transformedOrders = await Promise.all(
       orders.map(async (order) => {
         try {
-          // Fetch the user's details using the userID from the userModel
           const user = await userModel.findById(order.userID)
 
           if (user) {
-            // eslint-disable-next-line no-unused-vars
-            const { userID, ...rest } = order._doc // Destructure to exclude unwanted fields
+            const { userID, ...rest } = order._doc // eslint-disable-line no-unused-vars
             return {
               ...rest,
               user: user,
             }
           } else {
-            console.error(`User not found for userID: ${order.userID}`)
-            return null // Handle orders with missing user data, if necessary
+            return null
           }
         } catch (error) {
           console.error(
             `Error fetching user data for userID ${order.userID}:`,
             error
           )
-          return null // Gracefully handle errors
+          return null
         }
       })
     )
@@ -55,8 +52,7 @@ const getOrderByID = async (req, res) => {
       const user = await userModel.findById(order.userID)
 
       if (user) {
-        // eslint-disable-next-line no-unused-vars
-        const { userID, ...rest } = order._doc
+        const { userID, ...rest } = order._doc // eslint-disable-line no-unused-vars
         res.json({
           success: true,
           data: {

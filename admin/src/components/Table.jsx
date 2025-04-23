@@ -29,8 +29,7 @@ const Table = ({ tableName, data }) => {
   const lastItemIndex = currentPage * itemsPerPage
   const firstItemIndex = lastItemIndex - itemsPerPage
 
-  // eslint-disable-next-line no-unused-vars
-  const filteredData = data.map(({ _id, ...rest }) => rest)
+  const filteredData = data.map(({ _id, ...rest }) => rest) // eslint-disable-line no-unused-vars
 
   const currentItems = data.slice(firstItemIndex, lastItemIndex)
 

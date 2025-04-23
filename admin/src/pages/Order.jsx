@@ -64,11 +64,7 @@ const Order = () => {
     <div className="flex flex-col gap-7">
       <div className="flex items-center justify-between">
         <h2>Order</h2>
-        <Button
-          size="sm"
-          // variant="success"
-          onClick={() => navigate("/orders/edit_form")}
-        >
+        <Button size="sm" onClick={() => navigate("/orders/edit_form")}>
           <img src={PencilIcon} alt="Pencil Icon" className="h-4 w-4" />
         </Button>
       </div>

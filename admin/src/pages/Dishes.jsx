@@ -17,8 +17,7 @@ const Dishes = () => {
     try {
       const response = await axios.get(`${backendURL}/dish/`)
       const cleanedDishesData = response.data.data.map((item) => {
-        // eslint-disable-next-line no-unused-vars
-        const { __v, image, ...rest } = item
+        const { __v, image, ...rest } = item // eslint-disable-line no-unused-vars
         return { image, ...rest }
       })
       setList(cleanedDishesData)

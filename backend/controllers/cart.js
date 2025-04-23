@@ -59,8 +59,7 @@ const getCart = async (req, res) => {
     let cartData = await userData.cartData
     // Remove items with count 0
     cartData = Object.fromEntries(
-      // eslint-disable-next-line no-unused-vars
-      Object.entries(cartData).filter(([key, value]) => value > 0)
+      Object.entries(cartData).filter(([key, value]) => value > 0) // eslint-disable-line no-unused-vars
     )
     res.json({ success: true, cartData })
   } catch (error) {

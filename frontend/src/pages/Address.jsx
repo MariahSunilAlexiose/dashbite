@@ -13,8 +13,7 @@ const Address = () => {
   const [toBeUpdatedBilling, setToBeUpdatedBilling] = useState(false)
   const [toBeUpdatedShipping, setToBeUpdatedShipping] = useState(false)
   const { addToast } = useToast()
-  // eslint-disable-next-line no-unused-vars
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState({}) // eslint-disable-line no-unused-vars
   const { url, token, userID } = useContext(StoreContext)
   const [formData, setFormData] = useState({
     billingAddress: {},

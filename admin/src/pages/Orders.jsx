@@ -23,8 +23,7 @@ const Orders = () => {
       const cleanedOrdersData = await Promise.all(
         response.data.data.map(async (order) => {
           const name = order.user?.name || "Unknown User"
-          // eslint-disable-next-line no-unused-vars
-          const { __v, address, user, ...rest } = order
+          const { __v, address, user, ...rest } = order // eslint-disable-line no-unused-vars
           return { name, ...rest }
         })
       )
