@@ -11,9 +11,18 @@ import { backendImgURL, backendURL, formatDate, keyMapping } from "@/constants"
 
 import { Pagination } from "."
 
-const handleDelete = async ({ addToast, foodID }) => {
+const handleDelete = async ({ addToast, ID, tableName }) => {
   try {
-    await axios.delete(`${backendURL}/dish/remove`, { data: { id: foodID } })
+    if (tableName === "dishes") {
+      await axios.delete(`${backendURL}/dish/remove`, { data: { id: ID } })
+    } else {
+      await axios.delete(`${backendURL}/admin/${tableName}/delete/${ID}`, {
+        headers: {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        },
+      })
+    }
+
     addToast("success", "Success", "Removed dish")
     window.location.reload()
   } catch (error) {
@@ -144,7 +153,7 @@ const Table = ({ tableName, data }) => {
                   size="icon"
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleDelete({ addToast, foodID: row._id })
+                    handleDelete({ addToast, ID: row._id, tableName })
                   }}
                 >
                   <img src={TrashIcon} alt="Trash Icon" className="h-4 w-4" />

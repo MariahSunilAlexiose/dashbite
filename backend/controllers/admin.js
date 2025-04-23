@@ -38,7 +38,7 @@ const getOrders = async (req, res) => {
   }
 }
 
-const getOrderByID = async (req, res) => {
+const getOrder = async (req, res) => {
   try {
     const { orderID } = req.params
     const order = await orderModel.findById(orderID)
@@ -61,23 +61,41 @@ const getOrderByID = async (req, res) => {
           },
         })
       } else {
-        console.error(`User not found for userID: ${order.userID}`)
         res.json({
           success: false,
           message: "User not found for the given order.",
         })
       }
-    } catch (error) {
-      console.error(
-        `Error fetching user data for userID ${order.userID}:`,
-        error
-      )
+    } catch {
       res.json({ success: false, message: "Error fetching user data!" })
     }
-  } catch (error) {
-    console.error(`Error fetching order with ID ${req.params.id}:`, error)
+  } catch {
     res.json({ success: false, message: "Error fetching order!" })
   }
 }
 
-export { getOrderByID, getOrders }
+const deleteOrder = async (req, res) => {
+  try {
+    const { orderID } = req.params
+    const order = await orderModel.findById(orderID)
+
+    if (!order) {
+      res.json({ success: false, message: "Order not found!" })
+      return
+    }
+
+    try {
+      await orderModel.findByIdAndDelete(orderID)
+      res.json({
+        success: true,
+        message: `Order with ID ${orderID} has been deleted successfully.`,
+      })
+    } catch {
+      res.json({ success: false, message: "Error deleting the order!" })
+    }
+  } catch {
+    res.json({ success: false, message: "Error finding the order!" })
+  }
+}
+
+export { deleteOrder, getOrder, getOrders }
