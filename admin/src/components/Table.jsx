@@ -11,10 +11,17 @@ import { backendImgURL, backendURL, formatDate, keyMapping } from "@/constants"
 
 import { Pagination } from "."
 
-const handleDelete = async ({ addToast, ID, tableName }) => {
+const handleDelete = async ({ addToast, ID, tableName, ID2 }) => {
   try {
     if (tableName === "dishes") {
       await axios.delete(`${backendURL}/dish/remove`, { data: { id: ID } })
+    } else if (tableName === "orderitems") {
+      console.log(`${backendURL}/admin/orders/${ID}/items/${ID2}`)
+      await axios.delete(`${backendURL}/admin/orders/${ID}/items/${ID2}`, {
+        headers: {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        },
+      })
     } else {
       await axios.delete(`${backendURL}/admin/${tableName}/delete/${ID}`, {
         headers: {
@@ -23,14 +30,14 @@ const handleDelete = async ({ addToast, ID, tableName }) => {
       })
     }
 
-    addToast("success", "Success", "Removed dish")
+    addToast("success", "Success", "Removed Item")
     window.location.reload()
   } catch (error) {
-    addToast("error", "Error", `Error in deleting dish: ${error}`)
+    addToast("error", "Error", `Error in deleting item: ${error}`)
   }
 }
 
-const Table = ({ tableName, data }) => {
+const Table = ({ tableName, data, pageID }) => {
   const { addToast } = useToast()
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
@@ -153,7 +160,16 @@ const Table = ({ tableName, data }) => {
                   size="icon"
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleDelete({ addToast, ID: row._id, tableName })
+                    if (tableName === "orderitems") {
+                      handleDelete({
+                        addToast,
+                        ID: pageID,
+                        tableName,
+                        ID2: row._id,
+                      })
+                    } else {
+                      handleDelete({ addToast, ID: row._id, tableName })
+                    }
                   }}
                 >
                   <img src={TrashIcon} alt="Trash Icon" className="h-4 w-4" />
@@ -178,6 +194,7 @@ const Table = ({ tableName, data }) => {
 Table.propTypes = {
   tableName: PropTypes.string.isRequired,
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  pageID: PropTypes.string,
 }
 
 export default Table

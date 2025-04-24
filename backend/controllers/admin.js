@@ -98,4 +98,46 @@ const deleteOrder = async (req, res) => {
   }
 }
 
-export { deleteOrder, getOrder, getOrders }
+const deleteOrderItem = async (req, res) => {
+  try {
+    const { orderID, itemID } = req.params
+    const order = await orderModel.findById(orderID)
+
+    if (!order) {
+      res.json({ success: false, message: "Order not found!" })
+      return
+    }
+
+    // Check if the item exists in the order
+    const itemIndex = order.items.findIndex(
+      (item) => item._id.toString() === itemID
+    )
+
+    if (itemIndex === -1) {
+      res.json({ success: false, message: "Item not found in the order!" })
+      return
+    }
+
+    if (order.items.length === 1) {
+      await orderModel.findByIdAndDelete(orderID)
+      res.json({
+        success: true,
+        message: `Order with ID ${orderID} has been deleted as it contained only one item.`,
+      })
+      return
+    }
+
+    // Remove the item from the order's items
+    order.items.splice(itemIndex, 1)
+    await order.save()
+
+    res.json({
+      success: true,
+      message: `Item with ID ${itemID} removed from order ${orderID} successfully.`,
+    })
+  } catch {
+    res.json({ success: false, message: "Error deleting the item!" })
+  }
+}
+
+export { deleteOrderItem, deleteOrder, getOrder, getOrders }

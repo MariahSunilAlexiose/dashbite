@@ -25,7 +25,6 @@ const Order = () => {
         })
 
         setOrder(res.data.data)
-        console.log(res.data.data)
         setUser(res.data.data.user)
 
         const items = await Promise.all(
@@ -33,6 +32,7 @@ const Order = () => {
             const {
               /* eslint-disable no-unused-vars */
               __v,
+              _id,
               image,
               name,
               description,
@@ -43,6 +43,7 @@ const Order = () => {
               quantity,
             } = item
             return {
+              _id,
               image,
               name,
               price,
@@ -54,6 +55,10 @@ const Order = () => {
         setShippingAddress(res.data.data.address)
       } catch (err) {
         console.log(err)
+        navigate(-1)
+        setTimeout(() => {
+          window.location.reload()
+        }, 100)
       }
     }
 
@@ -137,7 +142,7 @@ const Order = () => {
       </div>
       {/* Items */}
       <div>
-        <Table data={items} tableName="orderitems" />
+        <Table data={items} tableName="orderitems" pageID={orderID} />
       </div>
     </div>
   )
