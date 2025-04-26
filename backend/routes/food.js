@@ -3,6 +3,7 @@ import multer from "multer"
 
 import {
   addDish,
+  getDish,
   listDishes,
   removeDish,
   updateDish,
@@ -24,5 +25,6 @@ dishRouter.post("/add", upload.single("image"), addDish)
 dishRouter.get("/", listDishes)
 dishRouter.delete("/remove", removeDish)
 dishRouter.post("/update", upload.single("image"), updateDish)
+dishRouter.get("/:id", getDish)
 
 export default dishRouter

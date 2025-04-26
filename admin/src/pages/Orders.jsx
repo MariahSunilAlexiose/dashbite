@@ -15,16 +15,35 @@ const Orders = () => {
 
   const fetchList = async () => {
     try {
-      const response = await axios.get(`${backendURL}/admin/orders/`, {
+      const ordersRes = await axios.get(`${backendURL}/admin/orders/`, {
         headers: {
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },
       })
+
       const cleanedOrdersData = await Promise.all(
-        response.data.data.map(async (order) => {
-          const name = order.user?.name || "Unknown User"
-          const { __v, address, user, ...rest } = order // eslint-disable-line no-unused-vars
-          return { name, ...rest }
+        ordersRes.data.data.map(async (order) => {
+          const userRes = await axios.get(
+            `${backendURL}/admin/user/${order.userID}`,
+            {
+              headers: {
+                token: import.meta.env.VITE_ADMIN_TOKEN,
+              },
+            }
+          )
+          const name = userRes.data.data.name || "Unknown User"
+          const updatedItems = await Promise.all(
+            order.items.map(async (item) => {
+              const itemRes = await axios.get(`${backendURL}/dish/${item._id}`)
+              return {
+                ...item,
+                image: itemRes.data.data.image,
+                name: itemRes.data.data.name,
+              }
+            })
+          )
+          const { __v, address, items, userID, ...rest } = order // eslint-disable-line no-unused-vars
+          return { name, items: updatedItems, ...rest }
         })
       )
       setList(cleanedOrdersData)

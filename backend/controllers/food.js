@@ -83,4 +83,30 @@ const updateDish = async (req, res) => {
   }
 }
 
-export { addDish, listDishes, removeDish, updateDish }
+const getDish = async (req, res) => {
+  const { id } = req.params
+
+  if (!id) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing id in the request body." })
+  }
+
+  try {
+    const dish = await dishModel.findOne({ _id: id })
+    if (!dish) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Dish not found." })
+    }
+    res.json({ success: true, data: dish })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      success: false,
+      message: "Error occurred while fetching the dish.",
+    })
+  }
+}
+
+export { getDish, addDish, listDishes, removeDish, updateDish }

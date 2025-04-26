@@ -6,6 +6,7 @@ import {
   deleteOrderItem,
   getOrder,
   getOrders,
+  getUser,
   getUsers,
 } from "../controllers/admin.js"
 import adminAuthMiddleware from "../middleware/adminauth.js"
@@ -22,5 +23,6 @@ adminRouter.delete(
 )
 adminRouter.post("/order", adminAuthMiddleware, addOrder)
 adminRouter.get("/users", adminAuthMiddleware, getUsers)
+adminRouter.get("/user/:userID", adminAuthMiddleware, getUser)
 
 export default adminRouter

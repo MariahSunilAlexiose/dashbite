@@ -3,35 +3,8 @@ import userModel from "../models/user.js"
 
 const getOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({}).sort({ createdAt: -1 })
-
-    const transformedOrders = await Promise.all(
-      orders.map(async (order) => {
-        try {
-          const user = await userModel.findById(order.userID)
-
-          if (user) {
-            const { userID, ...rest } = order._doc // eslint-disable-line no-unused-vars
-            return {
-              ...rest,
-              user: user,
-            }
-          } else {
-            return null
-          }
-        } catch (error) {
-          console.error(
-            `Error fetching user data for userID ${order.userID}:`,
-            error
-          )
-          return null
-        }
-      })
-    )
-
-    const filteredOrders = transformedOrders.filter((order) => order !== null)
-
-    res.json({ success: true, data: filteredOrders })
+    const orders = await orderModel.find({}).sort({ date: -1 })
+    res.json({ success: true, data: orders })
   } catch (error) {
     console.log(error)
     res.json({ success: false, message: "Error!" })
@@ -181,4 +154,23 @@ const getUsers = async (req, res) => {
   }
 }
 
-export { getUsers, addOrder, deleteOrderItem, deleteOrder, getOrder, getOrders }
+const getUser = async (req, res) => {
+  const { userID } = req.params
+  try {
+    const users = await userModel.findOne({ _id: userID })
+    res.json({ success: true, data: users })
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: "Error!" })
+  }
+}
+
+export {
+  getUser,
+  getUsers,
+  addOrder,
+  deleteOrderItem,
+  deleteOrder,
+  getOrder,
+  getOrders,
+}
