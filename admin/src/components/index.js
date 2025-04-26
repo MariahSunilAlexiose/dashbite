@@ -1,6 +1,7 @@
 import Button from "./Button"
 import DropDown from "./DropDown"
 import Input from "./Input"
+import InputDropDown from "./InputDropDown"
 import Label from "./Label"
 import Pagination from "./Pagination"
 import Sidebar from "./Sidebar"
@@ -11,6 +12,7 @@ import Toast from "./Toast"
 import Toasts from "./Toasts"
 
 export {
+  InputDropDown,
   Pagination,
   Table,
   Toasts,

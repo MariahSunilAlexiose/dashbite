@@ -2,7 +2,7 @@ import React from "react"
 import { Route, Routes } from "react-router-dom"
 
 import { Sidebar, Toasts } from "@cmp"
-import { AddDish, Dishes, Order, Orders, UpdateDish } from "@pages"
+import { AddDish, AddForm, Dishes, Order, Orders, UpdateDish } from "@pages"
 
 import { sidebarItems } from "@/constants"
 
@@ -18,6 +18,7 @@ function App() {
           <Route path="/dishes/update_form" element={<UpdateDish />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:orderID" element={<Order />} />
+          <Route path="/add_form" element={<AddForm />} />
         </Routes>
       </div>
     </div>

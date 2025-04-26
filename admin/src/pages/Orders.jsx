@@ -45,7 +45,21 @@ const Orders = () => {
         <Button
           size="sm"
           variant="success"
-          onClick={() => navigate("/orders/add_form")}
+          onClick={() =>
+            navigate("/add_form", {
+              state: {
+                tableName: "order",
+                toBeAddedKeys: [
+                  "userID",
+                  "items",
+                  "address",
+                  "status",
+                  "payment",
+                  "deliveryType",
+                ],
+              },
+            })
+          }
         >
           <img alt="Plus Icon" src={PlusIcon} width={20} height={20} />
         </Button>

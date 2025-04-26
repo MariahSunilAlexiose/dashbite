@@ -140,4 +140,45 @@ const deleteOrderItem = async (req, res) => {
   }
 }
 
-export { deleteOrderItem, deleteOrder, getOrder, getOrders }
+const addOrder = async (req, res) => {
+  const { userID, items, amount, deliveryType, address } = req.body
+  if (!userID || !items || !amount || !deliveryType || !address) {
+    return res.status(400).json({
+      error: "Missing required fields.",
+      required: ["userID", "items", "amount", "deliveryType", "address"],
+    })
+  }
+
+  const newOrder = new orderModel({
+    userID: req.body.userID,
+    items: req.body.items,
+    amount: req.body.amount,
+    address: req.body.address,
+    status: req.body.status,
+    date: new Date().toISOString(),
+    payment: req.body.payment,
+    deliveryType: req.body.deliveryType,
+  })
+
+  try {
+    await newOrder.save()
+    res.json({ success: true, message: "Order Created" })
+  } catch (err) {
+    res.status(500).json({
+      error: "An error occurred while adding the order.",
+      err,
+    })
+  }
+}
+
+const getUsers = async (req, res) => {
+  try {
+    const users = await userModel.find({})
+    res.json({ success: true, data: users })
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: "Error!" })
+  }
+}
+
+export { getUsers, addOrder, deleteOrderItem, deleteOrder, getOrder, getOrders }
