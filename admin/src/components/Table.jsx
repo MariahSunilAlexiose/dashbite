@@ -16,7 +16,6 @@ const handleDelete = async ({ addToast, ID, tableName, ID2 }) => {
     if (tableName === "dishes") {
       await axios.delete(`${backendURL}/dish/remove`, { data: { id: ID } })
     } else if (tableName === "orderitems") {
-      console.log(`${backendURL}/admin/orders/${ID}/items/${ID2}`)
       await axios.delete(`${backendURL}/admin/orders/${ID}/items/${ID2}`, {
         headers: {
           token: import.meta.env.VITE_ADMIN_TOKEN,
@@ -48,7 +47,6 @@ const Table = ({ tableName, data, pageID }) => {
   const filteredData = data.map(({ _id, ...rest }) => rest) // eslint-disable-line no-unused-vars
 
   const currentItems = data.slice(firstItemIndex, lastItemIndex)
-
   const dataMap = new Map()
   data.forEach((item, index) => {
     dataMap.set(index, item)
@@ -94,7 +92,8 @@ const Table = ({ tableName, data, pageID }) => {
                   {header === "unitPrice" ||
                   header === "price" ||
                   header === "amount" ||
-                  header === "salary" ? (
+                  header === "salary" ||
+                  header === "subtotal" ? (
                     `$${row[header]}`
                   ) : header === "date" ? (
                     formatDate(row[header])
@@ -123,7 +122,7 @@ const Table = ({ tableName, data, pageID }) => {
                   ) : header === "items" ? (
                     <div className="flex items-center justify-center gap-2">
                       {row.items.map((item, key) => (
-                        <div key={key} className="relative h-8 w-8">
+                        <div key={key} className="relative h-12 w-12">
                           <img
                             src={`${backendImgURL}/${item.image}`}
                             alt={item.name}

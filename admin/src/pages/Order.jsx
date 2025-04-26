@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
 import { PencilIcon, UserIcon } from "@icons"
+import { useToast } from "@providers"
 import axios from "axios"
 
 import { Button, Table } from "@/components"
@@ -14,51 +15,44 @@ const Order = () => {
   const [user, setUser] = useState({})
   const [shippingAddress, setShippingAddress] = useState({})
   const [items, setItems] = useState([])
+  const { addToast } = useToast()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${backendURL}/admin/orders/${orderID}`, {
+        const res = await axios.get(`${backendURL}/admin/order/${orderID}`, {
           headers: {
             token: import.meta.env.VITE_ADMIN_TOKEN,
           },
         })
-
         setOrder(res.data.data)
-        setUser(res.data.data.user)
+        setShippingAddress(res.data.data.address)
 
-        const items = await Promise.all(
-          res.data.data.items.map((item) => {
-            const {
-              /* eslint-disable no-unused-vars */
-              __v,
-              _id,
-              image,
-              name,
-              description,
-              price,
-              category,
-              rating,
-              /* eslint-enable no-unused-vars */
-              quantity,
-            } = item
+        const userRes = await axios.get(
+          `${backendURL}/admin/user/${res.data.data.userID}`,
+          {
+            headers: {
+              token: import.meta.env.VITE_ADMIN_TOKEN,
+            },
+          }
+        )
+        setUser(userRes.data.data)
+
+        const updatedItems = await Promise.all(
+          res.data.data.items.map(async (item) => {
+            const itemRes = await axios.get(`${backendURL}/dish/${item._id}`)
             return {
-              _id,
-              image,
-              name,
-              price,
-              quantity,
+              image: itemRes.data.data.image,
+              name: itemRes.data.data.name,
+              price: itemRes.data.data.price,
+              ...item,
+              subtotal: itemRes.data.data.price * item.quantity,
             }
           })
         )
-        setItems(items)
-        setShippingAddress(res.data.data.address)
+        setItems(updatedItems)
       } catch (err) {
-        console.log(err)
-        navigate(-1)
-        setTimeout(() => {
-          window.location.reload()
-        }, 100)
+        addToast("error", "Error", `Error in adding dish: ${err}`)
       }
     }
 
@@ -94,7 +88,7 @@ const Order = () => {
           </div>
         </div>
         {/* Shipping Address */}
-        {shippingAddress && shippingAddress.length >= 0 && (
+        {shippingAddress && (
           <div className="pr-35 flex flex-col">
             <h4>Shipping Address</h4>
             <p className="m-0">
@@ -140,7 +134,6 @@ const Order = () => {
           </div>
         </div>
       </div>
-      {/* Items */}
       <div>
         <Table data={items} tableName="orderitems" pageID={orderID} />
       </div>

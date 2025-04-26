@@ -14,7 +14,7 @@ import adminAuthMiddleware from "../middleware/adminauth.js"
 const adminRouter = express.Router()
 
 adminRouter.get("/orders", adminAuthMiddleware, getOrders)
-adminRouter.get("/orders/:orderID", adminAuthMiddleware, getOrder)
+adminRouter.get("/order/:orderID", adminAuthMiddleware, getOrder)
 adminRouter.delete("/orders/delete/:orderID", adminAuthMiddleware, deleteOrder)
 adminRouter.delete(
   "/orders/:orderID/items/:itemID",

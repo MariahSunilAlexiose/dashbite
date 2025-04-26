@@ -12,38 +12,12 @@ const getOrders = async (req, res) => {
 }
 
 const getOrder = async (req, res) => {
+  const { orderID } = req.params
   try {
-    const { orderID } = req.params
-    const order = await orderModel.findById(orderID)
-
-    if (!order) {
-      res.json({ success: false, message: "Order not found!" })
-      return
-    }
-
-    try {
-      const user = await userModel.findById(order.userID)
-
-      if (user) {
-        const { userID, ...rest } = order._doc // eslint-disable-line no-unused-vars
-        res.json({
-          success: true,
-          data: {
-            ...rest,
-            user: user,
-          },
-        })
-      } else {
-        res.json({
-          success: false,
-          message: "User not found for the given order.",
-        })
-      }
-    } catch {
-      res.json({ success: false, message: "Error fetching user data!" })
-    }
-  } catch {
-    res.json({ success: false, message: "Error fetching order!" })
+    const order = await orderModel.findOne({ _id: orderID })
+    res.json({ success: true, data: order })
+  } catch (error) {
+    res.json({ success: false, message: `Error! ${error}` })
   }
 }
 
