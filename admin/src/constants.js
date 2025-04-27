@@ -106,3 +106,9 @@ export const formatDate = (dateString) => {
   const [month, day, year] = formattedDate.replace(",", "").split(" ")
   return `${day} ${month} ${year}`
 }
+
+export const payment = ["Not Paid", "Paid"]
+
+export const deliveryType = ["Free Shipping", "Express Shipping", "Pick Up"]
+
+export const orderStatus = ["Dish Processing...", "Shipped", "Delivered Up"]

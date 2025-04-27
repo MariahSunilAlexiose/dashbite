@@ -37,7 +37,21 @@ const Dishes = () => {
         <Button
           size="sm"
           variant="success"
-          onClick={() => navigate("/dishes/add_form")}
+          onClick={() =>
+            navigate("/add_form", {
+              state: {
+                tableName: "dish",
+                toBeAddedKeys: [
+                  "image",
+                  "category",
+                  "name",
+                  "description",
+                  "price",
+                  "rating",
+                ],
+              },
+            })
+          }
         >
           <img alt="Plus Icon" src={PlusIcon} width={20} height={20} />
         </Button>
