@@ -57,6 +57,7 @@ const AddForm = () => {
       if (tableName === "dish") navigate("/dishes")
       else if (tableName === "order") navigate("/orders")
     } catch (err) {
+      console.error(err)
       addToast("error", "Error", `Error in adding dish: ${err}`)
     }
   }
@@ -113,8 +114,6 @@ const AddForm = () => {
       }))
     }
   }, [formData.items, dishes])
-
-  console.log(formData)
 
   return (
     <div className="pt-10">

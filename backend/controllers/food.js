@@ -26,6 +26,7 @@ const addDish = async (req, res) => {
     await food.save()
     res.json({ success: true, message: "Dish Added" })
   } catch (err) {
+    console.error(err)
     res.json({ success: false, message: `Error in adding dish: ${err}` })
   }
 }
@@ -33,54 +34,67 @@ const addDish = async (req, res) => {
 // list dishes
 const listDishes = async (req, res) => {
   try {
-    const dishes = await dishModel.find({})
+    const dishes = await dishModel
+      .find({})
+      .sort({ createdAt: -1 })
+      .select("-createdAt -updatedAt")
     if (!dishes) {
       res.json({ success: false, message: "Dishes not found!" })
       return
     }
     res.json({ success: true, data: dishes })
   } catch (err) {
+    console.error(err)
     res.json({ success: false, message: `Error in listing dishes: ${err}` })
   }
 }
 
 // remove dishes
 const removeDish = async (req, res) => {
-  const { id } = req.body
-  if (!id) {
+  const { dishID } = req.params
+  if (!dishID) {
     return res.json({ success: false, message: "Missing dish's ID field!" })
   }
 
   try {
-    const dish = await dishModel.findById(id)
+    const dish = await dishModel.findById(dishID)
     if (!dish) {
       res.json({ success: false, message: "Dish not found!" })
       return
     }
     fs.unlink(`uploads/${dish.image}`, () => {})
-    const deleteDish = await dishModel.findByIdAndDelete(id)
+    const deleteDish = await dishModel.findByIdAndDelete(dishID)
     if (!deleteDish) {
       res.json({ success: false, message: "Error in removing the dish!" })
       return
     }
     res.json({ success: true, message: "Dish Removed" })
   } catch (err) {
+    console.error(err)
     res.json({ success: false, message: `Error in removing dish: ${err}` })
   }
 }
 
 // update dish item
 const updateDish = async (req, res) => {
-  const { _id, name, description, price, category, rating } = req.body
-  if (!_id || !name || !description || !price || !category || !rating) {
+  const { dishID } = req.params
+  const { name, description, price, category, rating } = req.body
+  if (!dishID || !name || !description || !price || !category || !rating) {
     return res.json({
       error: "Missing required fields.",
-      required: ["userID", "items", "amount", "deliveryType", "address"],
+      required: [
+        "dishID",
+        "name",
+        "description",
+        "price",
+        "category",
+        "rating",
+      ],
     })
   }
 
   try {
-    const dish = await dishModel.findById(_id)
+    const dish = await dishModel.findById(dishID)
     if (!dish) {
       return res.json({ success: false, message: "Dish not found!" })
     }
@@ -110,7 +124,7 @@ const updateDish = async (req, res) => {
       }
     }
 
-    const newDish = await dishModel.findByIdAndUpdate(_id, updatedData, {
+    const newDish = await dishModel.findByIdAndUpdate(dishID, updatedData, {
       new: true,
     })
     if (!newDish) {
@@ -118,6 +132,7 @@ const updateDish = async (req, res) => {
     }
     res.json({ success: true, message: "Dish updated!" })
   } catch (err) {
+    console.error(err)
     res.json({ success: false, message: `Error in updating dish: ${err}` })
   }
 }
@@ -135,6 +150,7 @@ const getDish = async (req, res) => {
     }
     res.json({ success: true, data: dish })
   } catch (err) {
+    console.error(err)
     res.json({ success: false, message: `Error in retrieving dish: ${err}` })
   }
 }

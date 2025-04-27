@@ -8,6 +8,7 @@ import {
   removeDish,
   updateDish,
 } from "../controllers/food.js"
+import adminAuthMiddleware from "../middleware/adminauth.js"
 
 const dishRouter = express.Router()
 
@@ -21,10 +22,17 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-dishRouter.post("/add", upload.single("image"), addDish)
 dishRouter.get("/", listDishes)
-dishRouter.delete("/remove", removeDish)
-dishRouter.post("/update", upload.single("image"), updateDish)
 dishRouter.get("/:dishID", getDish)
+
+// admin authenticated
+dishRouter.post("/", upload.single("image"), adminAuthMiddleware, addDish)
+dishRouter.delete("/:dishID", adminAuthMiddleware, removeDish)
+dishRouter.put(
+  "/:dishID",
+  upload.single("image"),
+  adminAuthMiddleware,
+  updateDish
+)
 
 export default dishRouter

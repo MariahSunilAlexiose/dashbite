@@ -15,13 +15,18 @@ const Dishes = () => {
 
   const fetchList = async () => {
     try {
-      const res = await axios.get(`${backendURL}/dish/`)
+      const res = await axios.get(`${backendURL}/dish/`, {
+        headers: {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        },
+      })
       const cleanedDishesData = res.data.data.map((item) => {
         const { __v, image, ...rest } = item // eslint-disable-line no-unused-vars
         return { image, ...rest }
       })
       setList(cleanedDishesData)
     } catch (err) {
+      console.error(err)
       addToast("error", "Error", `Error in listing dish: ${err}`)
     }
   }

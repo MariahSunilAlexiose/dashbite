@@ -21,17 +21,19 @@ const UpdateDish = () => {
     e.preventDefault()
     e.stopPropagation()
     try {
-      await axios.post(`${backendURL}/dish/update`, formData, {
+      const { _id, ...dataToSubmit } = formData
+      await axios.put(`${backendURL}/dish/${_id}`, dataToSubmit, {
         headers: {
           "Content-Type": "multipart/form-data",
+          token: import.meta.env.VITE_ADMIN_TOKEN,
         },
       })
       navigate(-1)
     } catch (err) {
+      console.error(err)
       addToast("error", "Error", `Error in updating the dish: ${err}`)
     }
   }
-
   return (
     <div>
       <h2>Update Dish</h2>

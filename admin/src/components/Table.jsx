@@ -14,7 +14,11 @@ import { Pagination } from "."
 const handleDelete = async ({ addToast, ID, tableName, ID2 }) => {
   try {
     if (tableName === "dishes") {
-      await axios.delete(`${backendURL}/dish/remove`, { data: { id: ID } })
+      await axios.delete(`${backendURL}/dish/${ID}`, {
+        headers: {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        },
+      })
     } else if (tableName === "orderitems") {
       await axios.delete(`${backendURL}/admin/orders/${ID}/items/${ID2}`, {
         headers: {
@@ -32,6 +36,7 @@ const handleDelete = async ({ addToast, ID, tableName, ID2 }) => {
     addToast("success", "Success", "Removed Item")
     window.location.reload()
   } catch (err) {
+    console.error(err)
     addToast("error", "Error", `Error in deleting item: ${err}`)
   }
 }
