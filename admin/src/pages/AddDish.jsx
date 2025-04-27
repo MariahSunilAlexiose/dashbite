@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { Button, DropDown, Input, Label, TextArea } from "@cmp"
 import { TrashIcon } from "@icons"
@@ -12,6 +13,7 @@ const AddDish = () => {
   const [formData, setFormData] = useState({})
   const [image, setImage] = useState(false)
   const { addToast } = useToast()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -24,9 +26,9 @@ const AddDish = () => {
       addToast("success", "Success", "Food Added")
       setFormData({})
       setImage(false)
+      navigate("/dishes")
     } catch (err) {
-      console.error("Error in adding:", err)
-      addToast("error", "Error", "Error in adding dish")
+      addToast("error", "Error", `Error in adding dish: ${err}`)
     }
   }
   return (

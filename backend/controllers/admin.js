@@ -4,52 +4,70 @@ import userModel from "../models/user.js"
 const getOrders = async (req, res) => {
   try {
     const orders = await orderModel.find({}).sort({ date: -1 })
+    if (!orders) {
+      res.json({ success: false, message: "Orders not found!" })
+      return
+    }
     res.json({ success: true, data: orders })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error!" })
+  } catch (err) {
+    res.json({ success: false, message: `Error: ${err}` })
   }
 }
 
 const getOrder = async (req, res) => {
   const { orderID } = req.params
+  if (!orderID)
+    return res.json({ success: false, message: "Missing orderID field!" })
+
   try {
     const order = await orderModel.findOne({ _id: orderID })
-    res.json({ success: true, data: order })
-  } catch (error) {
-    res.json({ success: false, message: `Error! ${error}` })
-  }
-}
-
-const deleteOrder = async (req, res) => {
-  try {
-    const { orderID } = req.params
-    const order = await orderModel.findById(orderID)
-
     if (!order) {
       res.json({ success: false, message: "Order not found!" })
       return
     }
+    res.json({ success: true, data: order })
+  } catch (err) {
+    res.json({ success: false, message: `Error! ${err}` })
+  }
+}
 
-    try {
-      await orderModel.findByIdAndDelete(orderID)
-      res.json({
-        success: true,
-        message: `Order with ID ${orderID} has been deleted successfully.`,
-      })
-    } catch {
-      res.json({ success: false, message: "Error deleting the order!" })
+const deleteOrder = async (req, res) => {
+  const { orderID } = req.params
+  if (!orderID)
+    return res.json({ success: false, message: "Missing orderID field!" })
+
+  const order = await orderModel.findById(orderID)
+  if (!order) {
+    res.json({ success: false, message: "Order not found!" })
+    return
+  }
+
+  try {
+    const order = await orderModel.findByIdAndDelete(orderID)
+    if (!order) {
+      res.json({ success: false, message: "Error in deleting order!" })
+      return
     }
-  } catch {
-    res.json({ success: false, message: "Error finding the order!" })
+    res.json({
+      success: true,
+      message: `Order with ID ${orderID} has been deleted successfully.`,
+    })
+  } catch (err) {
+    res.json({ success: false, message: `Error deleting the order: ${err}` })
   }
 }
 
 const deleteOrderItem = async (req, res) => {
   try {
     const { orderID, itemID } = req.params
-    const order = await orderModel.findById(orderID)
+    if (!orderID || !itemID) {
+      return res.json({
+        error: "Missing required fields.",
+        required: ["orderID", "itemID"],
+      })
+    }
 
+    const order = await orderModel.findById(orderID)
     if (!order) {
       res.json({ success: false, message: "Order not found!" })
       return
@@ -66,7 +84,11 @@ const deleteOrderItem = async (req, res) => {
     }
 
     if (order.items.length === 1) {
-      await orderModel.findByIdAndDelete(orderID)
+      const order = await orderModel.findByIdAndDelete(orderID)
+      if (!order) {
+        res.json({ success: false, message: "Error in deleting order!" })
+        return
+      }
       res.json({
         success: true,
         message: `Order with ID ${orderID} has been deleted as it contained only one item.`,
@@ -74,68 +96,83 @@ const deleteOrderItem = async (req, res) => {
       return
     }
 
-    // Remove the item from the order's items
-    order.items.splice(itemIndex, 1)
+    order.items.splice(itemIndex, 1) // Removes the item from the order's items
     await order.save()
 
     res.json({
       success: true,
       message: `Item with ID ${itemID} removed from order ${orderID} successfully.`,
     })
-  } catch {
-    res.json({ success: false, message: "Error deleting the item!" })
+  } catch (err) {
+    res.json({ success: false, message: `Error deleting the item: ${err}` })
   }
 }
 
 const addOrder = async (req, res) => {
-  const { userID, items, amount, deliveryType, address } = req.body
-  if (!userID || !items || !amount || !deliveryType || !address) {
-    return res.status(400).json({
+  const { userID, items, amount, deliveryType, status, payment, address } =
+    req.body
+  if (
+    !userID ||
+    !items ||
+    !amount ||
+    !deliveryType ||
+    !status ||
+    !payment ||
+    !address
+  ) {
+    return res.json({
       error: "Missing required fields.",
       required: ["userID", "items", "amount", "deliveryType", "address"],
     })
   }
 
   const newOrder = new orderModel({
-    userID: req.body.userID,
-    items: req.body.items,
-    amount: req.body.amount,
-    address: req.body.address,
-    status: req.body.status,
+    userID: userID,
+    items: items,
+    amount: amount,
+    address: address,
+    status: status,
     date: new Date().toISOString(),
-    payment: req.body.payment,
-    deliveryType: req.body.deliveryType,
+    payment: payment,
+    deliveryType: deliveryType,
   })
 
   try {
     await newOrder.save()
     res.json({ success: true, message: "Order Created" })
   } catch (err) {
-    res.status(500).json({
-      error: "An error occurred while adding the order.",
-      err,
-    })
+    res.json({ success: false, message: `Error in adding an order: ${err}` })
   }
 }
 
 const getUsers = async (req, res) => {
   try {
     const users = await userModel.find({})
+    if (!users) {
+      res.json({ success: false, message: "Users not found!" })
+      return
+    }
     res.json({ success: true, data: users })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error!" })
+  } catch (err) {
+    res.json({ success: false, message: `Error in retrieving users: ${err}` })
   }
 }
 
 const getUser = async (req, res) => {
   const { userID } = req.params
+  if (!userID) {
+    return res.json({ success: false, message: "Missing userID field!" })
+  }
+
   try {
-    const users = await userModel.findOne({ _id: userID })
-    res.json({ success: true, data: users })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error!" })
+    const user = await userModel.findOne({ _id: userID })
+    if (!user) {
+      res.json({ success: false, message: "User not found!" })
+      return
+    }
+    res.json({ success: true, data: user })
+  } catch (err) {
+    res.json({ success: false, message: `Error in retrieving user: ${err}` })
   }
 }
 

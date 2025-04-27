@@ -2,69 +2,141 @@ import userModel from "../models/user.js"
 
 // add items to user cart
 const addToCart = async (req, res) => {
+  const { userID, itemID } = req.body
+  if (!userID || !itemID) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["userID", "itemID"],
+    })
+  }
+
   try {
-    let userData = await userModel.findById(req.body.userID)
-    let cartData = await userData.cartData
-    if (!cartData[req.body.itemID]) {
-      cartData[req.body.itemID] = 1
-    } else {
-      cartData[req.body.itemID] += 1
+    const userData = await userModel.findById(userID)
+    if (!userData) {
+      res.json({ success: false, message: "User not found!" })
+      return
     }
-    await userModel.findByIdAndUpdate(req.body.userID, { cartData })
+    let cartData = await userData.cartData
+    if (!cartData) {
+      res.json({ success: false, message: "Cart not found!" })
+      return
+    }
+    if (!cartData[itemID]) {
+      cartData[itemID] = 1
+    } else {
+      cartData[itemID] += 1
+    }
+    const cart = await userModel.findByIdAndUpdate(userID, { cartData })
+    if (!cart) {
+      res.json({ success: false, message: "Error in updating cart!" })
+      return
+    }
     res.json({ success: true, message: "Added to Cart!" })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error!" })
+  } catch (err) {
+    res.json({ success: false, message: `Error in adding to cart: ${err}` })
   }
 }
 
 // remove item from user cart
 const removeFromCart = async (req, res) => {
+  const { userID, itemID } = req.body
+  if (!userID || !itemID) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["userID", "itemID"],
+    })
+  }
+
   try {
-    let userData = await userModel.findById(req.body.userID)
-    let cartData = await userData.cartData
-    if (cartData[req.body.itemID] > 0) {
-      cartData[req.body.itemID] -= 1
-    } else if (cartData[req.body.itemID] == 0) {
-      delete cartData[req.body.itemID]
+    let userData = await userModel.findById(userID)
+    if (!userData) {
+      res.json({ success: false, message: "User not found!" })
+      return
     }
-    await userModel.findByIdAndUpdate(req.body.userID, { cartData })
+    let cartData = await userData.cartData
+    if (!userData) {
+      res.json({ success: false, message: "Cart not found!" })
+      return
+    }
+    if (cartData[itemID] > 0) {
+      cartData[itemID] -= 1
+    } else if (cartData[itemID] == 0) {
+      delete cartData[itemID]
+    }
+    const cart = await userModel.findByIdAndUpdate(userID, { cartData })
+    if (!cart) {
+      res.json({ success: false, message: "Error in updating cart!" })
+      return
+    }
     res.json({ success: true, message: "Removed from Cart!" })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error!" })
+  } catch (err) {
+    res.json({ success: false, message: `Error in removing from cart: ${err}` })
   }
 }
 
 // deleted item from user cart
 const deleteFromCart = async (req, res) => {
+  const { userID, itemID } = req.body
+  if (!userID || !itemID) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["userID", "itemID"],
+    })
+  }
+
   try {
-    let userData = await userModel.findById(req.body.userID)
-    let cartData = await userData.cartData
-    if (cartData[req.body.itemID] >= 0) {
-      delete cartData[req.body.itemID]
+    const userData = await userModel.findById(userID)
+    if (!userData) {
+      res.json({ success: false, message: "User not found!" })
+      return
     }
-    await userModel.findByIdAndUpdate(req.body.userID, { cartData })
+    const cartData = await userData.cartData
+    if (!cartData) {
+      res.json({ success: false, message: "Cart not found!" })
+      return
+    }
+    if (cartData[itemID] >= 0) {
+      delete cartData[itemID]
+    }
+    const cart = await userModel.findByIdAndUpdate(userID, { cartData })
+    if (!cart) {
+      res.json({ success: false, message: "Error in updating cart!" })
+      return
+    }
     res.json({ success: true, message: "Deleted from Cart!" })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error!" })
+  } catch (err) {
+    res.json({ success: false, message: `Error in deleting from cart: ${err}` })
   }
 }
 
 // fetch user cart data
 const getCart = async (req, res) => {
+  const { userID } = req.body
+  if (!userID) {
+    return res.json({ success: false, message: "Missing userID field!" })
+  }
+
   try {
-    let userData = await userModel.findById(req.body.userID)
+    let userData = await userModel.findById(userID)
+    if (!userData) {
+      res.json({ success: false, message: "User not found!" })
+      return
+    }
     let cartData = await userData.cartData
+    if (!cartData) {
+      res.json({ success: false, message: "Cart not found!" })
+      return
+    }
     // Remove items with count 0
     cartData = Object.fromEntries(
       Object.entries(cartData).filter(([key, value]) => value > 0) // eslint-disable-line no-unused-vars
     )
     res.json({ success: true, cartData })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error!" })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: `Error in retrieving cart items: ${err}`,
+    })
   }
 }
 

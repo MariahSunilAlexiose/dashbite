@@ -24,23 +24,19 @@ const Signup = () => {
   const onSignup = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post(`${url}/api/user/register`, data)
-      if (!response.data.success) {
-        addToast("error", "Error", response.data.message)
+      const res = await axios.post(`${url}/api/user/register`, data)
+      if (!res.data.success) {
+        addToast("error", "Error", `Error: ${res.data.message}`)
         return
       }
-      setToken(response.data.token)
-      localStorage.setItem("token", response.data.token)
+      setToken(res.data.token)
+      localStorage.setItem("token", res.data.token)
       navigate("/profile")
     } catch (err) {
-      console.error(err)
-      addToast(
-        "error",
-        "error",
-        err.response?.data?.message || "An error occurred"
-      )
+      addToast("error", "Error", `Error in registering the user: ${err}`)
     }
   }
+
   return (
     <div className="flex items-center justify-center">
       <div className="relative m-6 flex flex-col space-y-8 rounded-2xl shadow-2xl md:flex-row md:space-y-0">

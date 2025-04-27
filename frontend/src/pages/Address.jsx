@@ -29,19 +29,16 @@ const Address = () => {
           : toBeUpdatedShipping
             ? `/api/user/update/${userID}/address`
             : `/api/user/add/${userID}/address`
-
-      let response = await axios.post(url + endpoint, formData, {
+      let res = await axios.post(url + endpoint, formData, {
         headers: { token },
       })
-
-      if (!response.data.success) {
-        addToast("error", "Error", response.data.message)
+      if (!res.data.success) {
+        addToast("error", "Error", `Error: ${res.data.message}`)
         return
       }
-
       window.location.reload()
-    } catch {
-      addToast("error", "Error", "Error in saving the addresses")
+    } catch (err) {
+      addToast("error", "Error", `Error in saving addresses: ${err}`)
     }
   }
   useEffect(() => {

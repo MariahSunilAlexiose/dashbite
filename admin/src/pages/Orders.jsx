@@ -20,7 +20,6 @@ const Orders = () => {
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },
       })
-
       const cleanedOrdersData = await Promise.all(
         ordersRes.data.data.map(async (order) => {
           const userRes = await axios.get(
@@ -48,8 +47,7 @@ const Orders = () => {
       )
       setList(cleanedOrdersData)
     } catch (err) {
-      console.error("Error in listing orders:", err)
-      addToast("error", "Error", "Error in listing order")
+      addToast("error", "Error", `Error in listing orders: ${err}`)
     }
   }
 

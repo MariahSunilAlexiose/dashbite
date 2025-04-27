@@ -25,6 +25,6 @@ dishRouter.post("/add", upload.single("image"), addDish)
 dishRouter.get("/", listDishes)
 dishRouter.delete("/remove", removeDish)
 dishRouter.post("/update", upload.single("image"), updateDish)
-dishRouter.get("/:id", getDish)
+dishRouter.get("/:dishID", getDish)
 
 export default dishRouter

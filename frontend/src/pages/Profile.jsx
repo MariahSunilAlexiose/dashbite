@@ -11,6 +11,7 @@ const Profile = () => {
   const { addToast } = useToast()
   const { url, token, userID } = useContext(StoreContext)
   const [user, setUser] = useState({})
+
   const setUpdates = async (updatedUser) => {
     try {
       if (updatedUser.newPassword !== updatedUser.repeatNewPassword) {
@@ -21,20 +22,19 @@ const Profile = () => {
         )
         return
       }
-      const response = await axios.put(
+      const res = await axios.put(
         url + "/api/user/update/" + userID,
         updatedUser,
         {
           headers: { token },
         }
       )
-      if (!response.data.success) {
-        addToast("error", "Error", response.data.message)
+      if (!res.data.success) {
+        addToast("error", "Error", `Error: ${res.data.message}`)
         return
       }
-    } catch (error) {
-      console.error("Failed to update user:", error)
-      addToast("error", "Error", "Failed to update user!")
+    } catch (err) {
+      addToast("error", "Error", `Error in updating user: ${err}`)
     }
   }
 

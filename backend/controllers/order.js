@@ -9,17 +9,25 @@ dotenv.config()
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 const placeOrder = async (req, res) => {
+  const { userID, items, amount, address, deliveryType } = req.body
+  if (!userID || !items || !amount || !deliveryType || !address) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["userID", "items", "amount", "deliveryType", "address"],
+    })
+  }
+
   const frontend_url = "http://localhost:5173"
   try {
     const newOrder = new orderModel({
-      userID: req.body.userID,
-      items: req.body.items,
-      amount: req.body.amount,
-      address: req.body.address,
-      deliveryType: req.body.deliveryType,
+      userID: userID,
+      items: items,
+      amount: amount,
+      address: address,
+      deliveryType: deliveryType,
     })
     await newOrder.save()
-    const line_items = req.body.items.map((item) => ({
+    const line_items = items.map((item) => ({
       price_data: {
         currency: "CAD",
         product_data: {
@@ -34,13 +42,13 @@ const placeOrder = async (req, res) => {
         currency: "CAD",
         product_data: {
           name:
-            req.body.deliveryType === "free_shipping"
+            deliveryType === "free_shipping"
               ? "Free Shipping"
-              : req.body.deliveryType === "express_shipping"
+              : deliveryType === "express_shipping"
                 ? "Express Shipping"
                 : "Pick Up",
         },
-        unit_amount: req.body.deliveryType === "express_shipping" ? 1500 : 0,
+        unit_amount: deliveryType === "express_shipping" ? 1500 : 0,
       },
       quantity: 1,
     })
@@ -51,21 +59,32 @@ const placeOrder = async (req, res) => {
       cancel_url: `${frontend_url}/verify?success=false&orderID=${newOrder._id}`,
     })
     res.json({ success: true, session_url: session.url })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error!" })
+  } catch (err) {
+    res.json({ success: false, message: `Error in placing order: ${err}` })
   }
 }
 
 const verifyOrder = async (req, res) => {
   const { orderID, success } = req.body
+  if (!orderID || !success) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["orderID", "success"],
+    })
+  }
+
   try {
     if (success == "true") {
-      await orderModel.findByIdAndUpdate(orderID, { payment: true })
+      const neworder = await orderModel.findByIdAndUpdate(orderID, {
+        payment: true,
+      })
+      if (!neworder) {
+        res.json({ success: false, message: "Error in updating order!" })
+        return
+      }
       const order = await orderModel.findById(orderID)
-      console.log(order)
       if (!order) {
-        console.error("Order not found.")
+        res.json({ success: false, message: "Order not found!" })
         return
       }
       await userModel.findByIdAndUpdate(order.userID, { cartData: {} })
@@ -74,21 +93,28 @@ const verifyOrder = async (req, res) => {
       await orderModel.findByIdAndDelete(orderID)
       res.json({ success: false, message: "Not Paid" })
     }
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error" })
+  } catch (err) {
+    res.json({ success: false, message: `Error in verifying order: ${err}` })
   }
 }
 
 const userOrders = async (req, res) => {
+  const { userID } = req.body
+  if (!userID) {
+    return res.json({ success: false, message: "Missing orderID field!" })
+  }
   try {
-    const orders = await orderModel
-      .find({ userID: req.body.userID })
-      .sort({ date: -1 })
+    const orders = await orderModel.find({ userID: userID }).sort({ date: -1 })
+    if (!orders) {
+      res.json({ success: false, message: "Orders not found!" })
+      return
+    }
     res.json({ success: true, data: orders })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error!" })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: `Error in retrieving user's orders: ${err}`,
+    })
   }
 }
 
@@ -96,22 +122,31 @@ const getOrderByID = async (req, res) => {
   try {
     const { orderID } = req.params
     const { userID } = req.body
+    if (!userID || !orderID) {
+      return res.json({
+        error: "Missing required fields.",
+        required: ["userID", "orderID"],
+      })
+    }
 
     const order = await orderModel.findById(orderID)
     if (!order) {
-      return res.status(404).json({ message: "Order not found" })
+      return res.json({
+        success: false,
+        message: "Order not found",
+      })
     }
 
     if (order.userID.toString() !== userID) {
-      return res
-        .status(403)
-        .json({ message: "Not authorized to access this order" })
+      return res.json({
+        success: false,
+        message: "Not authorized to access this order",
+      })
     }
 
     res.json({ success: true, data: order })
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: "Server error", error: err.message })
+    res.json({ success: false, message: `Error in retrieving order: ${err}` })
   }
 }
 

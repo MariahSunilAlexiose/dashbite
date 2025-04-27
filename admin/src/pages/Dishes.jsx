@@ -15,15 +15,14 @@ const Dishes = () => {
 
   const fetchList = async () => {
     try {
-      const response = await axios.get(`${backendURL}/dish/`)
-      const cleanedDishesData = response.data.data.map((item) => {
+      const res = await axios.get(`${backendURL}/dish/`)
+      const cleanedDishesData = res.data.data.map((item) => {
         const { __v, image, ...rest } = item // eslint-disable-line no-unused-vars
         return { image, ...rest }
       })
       setList(cleanedDishesData)
     } catch (err) {
-      console.error("Error in listing dishes:", err)
-      addToast("error", "Error", "Error in listing dish")
+      addToast("error", "Error", `Error in listing dish: ${err}`)
     }
   }
 

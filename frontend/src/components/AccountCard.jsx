@@ -21,25 +21,24 @@ const AccountCard = () => {
       try {
         const formData = new FormData()
         formData.append("profilePic", file)
-        const response = await axios.put(
+        const res = await axios.put(
           `${url}/api/user/update/${userID}/profilePic`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data", token },
           }
         )
-        if (!response.data.success) {
-          addToast("error", "Error", response.data.message)
+        if (!res.data.success) {
+          addToast("error", "Error", `Error: ${res.data.message}`)
           return
         }
         setUser((prevState) => ({
           ...prevState,
-          profilePic: response.data.profilePic,
+          profilePic: res.data.profilePic,
         }))
         addToast("success", "Success", "Profile picture updated successfully!")
-      } catch (error) {
-        console.error("Failed to upload profile picture:", error)
-        addToast("error", "Error", "Failed to upload profile picture!")
+      } catch (err) {
+        addToast("error", "Error", `Error in uploading profile picture: ${err}`)
       }
     }
   }

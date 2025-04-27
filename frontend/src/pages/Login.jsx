@@ -23,24 +23,19 @@ const Login = () => {
   const onLogin = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post(`${url}/api/user/login`, data)
-      if (!response.data.success) {
-        addToast("error", "Error", response.data.message)
+      const res = await axios.post(`${url}/api/user/login`, data)
+      if (!res.data.success) {
+        addToast("error", "Error", `Error: ${res.data.message}`)
         return
       }
-      setToken(response.data.token)
-      localStorage.setItem("token", response.data.token)
+      setToken(res.data.token)
+      localStorage.setItem("token", res.data.token)
       navigate("/")
       setTimeout(() => {
         window.location.reload()
       }, 100)
     } catch (err) {
-      console.error(err)
-      addToast(
-        "error",
-        "error",
-        err.response?.data?.message || "An error occurred"
-      )
+      addToast("error", "Error", `Error in logging in user: ${err}`)
     }
   }
   return (

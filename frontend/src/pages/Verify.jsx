@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom"
 
 import { Button } from "@cmp"
 import { StoreContext } from "@context"
+import { useToast } from "@providers"
 import axios from "axios"
 
 const Verify = () => {
@@ -10,22 +11,27 @@ const Verify = () => {
   const success = searchParams.get("success")
   const orderID = searchParams.get("orderID")
   const { url, token } = useContext(StoreContext)
+  const { addToast } = useToast()
   const navigate = useNavigate()
+
   const verifyPayment = async () => {
     try {
-      const verifyRes = await axios.post(
+      const res = await axios.post(
         url + "/api/order/verify",
         { success, orderID },
         { headers: { token } }
       )
-      if (verifyRes.data.success) {
+      if (res.data.success) {
         navigate("/myorders")
         setTimeout(() => {
           window.location.reload()
         }, 100)
+      } else {
+        addToast("error", "Error", `Error: ${res.data.message}`)
+        return
       }
-    } catch (error) {
-      console.error("Failed to fetch order:", error)
+    } catch (err) {
+      addToast("error", "Error", `Error in retrieving order: ${err}`)
     }
   }
 

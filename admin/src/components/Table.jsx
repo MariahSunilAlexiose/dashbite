@@ -31,8 +31,8 @@ const handleDelete = async ({ addToast, ID, tableName, ID2 }) => {
 
     addToast("success", "Success", "Removed Item")
     window.location.reload()
-  } catch (error) {
-    addToast("error", "Error", `Error in deleting item: ${error}`)
+  } catch (err) {
+    addToast("error", "Error", `Error in deleting item: ${err}`)
   }
 }
 
@@ -48,6 +48,7 @@ const Table = ({ tableName, data, pageID }) => {
 
   const currentItems = data.slice(firstItemIndex, lastItemIndex)
   const dataMap = new Map()
+
   data.forEach((item, index) => {
     dataMap.set(index, item)
   })

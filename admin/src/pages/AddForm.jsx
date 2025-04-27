@@ -43,8 +43,8 @@ const AddForm = () => {
       addToast("success", "Success", "Added")
       setFormData({})
       navigate("/orders")
-    } catch {
-      addToast("error", "Error", "Error in adding dish")
+    } catch (err) {
+      addToast("error", "Error", `Error in adding dish: ${err}`)
     }
   }
 
@@ -56,8 +56,8 @@ const AddForm = () => {
         },
       })
       setUsers(res.data.data)
-    } catch (error) {
-      addToast("error", "Error", `Error fetching user data: ${error}`)
+    } catch (err) {
+      addToast("error", "Error", `Error fetching user data: ${err}`)
     }
   }
 
@@ -69,8 +69,8 @@ const AddForm = () => {
         quantity: 0,
       }))
       setDishes(updatedData)
-    } catch (error) {
-      addToast("error", "Error", `Error fetching item data: ${error}`)
+    } catch (err) {
+      addToast("error", "Error", `Error fetching item data: ${err}`)
     }
   }
 

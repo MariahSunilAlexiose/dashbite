@@ -615,11 +615,11 @@ export const getuser = async ({ url, userID, token, addToast }) => {
       headers: { token },
     })
     if (!userRes.data.success) {
-      addToast("error", "Error", userRes.data.message)
+      addToast("error", "Error", `Error: ${userRes.data.message}`)
       return
     }
     return userRes.data.user
-  } catch (error) {
-    console.error("Failed to fetch user:", error)
+  } catch (err) {
+    addToast("error", "Error", `Error in retrieving user: ${err}`)
   }
 }

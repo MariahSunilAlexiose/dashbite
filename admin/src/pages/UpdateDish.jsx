@@ -28,8 +28,7 @@ const UpdateDish = () => {
       })
       navigate(-1)
     } catch (err) {
-      console.error("Error in updating:", err)
-      addToast("error", "Error", "Error in updating the dish")
+      addToast("error", "Error", `Error in updating the dish: ${err}`)
     }
   }
 

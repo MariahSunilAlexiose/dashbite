@@ -25,30 +25,30 @@ export const StoreProvider = (props) => {
   // Fetch cart items from the server
   const loadCartData = async (userToken) => {
     try {
-      const response = await axios.get(url + "/api/cart/", {
+      const res = await axios.get(url + "/api/cart/", {
         headers: { token: userToken },
       })
-      if (!response.data.success) {
-        addToast("error", "Error", response.data.message)
+      if (!res.data.success) {
+        addToast("error", "Error", `Error: ${res.data.message}`)
         return
       }
-      setCartItems(response.data.cartData)
-    } catch (error) {
-      console.error("Error fetching cart data:", error)
+      setCartItems(res.data.cartData)
+    } catch (err) {
+      addToast("error", "Error", `Error in retrieving cart items: ${err}`)
     }
   }
 
   // Fetch dishes
   const fetchDishes = async () => {
     try {
-      const response = await axios.get(`${url}/api/dish/`)
-      if (!response.data.success) {
-        addToast("error", "Error", response.data.message)
+      const res = await axios.get(`${url}/api/dish/`)
+      if (!res.data.success) {
+        addToast("error", "Error", `Error: ${res.data.message}`)
         return
       }
-      setDishes(response.data.data)
-    } catch (error) {
-      console.error("Error fetching dishes:", error)
+      setDishes(res.data.data)
+    } catch (err) {
+      addToast("error", "Error", `Error in retrieving cart items: ${err}`)
     }
   }
 
@@ -62,11 +62,11 @@ export const StoreProvider = (props) => {
           setUserID(decodedToken.id)
           loadCartData(storedToken)
         } else {
-          console.error("Decoded token missing ID.")
+          addToast("error", "Error", "Decoded token missing ID.")
           navigate("/login")
         }
-      } catch (error) {
-        console.error("Invalid token:", error)
+      } catch (err) {
+        addToast("error", "Error", `Invalid token: ${err}`)
         navigate("/login")
       }
     }
@@ -88,13 +88,13 @@ export const StoreProvider = (props) => {
       [itemID]: (prev[itemID] || 0) + 1,
     }))
     if (token) {
-      const response = await axios.post(
+      const res = await axios.post(
         url + "/api/cart/add",
         { itemID },
         { headers: { token } }
       )
-      if (!response.data.success) {
-        addToast("error", "Error", response.data.message)
+      if (!res.data.success) {
+        addToast("error", "Error", `Error: ${res.data.message}`)
         return
       }
     }
@@ -111,13 +111,13 @@ export const StoreProvider = (props) => {
       }
     })
     if (token) {
-      const response = await axios.post(
+      const res = await axios.post(
         url + "/api/cart/remove",
         { itemID },
         { headers: { token } }
       )
-      if (!response.data.success) {
-        addToast("error", "Error", response.data.message)
+      if (!res.data.success) {
+        addToast("error", "Error", `Error: ${res.data.message}`)
         return
       }
     }
@@ -129,12 +129,12 @@ export const StoreProvider = (props) => {
       return rest
     })
     if (token) {
-      const response = await axios.delete(url + "/api/cart/delete", {
+      const res = await axios.delete(url + "/api/cart/delete", {
         headers: { token },
         data: { itemID },
       })
-      if (!response.data.success) {
-        addToast("error", "Error", response.data.message)
+      if (!res.data.success) {
+        addToast("error", "Error", `Error: ${res.data.message}`)
         return
       }
     }

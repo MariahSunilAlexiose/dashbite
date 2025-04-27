@@ -9,10 +9,17 @@ import userModel from "../models/user.js"
 // login user
 const loginUser = async (req, res) => {
   const { email, password } = req.body
+  if (!email || !password) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["email", "password"],
+    })
+  }
+
   try {
     const user = await userModel.findOne({ email })
     if (!user) {
-      return res.json({ success: false, message: "User does not exist!" })
+      return res.json({ success: false, message: "User not found!" })
     }
     const isMatch = await bcrypt.compare(password, user.password)
     if (!isMatch) {
@@ -20,9 +27,8 @@ const loginUser = async (req, res) => {
     }
     const token = createToken(user._id)
     res.json({ success: true, token })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error" })
+  } catch (err) {
+    res.json({ success: false, message: `Error in logging in user: ${err}` })
   }
 }
 
@@ -33,6 +39,13 @@ const createToken = (id) => {
 // register user
 const registerUser = async (req, res) => {
   const { name, password, email } = req.body
+  if (!name || !password || !email) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["name", "password", "email"],
+    })
+  }
+
   try {
     const exists = await userModel.findOne({ email })
     if (exists) {
@@ -56,7 +69,7 @@ const registerUser = async (req, res) => {
     if (password.length < 8) {
       return res.json({
         success: false,
-        message: "Please enter a strong password",
+        message: "Please enter a strong password!",
       })
     }
 
@@ -73,18 +86,19 @@ const registerUser = async (req, res) => {
     const user = await newUser.save()
     const token = createToken(user._id)
     res.json({ success: true, token })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error" })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: `Error in registering user: ${err}`,
+    })
   }
 }
 
 // get user
 const getUser = async (req, res) => {
   const { userID } = req.params
-
   if (!userID || userID === "null") {
-    return res.status(400).json({ success: false, message: "Invalid User ID" })
+    return res.json({ success: false, message: "Invalid User ID" })
   }
 
   try {
@@ -94,9 +108,8 @@ const getUser = async (req, res) => {
     }
 
     res.json({ success: true, user })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error retrieving user!" })
+  } catch (err) {
+    res.json({ success: false, message: `Error in retrieving user: ${err}` })
   }
 }
 
@@ -104,6 +117,12 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const { userID } = req.params
   const { name, email, oldPassword, newPassword } = req.body
+  if (!userID || !name || !email || !oldPassword || !newPassword) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["userID", "name", "email", "oldPassword", "newPassword"],
+    })
+  }
 
   try {
     const user = await userModel.findById(userID)
@@ -148,20 +167,22 @@ const updateUser = async (req, res) => {
 
     const updatedUser = await user.save()
     res.json({ success: true, user: updatedUser })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: "Error updating user!" })
+  } catch (err) {
+    res.json({ success: false, message: `Error in updating user: ${err}` })
   }
 }
 
 const updateProfilePic = async (req, res) => {
   const { userID } = req.params
   const { file } = req
-  try {
-    if (!file) {
-      return res.json({ success: false, message: "No file provided!" })
-    }
+  if (!userID || !file) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["userID", "file"],
+    })
+  }
 
+  try {
     const user = await userModel.findById(userID)
     if (!user) {
       return res.json({ success: false, message: "User not found!" })
@@ -169,7 +190,11 @@ const updateProfilePic = async (req, res) => {
 
     if (user.profilePic) {
       fs.unlink(`uploads/${user.profilePic}`, (err) => {
-        if (err) console.error("Error removing old profile picture:", err)
+        if (err)
+          res.json({
+            success: false,
+            message: `"Error removing old profile picture: ${err}`,
+          })
       })
     }
 
@@ -177,9 +202,11 @@ const updateProfilePic = async (req, res) => {
     await user.save()
 
     res.json({ success: true, profilePic: user.profilePic })
-  } catch (error) {
-    console.error("Error updating profile picture:", error)
-    res.json({ success: false, message: "Error updating profile picture!" })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: `Error updating profile picture: ${err}`,
+    })
   }
 }
 
@@ -187,6 +214,12 @@ const updateProfilePic = async (req, res) => {
 const addAddresses = async (req, res) => {
   const { userID } = req.params
   const { shippingAddress, billingAddress } = req.body
+  if (!userID || !shippingAddress || !billingAddress) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["userID", "shippingAddress", "billingAddress"],
+    })
+  }
 
   try {
     const user = await userModel.findById(userID)
@@ -199,9 +232,11 @@ const addAddresses = async (req, res) => {
 
     const updatedUser = await user.save()
     res.json({ success: true, user: updatedUser })
-  } catch (error) {
-    console.error("Error adding addresses:", error)
-    res.json({ success: false, message: "Error adding addresses!" })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: `Error adding addresses: ${err}`,
+    })
   }
 }
 
@@ -209,6 +244,12 @@ const addAddresses = async (req, res) => {
 const updateAddresses = async (req, res) => {
   const { userID } = req.params
   const { shippingAddress, billingAddress } = req.body
+  if (!userID || !shippingAddress || !billingAddress) {
+    return res.json({
+      error: "Missing required fields.",
+      required: ["userID", "shippingAddress", "billingAddress"],
+    })
+  }
 
   try {
     const user = await userModel.findById(userID)
@@ -226,9 +267,11 @@ const updateAddresses = async (req, res) => {
 
     const updatedUser = await user.save()
     res.json({ success: true, user: updatedUser })
-  } catch (error) {
-    console.error("Error updating addresses:", error)
-    res.json({ success: false, message: "Error updating addresses!" })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: `Error updating addresses: ${err}`,
+    })
   }
 }
 
