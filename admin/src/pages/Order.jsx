@@ -20,7 +20,7 @@ const Order = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${backendURL}/admin/order/${orderID}`, {
+        const res = await axios.get(`${backendURL}/order/${orderID}`, {
           headers: {
             token: import.meta.env.VITE_ADMIN_TOKEN,
           },
@@ -29,14 +29,14 @@ const Order = () => {
         setShippingAddress(res.data.data.address)
 
         const userRes = await axios.get(
-          `${backendURL}/admin/user/${res.data.data.userID}`,
+          `${backendURL}/user/${res.data.data.userID}`,
           {
             headers: {
               token: import.meta.env.VITE_ADMIN_TOKEN,
             },
           }
         )
-        setUser(userRes.data.data)
+        setUser(userRes.data.user)
 
         const updatedItems = await Promise.all(
           res.data.data.items.map(async (item) => {
@@ -135,7 +135,7 @@ const Order = () => {
         </div>
       </div>
       <div>
-        <Table data={items} tableName="orderitems" pageID={orderID} />
+        <Table data={items} tableName="orderitem" pageID={orderID} />
       </div>
     </div>
   )

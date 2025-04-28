@@ -37,20 +37,15 @@ const AddForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      if (tableName === "dish") {
-        await axios.post(`${backendURL}/${tableName}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            token: import.meta.env.VITE_ADMIN_TOKEN,
-          },
-        })
-      } else if (tableName === "order") {
-        await axios.post(`${backendURL}/admin/${tableName}`, formData, {
-          headers: {
-            "Content-Type": "application/json",
-            token: import.meta.env.VITE_ADMIN_TOKEN,
-          },
-        })
+      const res = await axios.post(`${backendURL}/${tableName}`, formData, {
+        headers: {
+          "Content-Type":
+            tableName === "dish" ? "multipart/form-data" : "application/json",
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        },
+      })
+      if (res.data.success === false) {
+        return addToast("error", "Error", res.data.message)
       }
       addToast("success", "Success", "Added")
       setFormData({})
@@ -64,26 +59,28 @@ const AddForm = () => {
 
   const fetchUserData = async () => {
     try {
-      const res = await axios.get(`${backendURL}/users`, {
+      const res = await axios.get(`${backendURL}/user`, {
         headers: {
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },
       })
       setUsers(res.data.data)
     } catch (err) {
+      console.error(err)
       addToast("error", "Error", `Error fetching user data: ${err}`)
     }
   }
 
   const fetchItemData = async () => {
     try {
-      const response = await axios.get(`${backendURL}/dish/`)
+      const response = await axios.get(`${backendURL}/dish`)
       const updatedData = response.data.data.map((item) => ({
         ...item,
         quantity: 0,
       }))
       setDishes(updatedData)
     } catch (err) {
+      console.error(err)
       addToast("error", "Error", `Error fetching item data: ${err}`)
     }
   }

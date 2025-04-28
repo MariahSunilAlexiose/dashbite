@@ -275,7 +275,21 @@ const updateAddresses = async (req, res) => {
   }
 }
 
+const getUsers = async (req, res) => {
+  try {
+    const users = await userModel.find({})
+    if (!users) {
+      res.json({ success: false, message: "Users not found!" })
+      return
+    }
+    res.json({ success: true, data: users })
+  } catch (err) {
+    res.json({ success: false, message: `Error in retrieving users: ${err}` })
+  }
+}
+
 export {
+  getUsers,
   loginUser,
   registerUser,
   getUser,

@@ -4,12 +4,14 @@ import multer from "multer"
 import {
   addAddresses,
   getUser,
+  getUsers,
   loginUser,
   registerUser,
   updateAddresses,
   updateProfilePic,
   updateUser,
 } from "../controllers/user.js"
+import adminAuthMiddleware from "../middleware/adminauth.js"
 import authMiddleware from "../middleware/auth.js"
 
 const userRouter = express.Router()
@@ -26,7 +28,8 @@ const upload = multer({ storage: storage })
 
 userRouter.post("/register", registerUser)
 userRouter.post("/login", loginUser)
-userRouter.get("/:userID", authMiddleware, getUser)
+
+// user authenticated
 userRouter.put("/update/:userID", authMiddleware, updateUser)
 userRouter.put(
   "/update/:userID/profilePic",
@@ -36,5 +39,22 @@ userRouter.put(
 )
 userRouter.post("/add/:userID/address", authMiddleware, addAddresses)
 userRouter.post("/update/:userID/address", authMiddleware, updateAddresses)
+
+userRouter.get(
+  "/:userID",
+  (req, res, next) => {
+    if (req.headers.token === process.env.ADMIN_TOKEN) {
+      return adminAuthMiddleware(req, res, next)
+    } else {
+      return authMiddleware(req, res, next)
+    }
+  },
+  (req, res) => {
+    return getUser(req, res)
+  }
+)
+
+// admin authenticated
+userRouter.get("/", adminAuthMiddleware, getUsers)
 
 export default userRouter

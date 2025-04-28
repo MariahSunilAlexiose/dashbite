@@ -15,7 +15,7 @@ const Orders = () => {
 
   const fetchList = async () => {
     try {
-      const ordersRes = await axios.get(`${backendURL}/admin/orders/`, {
+      const ordersRes = await axios.get(`${backendURL}/order`, {
         headers: {
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },
@@ -23,14 +23,14 @@ const Orders = () => {
       const cleanedOrdersData = await Promise.all(
         ordersRes.data.data.map(async (order) => {
           const userRes = await axios.get(
-            `${backendURL}/admin/user/${order.userID}`,
+            `${backendURL}/user/${order.userID}`,
             {
               headers: {
                 token: import.meta.env.VITE_ADMIN_TOKEN,
               },
             }
           )
-          const name = userRes.data.data.name || "Unknown User"
+          const name = userRes.data.user.name || "Unknown User"
           const updatedItems = await Promise.all(
             order.items.map(async (item) => {
               const itemRes = await axios.get(`${backendURL}/dish/${item._id}`)
@@ -47,6 +47,7 @@ const Orders = () => {
       )
       setList(cleanedOrdersData)
     } catch (err) {
+      console.error(err)
       addToast("error", "Error", `Error in listing orders: ${err}`)
     }
   }
@@ -82,7 +83,7 @@ const Orders = () => {
         </Button>
       </div>
       <div className="pt-7">
-        <Table data={list} tableName="orders" />
+        <Table data={list} tableName="order" />
       </div>
     </div>
   )

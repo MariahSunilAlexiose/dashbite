@@ -19,21 +19,21 @@ const handleDelete = async ({ addToast, ID, tableName, ID2 }) => {
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },
       })
-    } else if (tableName === "orderitems") {
-      await axios.delete(`${backendURL}/admin/orders/${ID}/items/${ID2}`, {
+    } else if (tableName === "orderitem") {
+      await axios.delete(`${backendURL}/order/${ID}/items/${ID2}`, {
         headers: {
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },
       })
     } else {
-      await axios.delete(`${backendURL}/admin/${tableName}/delete/${ID}`, {
+      await axios.delete(`${backendURL}/${tableName}/${ID}`, {
         headers: {
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },
       })
     }
 
-    addToast("success", "Success", "Removed Item")
+    addToast("success", "Success", "Removed Item!")
     window.location.reload()
   } catch (err) {
     console.error(err)
@@ -90,7 +90,7 @@ const Table = ({ tableName, data, pageID }) => {
                   key={header}
                   className="w-1/6 p-2 align-middle"
                   onClick={() => {
-                    if (tableName === "orders") {
+                    if (tableName === "order") {
                       navigate(`/orders/${row["_id"]}`)
                     }
                   }}
@@ -165,7 +165,7 @@ const Table = ({ tableName, data, pageID }) => {
                   size="icon"
                   onClick={(e) => {
                     e.stopPropagation()
-                    if (tableName === "orderitems") {
+                    if (tableName === "orderitem") {
                       handleDelete({
                         addToast,
                         ID: pageID,
