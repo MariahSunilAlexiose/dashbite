@@ -606,20 +606,15 @@ export const logout = ({ setToken, navigate }) => {
   navigate("/")
 }
 
-export const getuser = async ({ url, userID, token, addToast }) => {
+export const fetchUser = async ({ url, token, addToast }) => {
   try {
-    if (!token) {
-      return
-    }
-    const userRes = await axios.get(`${url}/api/user/${userID}`, {
+    const userRes = await axios.get(`${url}/api/user`, {
       headers: { token },
     })
-    if (!userRes.data.success) {
-      addToast("error", "Error", `Error: ${userRes.data.message}`)
-      return
-    }
     return userRes.data.user
   } catch (err) {
+    console.error(err)
     addToast("error", "Error", `Error in retrieving user: ${err}`)
+    return
   }
 }

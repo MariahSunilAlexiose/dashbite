@@ -19,7 +19,7 @@ import { LogoBlue, LogoWhite } from "@img"
 import { useTheme, useToast } from "@providers"
 import PropTypes from "prop-types"
 
-import { getuser, logout, navbarLinks, popoverItems } from "@/constants"
+import { fetchUser, logout, navbarLinks, popoverItems } from "@/constants"
 
 const MobileNavBar = ({
   setMobileMenu,
@@ -36,7 +36,7 @@ const MobileNavBar = ({
   const { url, userID } = useContext(StoreContext)
   useEffect(() => {
     const fetchUserData = async () => {
-      const fetchedUser = await getuser({ url, userID, token, addToast })
+      const fetchedUser = await fetchUser({ url, token, addToast })
       if (fetchedUser) {
         setUser(fetchedUser)
       }
@@ -202,12 +202,12 @@ const Navbar = () => {
   const [popover, setPopover] = useState(false)
   const { cartItems, token, setToken } = useContext(StoreContext)
   const [mobilePopover, setMobilePopover] = useState(false)
-  const { addToast } = useToast()
   const [user, setUser] = useState({})
   const { url, userID } = useContext(StoreContext)
+  const { addToast } = useToast()
   useEffect(() => {
     const fetchUserData = async () => {
-      const fetchedUser = await getuser({ url, userID, token, addToast })
+      const fetchedUser = await fetchUser({ url, token, addToast })
       if (fetchedUser) {
         setUser(fetchedUser)
       }

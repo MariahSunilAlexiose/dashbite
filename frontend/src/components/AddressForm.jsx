@@ -3,7 +3,13 @@ import React from "react"
 import { Button, Input } from "@cmp"
 import PropTypes from "prop-types"
 
-const AddressForm = ({ addressType, addressData, setFormData, handleSave }) => {
+const AddressForm = ({
+  addressType,
+  addressData,
+  setFormData,
+  handleSave,
+  handleDelete,
+}) => {
   return (
     <form className="flex flex-col gap-4">
       {["name", "phone", "street", "city", "state", "zip", "country"].map(
@@ -29,7 +35,12 @@ const AddressForm = ({ addressType, addressData, setFormData, handleSave }) => {
           />
         )
       )}
-      <Button onClick={() => handleSave(addressType)}>Save</Button>
+      <div className="flex gap-5">
+        <Button onClick={() => handleSave(addressType)}>Save</Button>
+        <Button variant="destructive" onClick={() => handleDelete(addressType)}>
+          Delete
+        </Button>
+      </div>
     </form>
   )
 }
@@ -37,6 +48,7 @@ const AddressForm = ({ addressType, addressData, setFormData, handleSave }) => {
 AddressForm.propTypes = {
   addressType: PropTypes.string.isRequired,
   handleSave: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
   addressData: PropTypes.shape({
     name: PropTypes.string,
     phone: PropTypes.string,

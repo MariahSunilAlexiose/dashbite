@@ -5,7 +5,7 @@ import { StoreContext } from "@context"
 import { useToast } from "@providers"
 import axios from "axios"
 
-import { getuser } from "@/constants"
+import { fetchUser } from "@/constants"
 
 const Address = () => {
   const [billingModalOpen, setBillingModalOpen] = useState(false)
@@ -21,29 +21,50 @@ const Address = () => {
   })
   const handleSave = async (type) => {
     try {
-      const endpoint =
-        type === "billing"
-          ? toBeUpdatedBilling
-            ? `/api/user/update/${userID}/address`
-            : `/api/user/add/${userID}/address`
-          : toBeUpdatedShipping
-            ? `/api/user/update/${userID}/address`
-            : `/api/user/add/${userID}/address`
-      let res = await axios.post(url + endpoint, formData, {
+      const method =
+        (type === "billing" && toBeUpdatedBilling) ||
+        (type !== "billing" && toBeUpdatedShipping)
+          ? axios.put
+          : axios.post
+
+      await method(`${url}/api/user/address`, formData, {
         headers: { token },
       })
-      if (!res.data.success) {
-        addToast("error", "Error", `Error: ${res.data.message}`)
-        return
-      }
       window.location.reload()
+      addToast("success", "Success", "Updated address successfully!")
+    } catch (err) {
+      addToast("error", "Error", `Error in saving addresses: ${err}`)
+    }
+  }
+  const handleDelete = async (type) => {
+    let updatedFormData
+    if (type === "shippingAddress") {
+      updatedFormData = {
+        ...formData,
+        shippingAddress: {}, // Empty the shippingAddress
+      }
+      setFormData(updatedFormData) // Update the state
+    } else {
+      updatedFormData = {
+        ...formData,
+        billingAddress: {}, // Empty the billingAddress
+      }
+      setFormData(updatedFormData) // Update the state
+    }
+    try {
+      // Use the updatedFormData directly instead of formData
+      await axios.put(`${url}/api/user/address`, updatedFormData, {
+        headers: { token },
+      })
+      window.location.reload()
+      addToast("success", "Success", "Deleted address successfully!")
     } catch (err) {
       addToast("error", "Error", `Error in saving addresses: ${err}`)
     }
   }
   useEffect(() => {
     const fetchUserData = async () => {
-      const fetchedUser = await getuser({ url, userID, token, addToast })
+      const fetchedUser = await fetchUser({ url, token, addToast })
       if (fetchedUser) {
         setUser(fetchedUser)
         setFormData({
@@ -77,6 +98,7 @@ const Address = () => {
                 formData={formData}
                 setFormData={setFormData}
                 handleSave={handleSave}
+                handleDelete={handleDelete}
               />
               <AddressCard
                 title="Shipping Address"
@@ -86,6 +108,7 @@ const Address = () => {
                 formData={formData}
                 setFormData={setFormData}
                 handleSave={handleSave}
+                handleDelete={handleDelete}
               />
             </div>
           </div>

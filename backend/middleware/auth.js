@@ -2,17 +2,13 @@ import jwt from "jsonwebtoken"
 
 const authMiddleware = async (req, res, next) => {
   const { token } = req.headers
-  let { userID } = req.body
   if (!token) {
     return res.json({ success: false, message: "Not Authorized Login!" })
-  }
-  if (!userID) {
-    return res.json({ success: false, message: "Missing userID field!" })
   }
 
   try {
     const token_decode = jwt.verify(token, process.env.JWT_SECRET)
-    userID = token_decode.id
+    req.userID = token_decode.id
     next()
   } catch (err) {
     if (err.name === "TokenExpiredError") {

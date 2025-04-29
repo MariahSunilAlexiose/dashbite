@@ -96,7 +96,7 @@ const registerUser = async (req, res) => {
 
 // get user
 const getUser = async (req, res) => {
-  const { userID } = req.params
+  const userID = req.params.userID || req.userID
   if (!userID || userID === "null") {
     return res.json({ success: false, message: "Invalid User ID" })
   }
@@ -115,17 +115,10 @@ const getUser = async (req, res) => {
 
 // update user
 const updateUser = async (req, res) => {
-  const { userID } = req.params
   const { name, email, oldPassword, newPassword } = req.body
-  if (!userID || !name || !email || !oldPassword || !newPassword) {
-    return res.json({
-      error: "Missing required fields.",
-      required: ["userID", "name", "email", "oldPassword", "newPassword"],
-    })
-  }
 
   try {
-    const user = await userModel.findById(userID)
+    const user = await userModel.findById(req.userID)
     if (!user) {
       return res.json({ success: false, message: "User not found!" })
     }
@@ -173,22 +166,24 @@ const updateUser = async (req, res) => {
 }
 
 const updateProfilePic = async (req, res) => {
-  const { userID } = req.params
   const { file } = req
-  if (!userID || !file) {
+  if (!file) {
     return res.json({
-      error: "Missing required fields.",
-      required: ["userID", "file"],
+      success: false,
+      message: "Missing file!",
     })
   }
 
   try {
-    const user = await userModel.findById(userID)
+    const user = await userModel.findById(req.userID)
     if (!user) {
       return res.json({ success: false, message: "User not found!" })
     }
 
-    if (user.profilePic) {
+    if (
+      user.profilePic &&
+      !user.profilePic.startsWith("https://ui-avatars.com/api/?name=")
+    ) {
       fs.unlink(`uploads/${user.profilePic}`, (err) => {
         if (err)
           res.json({
@@ -242,26 +237,23 @@ const addAddresses = async (req, res) => {
 
 // Update addresses
 const updateAddresses = async (req, res) => {
-  const { userID } = req.params
   const { shippingAddress, billingAddress } = req.body
-  if (!userID || !shippingAddress || !billingAddress) {
-    return res.json({
-      error: "Missing required fields.",
-      required: ["userID", "shippingAddress", "billingAddress"],
-    })
-  }
 
   try {
-    const user = await userModel.findById(userID)
+    const user = await userModel.findById(req.userID)
     if (!user) {
       return res.json({ success: false, message: "User not found!" })
     }
 
-    if (shippingAddress) {
+    if (shippingAddress && Object.keys(shippingAddress).length === 0) {
+      user.shippingAddress = {}
+    } else if (shippingAddress) {
       user.shippingAddress = { ...user.shippingAddress, ...shippingAddress }
     }
 
-    if (billingAddress) {
+    if (billingAddress && Object.keys(billingAddress).length === 0) {
+      user.billingAddress = {}
+    } else if (billingAddress) {
       user.billingAddress = { ...user.billingAddress, ...billingAddress }
     }
 

@@ -12,6 +12,7 @@ const AddressCard = ({
   formData,
   setFormData,
   handleSave,
+  handleDelete,
 }) => {
   return (
     <div className="border-muted w-full max-w-sm rounded-lg border p-4">
@@ -41,20 +42,23 @@ const AddressCard = ({
               }
               setFormData={setFormData}
               handleSave={handleSave}
+              handleDelete={handleDelete}
             />
           </Modal>
         )}
       </div>
-      {addressData && Object.keys(addressData).length > 0 && (
-        <div className="text-muted">
-          <p className="m-0">{addressData.name}</p>
-          <p className="m-0">{addressData.phone}</p>
-          <p className="m-0">
-            {addressData.street}, {addressData.city}, {addressData.state},{" "}
-            {addressData.zip}, {addressData.country}
-          </p>
-        </div>
-      )}
+      {addressData &&
+        Object.keys(addressData).length > 0 &&
+        Object.values(addressData).every((value) => value !== "") && (
+          <div className="text-muted">
+            <p className="m-0">{addressData.name}</p>
+            <p className="m-0">{addressData.phone}</p>
+            <p className="m-0">
+              {addressData.street}, {addressData.city}, {addressData.state},{" "}
+              {addressData.zip}, {addressData.country}
+            </p>
+          </div>
+        )}
     </div>
   )
 }
@@ -94,6 +98,7 @@ AddressCard.propTypes = {
   }).isRequired,
   setFormData: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
 }
 
 export default AddressCard

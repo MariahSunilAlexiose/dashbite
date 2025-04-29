@@ -5,7 +5,7 @@ import { StoreContext } from "@context"
 import { useToast } from "@providers"
 import axios from "axios"
 
-import { getuser } from "@/constants"
+import { fetchUser } from "@/constants"
 
 const Profile = () => {
   const { addToast } = useToast()
@@ -22,13 +22,10 @@ const Profile = () => {
         )
         return
       }
-      const res = await axios.put(
-        url + "/api/user/update/" + userID,
-        updatedUser,
-        {
-          headers: { token },
-        }
-      )
+      const res = await axios.put(`${url}/api/user/`, updatedUser, {
+        headers: { token },
+      })
+      addToast("success", "Success", "Updated user successfully!")
       if (!res.data.success) {
         addToast("error", "Error", `Error: ${res.data.message}`)
         return
@@ -48,7 +45,7 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const fetchedUser = await getuser({ url, userID, token, addToast })
+      const fetchedUser = await fetchUser({ url, token, addToast })
       if (fetchedUser) {
         setUser(fetchedUser)
       }

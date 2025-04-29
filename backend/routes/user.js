@@ -30,31 +30,19 @@ userRouter.post("/register", registerUser)
 userRouter.post("/login", loginUser)
 
 // user authenticated
-userRouter.put("/update/:userID", authMiddleware, updateUser)
+userRouter.put("/", authMiddleware, updateUser)
 userRouter.put(
-  "/update/:userID/profilePic",
+  "/profilePic",
   upload.single("profilePic"),
   authMiddleware,
   updateProfilePic
 )
-userRouter.post("/add/:userID/address", authMiddleware, addAddresses)
-userRouter.post("/update/:userID/address", authMiddleware, updateAddresses)
-
-userRouter.get(
-  "/:userID",
-  (req, res, next) => {
-    if (req.headers.token === process.env.ADMIN_TOKEN) {
-      return adminAuthMiddleware(req, res, next)
-    } else {
-      return authMiddleware(req, res, next)
-    }
-  },
-  (req, res) => {
-    return getUser(req, res)
-  }
-)
+userRouter.post("/address", authMiddleware, addAddresses)
+userRouter.put("/address", authMiddleware, updateAddresses)
+userRouter.get("/", authMiddleware, getUser)
 
 // admin authenticated
-userRouter.get("/", adminAuthMiddleware, getUsers)
+userRouter.get("/all", adminAuthMiddleware, getUsers)
+userRouter.get("/:userID", adminAuthMiddleware, getUser)
 
 export default userRouter

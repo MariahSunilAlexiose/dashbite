@@ -59,7 +59,7 @@ const AddForm = () => {
 
   const fetchUserData = async () => {
     try {
-      const res = await axios.get(`${backendURL}/user`, {
+      const res = await axios.get(`${backendURL}/user/all`, {
         headers: {
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },

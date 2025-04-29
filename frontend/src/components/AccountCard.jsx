@@ -6,7 +6,7 @@ import { CameraIcon, UserIcon } from "@icons"
 import { useToast } from "@providers"
 import axios from "axios"
 
-import { getuser, logout } from "@/constants"
+import { fetchUser, logout } from "@/constants"
 
 const AccountCard = () => {
   const { addToast } = useToast()
@@ -21,13 +21,9 @@ const AccountCard = () => {
       try {
         const formData = new FormData()
         formData.append("profilePic", file)
-        const res = await axios.put(
-          `${url}/api/user/update/${userID}/profilePic`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data", token },
-          }
-        )
+        const res = await axios.put(`${url}/api/user/profilePic`, formData, {
+          headers: { "Content-Type": "multipart/form-data", token },
+        })
         if (!res.data.success) {
           addToast("error", "Error", `Error: ${res.data.message}`)
           return
@@ -45,7 +41,7 @@ const AccountCard = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const fetchedUser = await getuser({ url, userID, token, addToast })
+      const fetchedUser = await fetchUser({ url, token, addToast })
       if (fetchedUser) {
         setUser(fetchedUser)
       }
@@ -68,7 +64,7 @@ const AccountCard = () => {
               className="aspect-square h-full w-full object-cover"
             />
           </div>
-          <div className="bg-gray-20 hover:bg-gray-20 absolute bottom-7 right-11 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full">
+          <div className="bg-gray-20 hover:bg-gray-20 left-13 absolute top-10 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full">
             <input
               id="profilePictureUpload"
               type="file"
