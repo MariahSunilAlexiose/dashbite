@@ -10,9 +10,9 @@ import authMiddleware from "../middleware/auth.js"
 
 const cartRouter = express.Router()
 
-cartRouter.post("/add", authMiddleware, addToCart)
-cartRouter.post("/remove", authMiddleware, removeFromCart)
-cartRouter.delete("/delete", authMiddleware, deleteFromCart)
+cartRouter.post("/", authMiddleware, addToCart)
+cartRouter.put("/", authMiddleware, removeFromCart)
+cartRouter.delete("/", authMiddleware, deleteFromCart)
 cartRouter.get("/", authMiddleware, getCart)
 
 export default cartRouter
