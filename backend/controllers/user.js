@@ -5,16 +5,16 @@ import jwt from "jsonwebtoken"
 import validator from "validator"
 
 import userModel from "../models/user.js"
+import { checkMissingFields } from "../validationUtils.js"
 
 // login user
 const loginUser = async (req, res) => {
   const { email, password } = req.body
-  if (!email || !password) {
-    return res.json({
-      error: "Missing required fields.",
-      required: ["email", "password"],
-    })
-  }
+  let missingFieldsResponse = checkMissingFields("users", req.body, [
+    "email",
+    "password",
+  ])
+  if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
   try {
     const user = await userModel.findOne({ email })
@@ -39,12 +39,12 @@ const createToken = (id) => {
 // register user
 const registerUser = async (req, res) => {
   const { name, password, email } = req.body
-  if (!name || !password || !email) {
-    return res.json({
-      error: "Missing required fields.",
-      required: ["name", "password", "email"],
-    })
-  }
+  let missingFieldsResponse = checkMissingFields("users", req.body, [
+    "name",
+    "password",
+    "email",
+  ])
+  if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
   try {
     const exists = await userModel.findOne({ email })
@@ -97,9 +97,6 @@ const registerUser = async (req, res) => {
 // get user
 const getUser = async (req, res) => {
   const userID = req.params.userID || req.userID
-  if (!userID || userID === "null") {
-    return res.json({ success: false, message: "Invalid User ID" })
-  }
 
   try {
     const user = await userModel.findById(userID).select("-password")
@@ -207,17 +204,15 @@ const updateProfilePic = async (req, res) => {
 
 // Add or update addresses
 const addAddresses = async (req, res) => {
-  const { userID } = req.params
   const { shippingAddress, billingAddress } = req.body
-  if (!userID || !shippingAddress || !billingAddress) {
-    return res.json({
-      error: "Missing required fields.",
-      required: ["userID", "shippingAddress", "billingAddress"],
-    })
-  }
+  let missingFieldsResponse = checkMissingFields("user", req.body, [
+    "shippingAddress",
+    "billingAddress",
+  ])
+  if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
   try {
-    const user = await userModel.findById(userID)
+    const user = await userModel.findById(req.userID)
     if (!user) {
       return res.json({ success: false, message: "User not found!" })
     }

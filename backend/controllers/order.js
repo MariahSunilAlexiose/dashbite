@@ -3,24 +3,26 @@ import Stripe from "stripe"
 
 import orderModel from "../models/order.js"
 import userModel from "../models/user.js"
+import { checkMissingFields } from "../validationUtils.js"
 
 dotenv.config()
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 const placeOrder = async (req, res) => {
-  const { userID, items, amount, address, deliveryType } = req.body
-  if (!userID || !items || !amount || !deliveryType || !address) {
-    return res.json({
-      error: "Missing required fields.",
-      required: ["userID", "items", "amount", "deliveryType", "address"],
-    })
-  }
+  const { items, amount, address, deliveryType } = req.body
+  let missingFieldsResponse = checkMissingFields("order", req.body, [
+    "items",
+    "amount",
+    "deliveryType",
+    "address",
+  ])
+  if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
   const frontend_url = "http://localhost:5173"
   try {
     const newOrder = new orderModel({
-      userID: userID,
+      userID: req.userID,
       items: items,
       amount: amount,
       address: address,
@@ -66,12 +68,11 @@ const placeOrder = async (req, res) => {
 
 const verifyOrder = async (req, res) => {
   const { orderID, success } = req.body
-  if (!orderID || !success) {
-    return res.json({
-      error: "Missing required fields.",
-      required: ["orderID", "success"],
-    })
-  }
+  let missingFieldsResponse = checkMissingFields("order", req.body, [
+    "orderID",
+    "success",
+  ])
+  if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
   try {
     if (success == "true") {
@@ -99,12 +100,10 @@ const verifyOrder = async (req, res) => {
 }
 
 const userOrders = async (req, res) => {
-  const { userID } = req.body
-  if (!userID) {
-    return res.json({ success: false, message: "Missing orderID field!" })
-  }
   try {
-    const orders = await orderModel.find({ userID: userID }).sort({ date: -1 })
+    const orders = await orderModel
+      .find({ userID: req.userID })
+      .sort({ date: -1 })
     if (!orders) {
       res.json({ success: false, message: "Orders not found!" })
       return
@@ -121,13 +120,6 @@ const userOrders = async (req, res) => {
 const getOrderByID = async (req, res) => {
   try {
     const { orderID } = req.params
-    const { userID } = req.body
-    if (!userID || !orderID) {
-      return res.json({
-        error: "Missing required fields.",
-        required: ["userID", "orderID"],
-      })
-    }
 
     const order = await orderModel.findById(orderID)
     if (!order) {
@@ -137,7 +129,7 @@ const getOrderByID = async (req, res) => {
       })
     }
 
-    if (order.userID.toString() !== userID) {
+    if (order.userID.toString() !== req.userID) {
       return res.json({
         success: false,
         message: "Not authorized to access this order",
@@ -165,9 +157,6 @@ const getOrders = async (req, res) => {
 
 const getOrder = async (req, res) => {
   const { orderID } = req.params
-  if (!orderID)
-    return res.json({ success: false, message: "Missing orderID field!" })
-
   try {
     const order = await orderModel.findOne({ _id: orderID })
     if (!order) {
@@ -182,9 +171,6 @@ const getOrder = async (req, res) => {
 
 const deleteOrder = async (req, res) => {
   const { orderID } = req.params
-  if (!orderID)
-    return res.json({ success: false, message: "Missing orderID field!" })
-
   const order = await orderModel.findById(orderID)
   if (!order) {
     res.json({ success: false, message: "Order not found!" })
@@ -209,12 +195,6 @@ const deleteOrder = async (req, res) => {
 const deleteOrderItem = async (req, res) => {
   try {
     const { orderID, itemID } = req.params
-    if (!orderID || !itemID) {
-      return res.json({
-        error: "Missing required fields.",
-        required: ["orderID", "itemID"],
-      })
-    }
 
     const order = await orderModel.findById(orderID)
     if (!order) {
@@ -260,19 +240,15 @@ const deleteOrderItem = async (req, res) => {
 const addOrder = async (req, res) => {
   const { userID, items, amount, deliveryType, status, payment, address } =
     req.body
-  if (!userID || !items || !amount || !deliveryType || !status || !address) {
-    return res.json({
-      error: "Missing required fields.",
-      required: [
-        "userID",
-        "items",
-        "amount",
-        "deliveryType",
-        "status",
-        "address",
-      ],
-    })
-  } else if (!payment) {
+  let missingFieldsResponse = checkMissingFields("order", req.body, [
+    "items",
+    "amount",
+    "deliveryType",
+    "status",
+    "address",
+  ])
+  if (missingFieldsResponse) return res.json(missingFieldsResponse)
+  if (!payment) {
     return res.json({ success: false, message: "Payment not done!" })
   }
 

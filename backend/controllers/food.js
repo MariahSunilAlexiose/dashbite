@@ -1,25 +1,45 @@
 import fs from "fs"
 
 import dishModel from "../models/food.js"
+import { checkMissingFields } from "../validationUtils.js"
 
 // add dish item
 const addDish = async (req, res) => {
   const { name, description, price, category, rating } = req.body
-  const { filename } = req.file
-  if (!name || !description || !price || !category || !rating || !filename) {
-    return res.json({
-      error: "Missing required fields.",
-      required: ["name", "description", "price", "category", "rating"],
-    })
+  const { filename } = req.file || {}
+
+  // Check missing fields
+  let missingFieldsResponse = checkMissingFields("dish", req.body, [
+    "name",
+    "description",
+    "price",
+    "category",
+    "rating",
+  ])
+
+  // Ensure missingFieldsResponse exists before modifying it
+  if (!filename) {
+    if (!missingFieldsResponse) {
+      missingFieldsResponse = {
+        success: false,
+        message: "Missing required field: image",
+      }
+    } else {
+      missingFieldsResponse.message += " image"
+    }
   }
 
+  // Return error response if there are missing fields
+  if (missingFieldsResponse) return res.json(missingFieldsResponse)
+
+  // Proceed with saving dish
   const food = new dishModel({
-    name: name,
-    description: description,
-    price: price,
-    category: category,
-    rating: rating,
-    image: `${filename}`,
+    name,
+    description,
+    price,
+    category,
+    rating,
+    image: filename,
   })
 
   try {
@@ -52,9 +72,6 @@ const listDishes = async (req, res) => {
 // remove dishes
 const removeDish = async (req, res) => {
   const { dishID } = req.params
-  if (!dishID) {
-    return res.json({ success: false, message: "Missing dish's ID field!" })
-  }
 
   try {
     const dish = await dishModel.findById(dishID)
@@ -79,19 +96,16 @@ const removeDish = async (req, res) => {
 const updateDish = async (req, res) => {
   const { dishID } = req.params
   const { name, description, price, category, rating } = req.body
-  if (!dishID || !name || !description || !price || !category || !rating) {
-    return res.json({
-      error: "Missing required fields.",
-      required: [
-        "dishID",
-        "name",
-        "description",
-        "price",
-        "category",
-        "rating",
-      ],
-    })
-  }
+  let missingFieldsResponse = checkMissingFields("dish", req.body, [
+    "name",
+    "description",
+    "price",
+    "category",
+    "rating",
+  ])
+
+  // Return error response if there are missing fields
+  if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
   try {
     const dish = await dishModel.findById(dishID)
@@ -139,10 +153,6 @@ const updateDish = async (req, res) => {
 
 const getDish = async (req, res) => {
   const { dishID } = req.params
-  if (!dishID) {
-    return res.json({ success: false, message: "Missing dishID field!" })
-  }
-
   try {
     const dish = await dishModel.findOne({ _id: dishID })
     if (!dish) {

@@ -20,23 +20,18 @@ orderRouter.post("/verify", verifyOrder)
 
 // user authenticated
 orderRouter.post("/place", authMiddleware, placeOrder)
-orderRouter.get("/myOrders", authMiddleware, userOrders)
+orderRouter.get("/myorders", authMiddleware, userOrders)
 
 orderRouter.get(
   "/:orderID",
   (req, res, next) => {
-    if (req.headers.token === process.env.ADMIN_TOKEN) {
+    if (req.headers.token === process.env.ADMIN_TOKEN)
       return adminAuthMiddleware(req, res, next)
-    } else {
-      return authMiddleware(req, res, next)
-    }
+    else return authMiddleware(req, res, next)
   },
   (req, res) => {
-    if (req.headers.token === process.env.ADMIN_TOKEN) {
-      return getOrder(req, res)
-    } else {
-      return getOrderByID(req, res)
-    }
+    if (req.headers.token === process.env.ADMIN_TOKEN) return getOrder(req, res)
+    else return getOrderByID(req, res)
   }
 )
 
