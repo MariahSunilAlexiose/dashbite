@@ -17,6 +17,7 @@ const Input = ({
   className,
   icon,
   iconName,
+  disabled = false,
 }) => {
   return (
     <div className="relative flex w-full items-center">
@@ -35,6 +36,7 @@ const Input = ({
         placeholder={placeholder}
         pattern={pattern}
         className={`${className} border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50`}
+        disabled={disabled}
         required
       />
       {icon && (
@@ -61,6 +63,7 @@ Input.propTypes = {
   className: PropTypes.string,
   icon: PropTypes.string,
   iconName: PropTypes.string,
+  disabled: PropTypes.boolean,
 }
 
 export default Input

@@ -16,15 +16,15 @@ const CartSummary = ({ deliveryValue, deliveryInfo }) => {
   const { addToast } = useToast()
 
   const [selectedValue, setSelectedValue] = useState(
-    deliveryValue || "free_shipping"
+    deliveryValue || "Free Shipping"
   )
 
   const totalCartAmt = getTotalCartAmt()
   let adjustedTotal = totalCartAmt
 
-  if (selectedValue === "express_shipping") {
+  if (selectedValue === "Express Shipping") {
     adjustedTotal += 15
-  } else if (selectedValue === "pick_up") {
+  } else if (selectedValue === "Pick Up") {
     adjustedTotal -= totalCartAmt * 0.05
   }
 
@@ -72,13 +72,13 @@ const CartSummary = ({ deliveryValue, deliveryInfo }) => {
           <div
             key={option.value}
             className={`flex cursor-pointer justify-between rounded border p-2 ${
-              selectedValue === option.value && "border-primary"
+              selectedValue === option.title && "border-primary"
             }`}
-            onClick={() => setSelectedValue(option.value)}
+            onClick={() => setSelectedValue(option.title)}
           >
             <RadioInput
               title={option.title}
-              value={option.value}
+              value={option.title}
               selectedValue={selectedValue}
               onValueChange={setSelectedValue}
             />

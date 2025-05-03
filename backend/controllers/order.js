@@ -44,13 +44,13 @@ const placeOrder = async (req, res) => {
         currency: "CAD",
         product_data: {
           name:
-            deliveryType === "free_shipping"
+            deliveryType === "Free Shipping"
               ? "Free Shipping"
-              : deliveryType === "express_shipping"
+              : deliveryType === "Express Shipping"
                 ? "Express Shipping"
                 : "Pick Up",
         },
-        unit_amount: deliveryType === "express_shipping" ? 1500 : 0,
+        unit_amount: deliveryType === "Express Shipping" ? 1500 : 0,
       },
       quantity: 1,
     })
@@ -192,51 +192,6 @@ const deleteOrder = async (req, res) => {
   }
 }
 
-const deleteOrderItem = async (req, res) => {
-  try {
-    const { orderID, itemID } = req.params
-
-    const order = await orderModel.findById(orderID)
-    if (!order) {
-      res.json({ success: false, message: "Order not found!" })
-      return
-    }
-
-    // Check if the item exists in the order
-    const itemIndex = order.items.findIndex(
-      (item) => item._id.toString() === itemID
-    )
-
-    if (itemIndex === -1) {
-      res.json({ success: false, message: "Item not found in the order!" })
-      return
-    }
-
-    if (order.items.length === 1) {
-      const order = await orderModel.findByIdAndDelete(orderID)
-      if (!order) {
-        res.json({ success: false, message: "Error in deleting order!" })
-        return
-      }
-      res.json({
-        success: true,
-        message: `Order with ID ${orderID} has been deleted as it contained only one item.`,
-      })
-      return
-    }
-
-    order.items.splice(itemIndex, 1) // Removes the item from the order's items
-    await order.save()
-
-    res.json({
-      success: true,
-      message: `Item with ID ${itemID} removed from order ${orderID} successfully.`,
-    })
-  } catch (err) {
-    res.json({ success: false, message: `Error deleting the item: ${err}` })
-  }
-}
-
 const addOrder = async (req, res) => {
   const { userID, items, amount, deliveryType, status, payment, address } =
     req.body
@@ -270,14 +225,77 @@ const addOrder = async (req, res) => {
   }
 }
 
+const updateOrder = async (req, res) => {
+  const { orderID } = req.params
+  const {
+    userID,
+    items,
+    amount,
+    deliveryType,
+    date,
+    status,
+    payment,
+    address,
+  } = req.body
+  let missingFieldsResponse = checkMissingFields("order", req.body, [
+    "userID",
+    "items",
+    "amount",
+    "deliveryType",
+    "status",
+    "payment",
+    "address",
+  ])
+
+  if (missingFieldsResponse) return res.json(missingFieldsResponse)
+
+  try {
+    const order = await orderModel.findById(orderID)
+    if (!order) {
+      return res.json({ success: false, message: "Order not found!" })
+    }
+
+    const newOrder = await orderModel.findByIdAndUpdate(
+      orderID,
+      {
+        userID,
+        items,
+        amount,
+        address,
+        status,
+        date,
+        payment,
+        deliveryType,
+      },
+      {
+        new: true,
+      }
+    )
+    if (!newOrder) {
+      return res.json({ success: false, message: "Error in updating order!" })
+    }
+
+    // Save the updated order
+    await order.save()
+
+    res.json({
+      success: true,
+      message: `Order ${orderID} updated successfully.`,
+      order,
+    })
+  } catch (err) {
+    res.json({ success: false, message: `Error updating the order: ${err}` })
+  }
+}
+
 export {
   getOrderByID,
   userOrders,
   placeOrder,
   verifyOrder,
   addOrder,
-  deleteOrderItem,
   deleteOrder,
   getOrder,
   getOrders,
+  updateOrder,
 }

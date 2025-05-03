@@ -41,11 +41,13 @@ const Order = () => {
         const updatedItems = await Promise.all(
           res.data.data.items.map(async (item) => {
             const itemRes = await axios.get(`${backendURL}/dish/${item._id}`)
+            const { __v, description, category, rating, ...filteredItem } = item // eslint-disable-line no-unused-vars
+
             return {
               image: itemRes.data.data.image,
               name: itemRes.data.data.name,
               price: itemRes.data.data.price,
-              ...item,
+              ...filteredItem,
               subtotal: itemRes.data.data.price * item.quantity,
             }
           })
@@ -63,7 +65,26 @@ const Order = () => {
     <div className="flex flex-col gap-7">
       <div className="flex items-center justify-between">
         <h2>Order</h2>
-        <Button size="sm" onClick={() => navigate("/orders/edit_form")}>
+        <Button
+          size="sm"
+          onClick={() =>
+            navigate("/update_form", {
+              state: {
+                tableName: "order",
+                pageID: orderID,
+                dataToBeUpdated: {
+                  userID: order.userID,
+                  date: order.date,
+                  payment: order.payment,
+                  status: order.status,
+                  address: order.address,
+                  items: order.items,
+                  deliveryType: order.deliveryType,
+                },
+              },
+            })
+          }
+        >
           <img src={PencilIcon} alt="Pencil Icon" className="h-4 w-4" />
         </Button>
       </div>
@@ -111,31 +132,21 @@ const Order = () => {
       <div>
         <h4 className="mb-2">Order Details</h4>
         <div className="flex justify-between">
-          <div>
-            <p>Order ID: {orderID}</p>
-            <p className="m-0">Amount: ${order.amount}</p>
-            {order.date && (
-              <p className="m-0">Date: {formatDate(order.date)}</p>
-            )}
-          </div>
-          <div className="pr-30 flex flex-col">
-            <p className="m-0">
-              Delivery Type:{" "}
-              {order.deliveryType === "free_shipping"
-                ? "Free shipping"
-                : order.deliveryType === "express_shipping"
-                  ? "Express Shipping"
-                  : "Pick up"}
-            </p>
-            <p className="m-0">
-              Payment Status: {order.payment ? "Paid" : "Not Paid"}
-            </p>
-            <p className="m-0">Status: {order.status}</p>
-          </div>
+          <p>Order ID: {orderID}</p>
+          {order.date && <p className="m-0">Date: {formatDate(order.date)}</p>}
+          <p className="m-0">Status: {order.status}</p>
         </div>
       </div>
       <div>
-        <Table data={items} tableName="orderitem" pageID={orderID} />
+        <Table
+          data={items}
+          tableName="orderitem"
+          extraData={{
+            deliveryType: order.deliveryType,
+            amount: order.amount,
+          }}
+          pageID={orderID}
+        />
       </div>
     </div>
   )

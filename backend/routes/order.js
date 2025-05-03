@@ -3,11 +3,11 @@ import express from "express"
 import {
   addOrder,
   deleteOrder,
-  deleteOrderItem,
   getOrder,
   getOrderByID,
   getOrders,
   placeOrder,
+  updateOrder,
   userOrders,
   verifyOrder,
 } from "../controllers/order.js"
@@ -38,11 +38,7 @@ orderRouter.get(
 // admin authenticated
 orderRouter.get("/", adminAuthMiddleware, getOrders)
 orderRouter.delete("/:orderID", adminAuthMiddleware, deleteOrder)
-orderRouter.delete(
-  "/:orderID/items/:itemID",
-  adminAuthMiddleware,
-  deleteOrderItem
-)
+orderRouter.put("/:orderID", adminAuthMiddleware, updateOrder)
 orderRouter.post("/", adminAuthMiddleware, addOrder)
 
 export default orderRouter

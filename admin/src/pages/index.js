@@ -3,5 +3,6 @@ import Dishes from "./Dishes"
 import Order from "./Order"
 import Orders from "./Orders"
 import UpdateDish from "./UpdateDish"
+import UpdateForm from "./UpdateForm"
 
-export { AddForm, Order, Orders, Dishes, UpdateDish }
+export { UpdateForm, AddForm, Order, Orders, Dishes, UpdateDish }

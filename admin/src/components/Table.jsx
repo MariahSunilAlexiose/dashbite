@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button } from "@cmp"
@@ -11,16 +11,10 @@ import { backendImgURL, backendURL, formatDate, keyMapping } from "@/constants"
 
 import { Pagination } from "."
 
-const handleDelete = async ({ addToast, ID, tableName, ID2 }) => {
+const handleDelete = async ({ addToast, ID, tableName }) => {
   try {
     if (tableName === "dishes") {
       await axios.delete(`${backendURL}/dish/${ID}`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
-      })
-    } else if (tableName === "orderitem") {
-      await axios.delete(`${backendURL}/order/${ID}/items/${ID2}`, {
         headers: {
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },
@@ -41,15 +35,18 @@ const handleDelete = async ({ addToast, ID, tableName, ID2 }) => {
   }
 }
 
-const Table = ({ tableName, data, pageID }) => {
+const Table = ({ tableName, data, pageID, extraData }) => {
   const { addToast } = useToast()
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(5)
   const lastItemIndex = currentPage * itemsPerPage
   const firstItemIndex = lastItemIndex - itemsPerPage
+  const [total, setTotal] = useState(0)
 
-  const filteredData = data.map(({ _id, ...rest }) => rest) // eslint-disable-line no-unused-vars
+  useEffect(() => {
+    setTotal(data.reduce((acc, item) => acc + item.subtotal, 0))
+  }, [data])
 
   const currentItems = data.slice(firstItemIndex, lastItemIndex)
   const dataMap = new Map()
@@ -67,7 +64,8 @@ const Table = ({ tableName, data, pageID }) => {
       <table className="w-full items-center justify-center text-sm">
         <thead className="[&_tr]:border-b">
           <tr className="border-b transition-colors">
-            {Object.keys(filteredData[0])
+            {Object.keys(data[0])
+              .filter((key) => key !== "_id")
               .map((key) => keyMapping[key] || key)
               .map((header) => (
                 <th
@@ -85,103 +83,138 @@ const Table = ({ tableName, data, pageID }) => {
               key={index}
               className="cursor-pointer border-b transition-colors hover:bg-[#f1f5f9]"
             >
-              {Object.keys(filteredData[0]).map((header) => (
-                <td
-                  key={header}
-                  className="w-1/6 p-2 align-middle"
-                  onClick={() => {
-                    if (tableName === "order") {
-                      navigate(`/orders/${row["_id"]}`)
-                    }
-                  }}
-                >
-                  {header === "unitPrice" ||
-                  header === "price" ||
-                  header === "amount" ||
-                  header === "salary" ||
-                  header === "subtotal" ? (
-                    `$${row[header]}`
-                  ) : header === "date" ? (
-                    formatDate(row[header])
-                  ) : header === "image" ? (
-                    <div className="flex items-center justify-center">
-                      <img
-                        src={`${backendImgURL}/${row[header]}`}
-                        alt={row.name || "Image"}
-                        className="h-16 w-16 object-cover"
-                      />
-                    </div>
-                  ) : header === "payment" ? (
-                    row[header] ? (
-                      "Paid"
-                    ) : (
-                      "Not Paid"
-                    )
-                  ) : header === "deliveryType" ? (
-                    row[header] === "free_shipping" ? (
-                      "Free shipping"
-                    ) : row[header] === "express_shipping" ? (
-                      "Express Shipping"
-                    ) : (
-                      "Pick up"
-                    )
-                  ) : header === "items" ? (
-                    <div className="flex items-center justify-center gap-2">
-                      {row.items.map((item, key) => (
-                        <div key={key} className="relative h-12 w-12">
-                          <img
-                            src={`${backendImgURL}/${item.image}`}
-                            alt={item.name}
-                            className="h-full w-full rounded"
-                          />
-                          <div className="bg-foreground text-background absolute -right-2 -top-2 rounded-full px-2.5 py-1 text-xs font-bold shadow-md">
-                            {item.quantity}
+              {Object.keys(data[0])
+                .filter((key) => key !== "_id")
+                .map((header) => (
+                  <td
+                    key={header}
+                    className="w-1/6 p-2 align-middle"
+                    onClick={() => {
+                      if (tableName === "order") {
+                        navigate(`/orders/${row["_id"]}`)
+                      }
+                    }}
+                  >
+                    {header === "unitPrice" ||
+                    header === "price" ||
+                    header === "amount" ||
+                    header === "salary" ||
+                    header === "subtotal" ? (
+                      `$${row[header]}`
+                    ) : header === "date" ? (
+                      formatDate(row[header])
+                    ) : header === "image" ? (
+                      <div className="flex items-center justify-center">
+                        <img
+                          src={`${backendImgURL}/${row[header]}`}
+                          alt={row.name || "Image"}
+                          className="h-16 w-16 object-cover"
+                        />
+                      </div>
+                    ) : header === "payment" ? (
+                      row[header] ? (
+                        "Paid"
+                      ) : (
+                        "Not Paid"
+                      )
+                    ) : header === "deliveryType" ? (
+                      row[header] === "Free Shipping" ? (
+                        "Free Shipping"
+                      ) : row[header] === "Express Shipping" ? (
+                        "Express Shipping"
+                      ) : (
+                        "Pick Up"
+                      )
+                    ) : header === "items" ? (
+                      <div className="flex items-center justify-center gap-2">
+                        {row.items.map((item, key) => (
+                          <div key={key} className="relative h-12 w-12">
+                            <img
+                              src={`${backendImgURL}/${item.image}`}
+                              alt={item.name}
+                              className="h-full w-full rounded"
+                            />
+                            <div className="bg-foreground text-background absolute -right-2 -top-2 rounded-full px-2.5 py-1 text-xs font-bold shadow-md">
+                              {item.quantity}
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    row[header]
+                        ))}
+                      </div>
+                    ) : (
+                      row[header]
+                    )}
+                  </td>
+                ))}
+              {tableName !== "orderitem" && (
+                <td className="flex items-center justify-center gap-3 py-8 align-middle">
+                  {tableName !== "order" && (
+                    <Button
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigate(`/update_form`, {
+                          state: {
+                            tableName,
+                            tableID: pageID || row._id,
+                            dataToBeUpdated: data.find(
+                              (d) => d._id === row._id
+                            ),
+                          },
+                        })
+                      }}
+                    >
+                      <img
+                        src={PencilIcon}
+                        alt="Pencil Icon"
+                        className="h-4 w-4"
+                      />
+                    </Button>
                   )}
-                </td>
-              ))}
-              <td className="flex items-center justify-center gap-3 py-8 align-middle">
-                <Button
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    navigate(`/${tableName}/update_form`, {
-                      state: {
-                        tableName,
-                        dataToBeUpdated: data.find((d) => d._id === row._id),
-                      },
-                    })
-                  }}
-                >
-                  <img src={PencilIcon} alt="Pencil Icon" className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    if (tableName === "orderitem") {
-                      handleDelete({
-                        addToast,
-                        ID: pageID,
-                        tableName,
-                        ID2: row._id,
-                      })
-                    } else {
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation()
                       handleDelete({ addToast, ID: row._id, tableName })
-                    }
-                  }}
-                >
-                  <img src={TrashIcon} alt="Trash Icon" className="h-4 w-4" />
-                </Button>
-              </td>
+                    }}
+                  >
+                    <img src={TrashIcon} alt="Trash Icon" className="h-4 w-4" />
+                  </Button>
+                </td>
+              )}
             </tr>
           ))}
+          {tableName === "orderitem" && (
+            <>
+              <tr className="p-5">
+                <td className="py-5 font-bold">Sub Total</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>${total}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td className="py-2 font-bold">{extraData.deliveryType}</td>
+                <td>
+                  {extraData.deliveryType === "Pick Up"
+                    ? `-${Math.abs((total * 0.05).toFixed(2))}`
+                    : extraData.deliveryType === "Express Shipping"
+                      ? `$15`
+                      : `$0`}
+                </td>
+              </tr>
+              <tr>
+                <td className="py-5 font-bold">Total</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td className="font-bold">${extraData.amount}</td>
+              </tr>
+            </>
+          )}
         </tbody>
       </table>
       <div className="pt-5">
@@ -200,6 +233,10 @@ Table.propTypes = {
   tableName: PropTypes.string.isRequired,
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   pageID: PropTypes.string,
+  extraData: PropTypes.shape({
+    deliveryType: PropTypes.string,
+    amount: PropTypes.number,
+  }),
 }
 
 export default Table

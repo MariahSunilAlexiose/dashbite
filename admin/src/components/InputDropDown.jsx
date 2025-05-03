@@ -3,7 +3,13 @@ import React, { useEffect, useState } from "react"
 import { ChevronUpDownIcon } from "@icons"
 import PropTypes from "prop-types"
 
-const InputDropDown = ({ options, className, onChange, defaultValue }) => {
+const InputDropDown = ({
+  options,
+  className,
+  onChange,
+  defaultValue,
+  disabled,
+}) => {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
 
@@ -28,6 +34,7 @@ const InputDropDown = ({ options, className, onChange, defaultValue }) => {
             className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Search option..."
             onChange={(e) => setSearchTerm(e.target.value)}
+            disabled={disabled}
           />
           <img
             src={ChevronUpDownIcon}
@@ -87,6 +94,7 @@ InputDropDown.propTypes = {
   label: PropTypes.string.isRequired,
   defaultValue: PropTypes.string,
   className: PropTypes.string,
+  disabled: PropTypes.boolean,
 }
 
 export default InputDropDown
