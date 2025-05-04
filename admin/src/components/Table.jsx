@@ -83,11 +83,7 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                   <td
                     key={header}
                     className="w-1/6 p-2 align-middle"
-                    onClick={() => {
-                      if (tableName === "order") {
-                        navigate(`/orders/${row["_id"]}`)
-                      }
-                    }}
+                    onClick={() => navigate(`/${tableName}s/${row["_id"]}`)}
                   >
                     {header === "unitPrice" ||
                     header === "price" ||
@@ -148,8 +144,10 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                           </div>
                         ))}
                       </div>
-                    ) : (
+                    ) : row[header] ? (
                       row[header]
+                    ) : (
+                      "-"
                     )}
                   </td>
                 ))}

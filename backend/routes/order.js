@@ -40,5 +40,6 @@ orderRouter.get("/", adminAuthMiddleware, getOrders)
 orderRouter.delete("/:orderID", adminAuthMiddleware, deleteOrder)
 orderRouter.put("/:orderID", adminAuthMiddleware, updateOrder)
 orderRouter.post("/", adminAuthMiddleware, addOrder)
+orderRouter.get("/user/:userID", adminAuthMiddleware, userOrders)
 
 export default orderRouter

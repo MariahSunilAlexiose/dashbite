@@ -100,10 +100,9 @@ const verifyOrder = async (req, res) => {
 }
 
 const userOrders = async (req, res) => {
+  const userID = req.userID || req.params.userID
   try {
-    const orders = await orderModel
-      .find({ userID: req.userID })
-      .sort({ date: -1 })
+    const orders = await orderModel.find({ userID: userID }).sort({ date: -1 })
     if (!orders) {
       res.json({ success: false, message: "Orders not found!" })
       return
