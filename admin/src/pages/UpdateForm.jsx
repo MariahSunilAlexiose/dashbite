@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import { Button, DropDown, Input, InputDropDown, Label } from "@cmp"
+import { Button, DropDown, Input, InputDropDown, Label, TextArea } from "@cmp"
 import { PlusIcon, TrashIcon } from "@icons"
+import { UploadAreaImg } from "@img"
 import { useToast } from "@providers"
 import axios from "axios"
 
 import {
+  backendImgURL,
   backendURL,
+  categories,
   deliveryType,
   keyMapping,
   orderStatus,
@@ -29,16 +32,17 @@ const getNameByID = (id, list) => {
 
 const UpdateForm = () => {
   const location = useLocation()
-  const { dataToBeUpdated, pageID, tableName } = location.state || {}
-  const [formData, setFormData] = useState(dataToBeUpdated)
+  const navigate = useNavigate()
   const { addToast } = useToast()
+  const { dataToBeUpdated, tableName } = location.state || {}
+  const [formData, setFormData] = useState(dataToBeUpdated)
   const [users, setUsers] = useState([])
   const [dishes, setDishes] = useState([])
-  const navigate = useNavigate()
   const [selectedItems, setSelectedItems] = useState([])
   const [isFormatted, setIsFormatted] = useState(true)
   const [totalSum, setTotalSum] = useState(0)
   const [deliveryCost, setDeliveryCost] = useState(0)
+  const [image, setImage] = useState(false)
 
   const onChangeHandler = (e) => {
     setFormData((prevFormData) => ({
@@ -51,7 +55,7 @@ const UpdateForm = () => {
     e.preventDefault()
     try {
       const res = await axios.put(
-        `${backendURL}/${tableName}/${pageID}`,
+        `${backendURL}/${tableName}/${dataToBeUpdated._id}`,
         formData,
         {
           headers: {
@@ -69,7 +73,7 @@ const UpdateForm = () => {
       navigate(-1)
     } catch (err) {
       console.error(err)
-      addToast("error", "Error", `Error in adding dish: ${err}`)
+      addToast("error", "Error", `Error in updating: ${err}`)
     }
   }
 
@@ -146,15 +150,79 @@ const UpdateForm = () => {
           tableName.charAt(0).toUpperCase() + tableName.slice(1).toLowerCase()}
       </h2>
       <div>
-        <div className="flex gap-5">
+        <div className="pt-3">
+          {Object.keys(formData)
+            .filter((key) => key !== "_id" && key !== "__v" && key !== "amount")
+            .map(
+              (key) =>
+                key === "image" && (
+                  <div key={key}>
+                    <Label>Upload Image</Label>
+                    <div className="flex items-center gap-3">
+                      <label htmlFor="image">
+                        <div className="flex items-center justify-center">
+                          <img
+                            src={
+                              image
+                                ? URL.createObjectURL(image)
+                                : formData.image
+                                  ? `${backendImgURL}/${formData.image}`
+                                  : UploadAreaImg
+                            }
+                            alt={formData.name || "Image"}
+                            className="w-32 cursor-pointer"
+                          />
+                        </div>
+                      </label>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => {
+                          setImage(false)
+                          setFormData((prevFormData) => ({
+                            ...prevFormData,
+                            image: null,
+                          }))
+                        }}
+                      >
+                        <img
+                          src={TrashIcon}
+                          alt="Trash Icon"
+                          className="h-4 w-4"
+                        />
+                      </Button>
+                    </div>
+                    <input
+                      type="file"
+                      name="image"
+                      id="image"
+                      hidden
+                      required
+                      onChange={(e) => {
+                        setImage(e.target.files[0])
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          image: e.target.files[0],
+                        }))
+                      }}
+                    />
+                  </div>
+                )
+            )}
+        </div>
+        <div className="flex gap-5 pt-3">
           <div className="flex flex-1 flex-col gap-3">
             {Object.keys(formData)
               .filter(
-                (key) => key !== "_id" && key !== "__v" && key !== "amount"
+                (key) =>
+                  key !== "_id" &&
+                  key !== "__v" &&
+                  key !== "amount" &&
+                  key !== "image"
               )
               .map((key) =>
                 key === "userID" ? (
-                  <div key={key} className="pt-5">
+                  <div key={key} className="pt-3">
                     <Label className="block text-sm font-medium text-gray-700">
                       User
                     </Label>
@@ -171,23 +239,57 @@ const UpdateForm = () => {
                       disabled={true}
                     />
                   </div>
+                ) : key === "payment" ? (
+                  <div className="pt-3">
+                    <Label className="block text-sm font-medium text-gray-700">
+                      Payment Status
+                    </Label>
+                    <DropDown
+                      options={payment}
+                      onChange={(status) => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          payment: status === "Not Paid" ? false : true,
+                        }))
+                      }}
+                      defaultValue={
+                        formData.payment === true ? "Paid" : "Not Paid"
+                      }
+                    />
+                  </div>
+                ) : key === "category" ? (
+                  <div>
+                    <Label>Category</Label>
+                    <DropDown
+                      options={categories}
+                      defaultValue={formData.category}
+                      onChange={(status) => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          category: status,
+                        }))
+                      }}
+                    />
+                  </div>
                 ) : (
-                  key === "payment" && (
-                    <div className="pt-5">
+                  key === "price" && (
+                    <div key={key}>
                       <Label className="block text-sm font-medium text-gray-700">
-                        Payment Status
+                        Price
                       </Label>
-                      <DropDown
-                        options={payment}
-                        onChange={(status) => {
+                      <Input
+                        name={key}
+                        type="number"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        min="0"
+                        value={formData[key] || ""}
+                        onChange={(e) => {
                           setFormData((prevFormData) => ({
                             ...prevFormData,
-                            payment: status === "Not Paid" ? false : true,
+                            price: e.target.value,
                           }))
                         }}
-                        defaultValue={
-                          formData.payment === true ? "Paid" : "Not Paid"
-                        }
+                        required
                       />
                     </div>
                   )
@@ -206,11 +308,15 @@ const UpdateForm = () => {
                   key !== "address" &&
                   key !== "items" &&
                   key !== "deliveryType" &&
-                  key !== "userID"
+                  key !== "userID" &&
+                  key !== "image" &&
+                  key !== "description" &&
+                  key !== "category" &&
+                  key !== "price"
               )
               .map((key) =>
                 key === "date" ? (
-                  <div key={key} className="pt-5">
+                  <div key={key} className="pt-3">
                     <Label className="block text-sm font-medium text-gray-700">
                       Date
                     </Label>
@@ -234,7 +340,7 @@ const UpdateForm = () => {
                     />
                   </div>
                 ) : key === "status" ? (
-                  <div className="pt-5">
+                  <div className="pt-3">
                     <Label className="block text-sm font-medium text-gray-700">
                       Order Status
                     </Label>
@@ -259,8 +365,29 @@ const UpdateForm = () => {
                     </label>
                     <Input
                       name={key}
-                      type={key === "quantity" ? "number" : "text"}
+                      type={
+                        key === "rating" ||
+                        key === "salary" ||
+                        key === "unitPrice" ||
+                        key === "price" ||
+                        key === "quantity"
+                          ? "number"
+                          : key === "phone"
+                            ? "tel"
+                            : key === "email"
+                              ? "email"
+                              : "text"
+                      }
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      step={
+                        key === "rating"
+                          ? "0.1"
+                          : key === "salary" ||
+                              key === "unitPrice" ||
+                              key === "price"
+                            ? "0.01"
+                            : undefined
+                      }
                       min={
                         key === "rating" || key === "unitPrice"
                           ? "0"
@@ -289,289 +416,286 @@ const UpdateForm = () => {
         <div className="pt-3">
           {Object.keys(formData)
             .filter((key) => key !== "_id" && key !== "__v" && key !== "amount")
-            .map(
-              (key) =>
-                key === "address" && (
-                  <div key={key} className="pt-5">
-                    <Label className="block text-sm font-medium text-gray-700">
-                      Address
-                    </Label>
-                    <div className="flex flex-col gap-4 pt-4">
-                      <div className="flex gap-4">
-                        <Input
-                          type="name"
-                          placeholder="First Name"
-                          name="firstName"
-                          onChange={onChangeHandler}
-                          value={formData.address.firstName}
-                          required
-                        />
-                        <Input
-                          type="name"
-                          placeholder="Last Name"
-                          name="lastName"
-                          onChange={onChangeHandler}
-                          value={formData.address.lastName}
-                          required
-                        />
-                      </div>
+            .map((key) =>
+              key === "address" ? (
+                <div key={key} className="pt-3">
+                  <Label className="block text-sm font-medium text-gray-700">
+                    Address
+                  </Label>
+                  <div className="flex flex-col gap-4 pt-4">
+                    <div className="flex gap-4">
                       <Input
-                        type="email"
-                        placeholder="Email"
-                        name="email"
+                        type="name"
+                        placeholder="First Name"
+                        name="firstName"
                         onChange={onChangeHandler}
-                        value={formData.address.email}
+                        value={formData.address.firstName}
+                        required
+                      />
+                      <Input
+                        type="name"
+                        placeholder="Last Name"
+                        name="lastName"
+                        onChange={onChangeHandler}
+                        value={formData.address.lastName}
+                        required
+                      />
+                    </div>
+                    <Input
+                      type="email"
+                      placeholder="Email"
+                      name="email"
+                      onChange={onChangeHandler}
+                      value={formData.address.email}
+                      required
+                    />
+                    <Input
+                      type="text"
+                      placeholder="Street"
+                      name="street"
+                      onChange={onChangeHandler}
+                      value={formData.address.street}
+                      required
+                    />
+                    <div className="flex gap-4">
+                      <Input
+                        type="text"
+                        placeholder="City"
+                        name="city"
+                        onChange={onChangeHandler}
+                        value={formData.address.city}
                         required
                       />
                       <Input
                         type="text"
-                        placeholder="Street"
-                        name="street"
+                        placeholder="State"
+                        name="state"
                         onChange={onChangeHandler}
-                        value={formData.address.street}
+                        value={formData.address.state}
                         required
                       />
-                      <div className="flex gap-4">
-                        <Input
-                          type="text"
-                          placeholder="City"
-                          name="city"
-                          onChange={onChangeHandler}
-                          value={formData.address.city}
-                          required
-                        />
-                        <Input
-                          type="text"
-                          placeholder="State"
-                          name="state"
-                          onChange={onChangeHandler}
-                          value={formData.address.state}
-                          required
-                        />
-                      </div>
-                      <div className="flex gap-4">
-                        <Input
-                          type="text"
-                          placeholder="Zip Code"
-                          name="zipcode"
-                          onChange={onChangeHandler}
-                          value={formData.address.zipcode}
-                          required
-                        />
-                        <Input
-                          type="text"
-                          placeholder="Country"
-                          name="country"
-                          onChange={onChangeHandler}
-                          value={formData.address.country}
-                          required
-                        />
-                      </div>
+                    </div>
+                    <div className="flex gap-4">
                       <Input
-                        type="phone"
-                        placeholder="Phone"
-                        name="phone"
+                        type="text"
+                        placeholder="Zip Code"
+                        name="zipcode"
                         onChange={onChangeHandler}
-                        value={formData.address.phone}
+                        value={formData.address.zipcode}
+                        required
+                      />
+                      <Input
+                        type="text"
+                        placeholder="Country"
+                        name="country"
+                        onChange={onChangeHandler}
+                        value={formData.address.country}
                         required
                       />
                     </div>
+                    <Input
+                      type="phone"
+                      placeholder="Phone"
+                      name="phone"
+                      onChange={onChangeHandler}
+                      value={formData.address.phone}
+                      required
+                    />
                   </div>
-                )
-            )}
-        </div>
-        <div className="pt-3">
-          {Object.keys(formData)
-            .filter((key) => key !== "_id" && key !== "__v" && key !== "amount")
-            .map(
-              (key) =>
-                key === "items" && (
-                  <div key={key} className="pt-5">
-                    <div className="flex justify-between">
-                      <Label className="block text-sm font-medium text-gray-700">
-                        Menu Items
-                      </Label>
-                      <Button
-                        variant="success"
-                        size="sm"
-                        onClick={() => {
-                          setFormData((prevFormData) => ({
-                            ...prevFormData,
-                            items: [
-                              ...(prevFormData.items || []),
-                              { _id: 0, quantity: 1 },
-                            ],
-                          }))
-                        }}
-                        className="rounded-full!"
-                      >
-                        <img
-                          src={PlusIcon}
-                          alt="Add Icon"
-                          className="h-4 w-4"
-                        />
-                      </Button>
-                    </div>
+                </div>
+              ) : key === "items" ? (
+                <div key={key} className="pt-3">
+                  <div className="flex justify-between">
+                    <Label className="block text-sm font-medium text-gray-700">
+                      Menu Items
+                    </Label>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          items: [
+                            ...(prevFormData.items || []),
+                            { _id: 0, quantity: 1 },
+                          ],
+                        }))
+                      }}
+                      className="rounded-full!"
+                    >
+                      <img src={PlusIcon} alt="Add Icon" className="h-4 w-4" />
+                    </Button>
+                  </div>
 
-                    {formData.items &&
-                      formData.items.map((item, index) => {
-                        const selectedDish = dishes.find(
-                          (dish) => dish._id === item._id
-                        )
-                        const subtotal =
-                          item.quantity * (selectedDish?.price || 0)
+                  {formData.items &&
+                    formData.items.map((item, index) => {
+                      const selectedDish = dishes.find(
+                        (dish) => dish._id === item._id
+                      )
+                      const subtotal =
+                        item.quantity * (selectedDish?.price || 0)
 
-                        return (
-                          <div key={index} className="flex gap-3">
-                            <div className="w-full">
-                              <Label className="block text-sm font-medium text-gray-700">
-                                Menu Item
-                              </Label>
-                              <InputDropDown
-                                label="menuitem"
-                                options={dishes.filter(
-                                  (dish) => !selectedItems.includes(dish._id)
-                                )}
-                                onChange={(newOrderItemID) => {
-                                  setFormData((prevFormData) => ({
-                                    ...prevFormData,
-                                    items: prevFormData.items.map((i, idx) =>
-                                      idx === index
-                                        ? { ...i, _id: newOrderItemID }
-                                        : i
-                                    ),
-                                  }))
-                                  setSelectedItems((prevSelected) => [
-                                    ...prevSelected,
-                                    newOrderItemID,
-                                  ])
-                                }}
-                                defaultValue={getNameByID(
-                                  item._id,
-                                  dishes,
-                                  "dish"
-                                )}
-                              />
-                            </div>
-                            <div className="w-full">
-                              <Label className="block text-sm font-medium text-gray-700">
-                                Quantity
-                              </Label>
-                              <Input
-                                name={`quantity-${index}`}
-                                type="number"
-                                value={item.quantity}
-                                onChange={(e) => {
-                                  setFormData((prevFormData) => ({
-                                    ...prevFormData,
-                                    items: prevFormData.items.map((i, idx) =>
-                                      idx === index
-                                        ? {
-                                            ...i,
-                                            quantity: parseInt(
-                                              e.target.value,
-                                              10
-                                            ),
-                                          }
-                                        : i
-                                    ),
-                                  }))
-                                }}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                min={1}
-                                required
-                              />
-                            </div>
-                            <div className="flex gap-3">
-                              {selectedDish?.price > 0 && (
-                                <div
-                                  className={`flex flex-col items-center gap-1.5 ${index === 0 ? "p-0" : "px-4"}`}
-                                >
-                                  {index === 0 && (
-                                    <Label className="block text-sm font-medium text-gray-700">
-                                      Subtotal
-                                    </Label>
-                                  )}
-                                  <p
-                                    className={`${index === 0 ? "mt-1" : "mt-6"}`}
-                                  >
-                                    ${subtotal}
-                                  </p>
-                                </div>
+                      return (
+                        <div key={index} className="flex gap-3">
+                          <div className="w-full">
+                            <Label className="block text-sm font-medium text-gray-700">
+                              Menu Item
+                            </Label>
+                            <InputDropDown
+                              label="menuitem"
+                              options={dishes.filter(
+                                (dish) => !selectedItems.includes(dish._id)
                               )}
-                              <div className="flex items-center justify-center gap-3 py-8 align-middle">
-                                <Button
-                                  variant="destructive"
-                                  size="icon"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    setFormData((prevFormData) => ({
-                                      ...prevFormData,
-                                      items: prevFormData.items.filter(
-                                        (i) => i._id !== item._id
-                                      ), // Remove the matching item
-                                    }))
-                                  }}
+                              onChange={(newOrderItemID) => {
+                                setFormData((prevFormData) => ({
+                                  ...prevFormData,
+                                  items: prevFormData.items.map((i, idx) =>
+                                    idx === index
+                                      ? { ...i, _id: newOrderItemID }
+                                      : i
+                                  ),
+                                }))
+                                setSelectedItems((prevSelected) => [
+                                  ...prevSelected,
+                                  newOrderItemID,
+                                ])
+                              }}
+                              defaultValue={getNameByID(
+                                item._id,
+                                dishes,
+                                "dish"
+                              )}
+                            />
+                          </div>
+                          <div className="w-full">
+                            <Label className="block text-sm font-medium text-gray-700">
+                              Quantity
+                            </Label>
+                            <Input
+                              name={`quantity-${index}`}
+                              type="number"
+                              value={item.quantity}
+                              onChange={(e) => {
+                                setFormData((prevFormData) => ({
+                                  ...prevFormData,
+                                  items: prevFormData.items.map((i, idx) =>
+                                    idx === index
+                                      ? {
+                                          ...i,
+                                          quantity: parseInt(
+                                            e.target.value,
+                                            10
+                                          ),
+                                        }
+                                      : i
+                                  ),
+                                }))
+                              }}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                              min={1}
+                              required
+                            />
+                          </div>
+                          <div className="flex gap-3">
+                            {selectedDish?.price > 0 && (
+                              <div
+                                className={`flex flex-col items-center gap-1.5 ${index === 0 ? "p-0" : "px-4"}`}
+                              >
+                                {index === 0 && (
+                                  <Label className="block text-sm font-medium text-gray-700">
+                                    Subtotal
+                                  </Label>
+                                )}
+                                <p
+                                  className={`${index === 0 ? "mt-1" : "mt-6"}`}
                                 >
-                                  <img
-                                    src={TrashIcon}
-                                    alt="Trash Icon"
-                                    className="h-4 w-4"
-                                  />
-                                </Button>
+                                  ${subtotal}
+                                </p>
                               </div>
+                            )}
+                            <div className="flex items-center justify-center gap-3 py-8 align-middle">
+                              <Button
+                                variant="destructive"
+                                size="icon"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setFormData((prevFormData) => ({
+                                    ...prevFormData,
+                                    items: prevFormData.items.filter(
+                                      (i) => i._id !== item._id
+                                    ), // Remove the matching item
+                                  }))
+                                }}
+                              >
+                                <img
+                                  src={TrashIcon}
+                                  alt="Trash Icon"
+                                  className="h-4 w-4"
+                                />
+                              </Button>
                             </div>
                           </div>
-                        )
-                      })}
-
-                    {totalSum > 0 && (
-                      <div className="flex justify-end pl-2 pr-10 text-center">
-                        <div className="border-t border-gray-500 px-5">
-                          <p className="mt-1 font-bold">${totalSum}</p>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                )
-            )}
-        </div>
-        <div>
-          {Object.keys(formData)
-            .filter((key) => key !== "_id" && key !== "__v" && key !== "amount")
-            .map(
-              (key) =>
-                key === "deliveryType" && (
-                  <div key={key} className="flex justify-between gap-5">
-                    <div className="w-full">
-                      <Label className="block text-sm font-medium text-gray-700">
-                        Delivery Type
-                      </Label>
-                      <DropDown
-                        defaultValue={formData.deliveryType}
-                        options={deliveryType}
-                        onChange={(type) => {
-                          setFormData((prevFormData) => ({
-                            ...prevFormData,
-                            deliveryType: type,
-                          }))
-                        }}
-                      />
-                    </div>
-                    <div className="pr-14">
-                      <div className="pt-5">
-                        <p className="mt-1">${deliveryCost}</p>
+                      )
+                    })}
+
+                  {totalSum > 0 && (
+                    <div className="flex justify-end pl-2 pr-10 text-center">
+                      <div className="border-t border-gray-500 px-5">
+                        <p className="mt-1 font-bold">${totalSum}</p>
                       </div>
                     </div>
+                  )}
+                </div>
+              ) : key === "deliveryType" ? (
+                <div key={key} className="flex justify-between gap-5">
+                  <div className="w-full">
+                    <Label className="block text-sm font-medium text-gray-700">
+                      Delivery Type
+                    </Label>
+                    <DropDown
+                      defaultValue={formData.deliveryType}
+                      options={deliveryType}
+                      onChange={(type) => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          deliveryType: type,
+                        }))
+                      }}
+                    />
+                  </div>
+                  <div className="pr-14">
+                    <div className="pt-3">
+                      <p className="mt-1">${deliveryCost}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                key === "description" && (
+                  <div>
+                    <Label>Description</Label>
+                    <TextArea
+                      placeholder=""
+                      value={formData.description || ""}
+                      onChange={(e) => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          description: e.target.value,
+                        }))
+                      }}
+                    />
                   </div>
                 )
+              )
             )}
         </div>
-        <div className="mr-13 flex justify-end gap-3 pt-3 text-right">
-          <p className="font-black">Total:</p>
-          <p className="mt-0 font-black">${formData.amount}</p>
-        </div>
-        <div className="flex justify-end pt-5">
+        {formData.amount && (
+          <div className="mr-13 flex justify-end gap-3 pt-3 text-right">
+            <p className="font-black">Total:</p>
+            <p className="mt-0 font-black">${formData.amount}</p>
+          </div>
+        )}
+        <div className="flex justify-end pt-3">
           <Button onClick={(e) => handleSubmit(e)}>Update</Button>
         </div>
       </div>

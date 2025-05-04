@@ -71,8 +71,8 @@ const Order = () => {
             navigate("/update_form", {
               state: {
                 tableName: "order",
-                pageID: orderID,
                 dataToBeUpdated: {
+                  _id: order._id,
                   userID: order.userID,
                   date: order.date,
                   payment: order.payment,

@@ -62,7 +62,7 @@ const Dishes = () => {
         </Button>
       </div>
       <div className="pt-7">
-        <Table data={list} tableName="dishes" />
+        <Table data={list} tableName="dish" />
       </div>
     </div>
   )

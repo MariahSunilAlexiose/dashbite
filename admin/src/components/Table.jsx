@@ -13,7 +13,7 @@ import { Pagination } from "."
 
 const handleDelete = async ({ addToast, ID, tableName }) => {
   try {
-    if (tableName === "dishes") {
+    if (tableName === "dish") {
       await axios.delete(`${backendURL}/dish/${ID}`, {
         headers: {
           token: import.meta.env.VITE_ADMIN_TOKEN,
@@ -155,7 +155,7 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                         navigate(`/update_form`, {
                           state: {
                             tableName,
-                            tableID: pageID || row._id,
+                            pageID: pageID || row._id,
                             dataToBeUpdated: data.find(
                               (d) => d._id === row._id
                             ),
