@@ -1,6 +1,7 @@
 import fs from "fs"
 
 import dishModel from "../models/food.js"
+import orderModel from "../models/order.js"
 import { checkMissingFields } from "../validationUtils.js"
 
 // add dish item
@@ -79,16 +80,27 @@ const removeDish = async (req, res) => {
       res.json({ success: false, message: "Dish not found!" })
       return
     }
-    fs.unlink(`uploads/${dish.image}`, () => {})
-    const deleteDish = await dishModel.findByIdAndDelete(dishID)
-    if (!deleteDish) {
-      res.json({ success: false, message: "Error in removing the dish!" })
+
+    const dishOrders = await orderModel.find({ "items._id": dishID })
+    if (dishOrders.length > 0) {
+      res.json({
+        success: false,
+        message: "Dish is present in orders and cannot be deleted!",
+      })
       return
     }
-    res.json({ success: true, message: "Dish Removed" })
+    fs.unlink(`uploads/${dish.image}`, () => {})
+
+    const deletedDish = await dishModel.findByIdAndDelete(dishID)
+    if (!deletedDish) {
+      res.json({ success: false, message: "Error in deleting the dish!" })
+      return
+    }
+
+    res.json({ success: true, message: "Dish Removed!" })
   } catch (err) {
     console.error(err)
-    res.json({ success: false, message: `Error in removing dish: ${err}` })
+    res.json({ success: false, message: `Error in deleting dish: ${err}` })
   }
 }
 
