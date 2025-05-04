@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button } from "@cmp"
-import { PencilIcon, TrashIcon } from "@icons"
+import { PencilIcon, TrashIcon, UserIcon } from "@icons"
 import { useToast } from "@providers"
 import axios from "axios"
 import PropTypes from "prop-types"
@@ -13,20 +13,14 @@ import { Pagination } from "."
 
 const handleDelete = async ({ addToast, ID, tableName }) => {
   try {
-    if (tableName === "dish") {
-      await axios.delete(`${backendURL}/dish/${ID}`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
-      })
-    } else {
-      await axios.delete(`${backendURL}/${tableName}/${ID}`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
-      })
+    const res = await axios.delete(`${backendURL}/${tableName}/${ID}`, {
+      headers: {
+        token: import.meta.env.VITE_ADMIN_TOKEN,
+      },
+    })
+    if (res.data.success === false) {
+      return addToast("error", "Error", res.data.message)
     }
-
     addToast("success", "Success", "Removed Item!")
     window.location.reload()
   } catch (err) {
@@ -72,7 +66,7 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                   key={header}
                   className="h-10 w-[100px] px-4 text-center align-middle font-bold"
                 >
-                  {header === "image" ? "" : header}
+                  {header === "image" || header === "profilePic" ? "" : header}
                 </th>
               ))}
           </tr>
@@ -111,6 +105,20 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                           className="h-16 w-16 object-cover"
                         />
                       </div>
+                    ) : header === "profilePic" ? (
+                      <div className="flex items-center justify-center">
+                        <img
+                          src={
+                            row[header].startsWith(
+                              "https://ui-avatars.com/api/?name="
+                            )
+                              ? row[header]
+                              : `${backendImgURL}/${row[header] || UserIcon}`
+                          }
+                          alt="User Profile"
+                          className="h-15 w-15 aspect-square rounded-full object-cover"
+                        />
+                      </div>
                     ) : header === "payment" ? (
                       row[header] ? (
                         "Paid"
@@ -147,7 +155,7 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                 ))}
               {tableName !== "orderitem" && (
                 <td className="flex items-center justify-center gap-3 py-8 align-middle">
-                  {tableName !== "order" && (
+                  {tableName !== "order" && tableName !== "user" && (
                     <Button
                       size="icon"
                       onClick={(e) => {

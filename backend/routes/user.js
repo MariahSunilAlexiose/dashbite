@@ -3,6 +3,7 @@ import multer from "multer"
 
 import {
   addAddresses,
+  deleteUser,
   getUser,
   getUsers,
   loginUser,
@@ -44,5 +45,6 @@ userRouter.get("/", authMiddleware, getUser)
 // admin authenticated
 userRouter.get("/all", adminAuthMiddleware, getUsers)
 userRouter.get("/:userID", adminAuthMiddleware, getUser)
+userRouter.delete("/:userID", adminAuthMiddleware, deleteUser)
 
 export default userRouter

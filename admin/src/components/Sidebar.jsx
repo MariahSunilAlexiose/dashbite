@@ -25,7 +25,7 @@ export default function Sidebar({ items }) {
   useEffect(() => {
     window.addEventListener("scroll", () => {
       const scrollTop = window.scrollY
-      setSidebarHeight(`${550 + scrollTop}px`)
+      setSidebarHeight(`${640 + scrollTop}px`)
     })
   }, [])
 

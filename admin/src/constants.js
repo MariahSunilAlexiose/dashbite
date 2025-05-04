@@ -4,6 +4,8 @@ import {
   InformationCircleIcon,
   ShoppingCartIcon,
   ShoppingCartWhiteIcon,
+  UserIcon,
+  UserWhiteIcon,
   UtensilsCrossedIcon,
   UtensilsCrossedWhiteIcon,
 } from "@icons"
@@ -27,6 +29,13 @@ export const sidebarItems = [
     iconName: "Shopping Cart Icon",
     text: "Orders",
     link: "/orders",
+  },
+  {
+    icon: UserIcon,
+    iconDark: UserWhiteIcon,
+    iconName: "User Icon",
+    text: "Users",
+    link: "/users",
   },
 ]
 
@@ -96,6 +105,9 @@ export const keyMapping = {
   items: "Items",
   quantity: "Quantity",
   subtotal: "Subtotal",
+  email: "Email",
+  shippingAddress: "Shipping Address",
+  billingAddress: "Billing Address",
 }
 
 export const formatDate = (dateString) => {

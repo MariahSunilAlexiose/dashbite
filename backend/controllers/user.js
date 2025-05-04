@@ -4,6 +4,7 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import validator from "validator"
 
+import orderModel from "../models/order.js"
 import userModel from "../models/user.js"
 import { checkMissingFields } from "../validationUtils.js"
 
@@ -275,7 +276,39 @@ const getUsers = async (req, res) => {
   }
 }
 
+const deleteUser = async (req, res) => {
+  const { userID } = req.params
+
+  try {
+    const user = await userModel.findById(userID)
+    if (!user) {
+      res.json({ success: false, message: "User not found!" })
+      return
+    }
+
+    const userOrders = await orderModel.find({ userID })
+    if (userOrders.length > 0) {
+      res.json({ success: false, message: "User has existing orders!" })
+      return
+    }
+
+    fs.unlink(`uploads/${user.profilePic}`, () => {})
+
+    const deletedUser = await userModel.findByIdAndDelete(userID)
+    if (!deletedUser) {
+      res.json({ success: false, message: "Error in deleting the user!" })
+      return
+    }
+
+    res.json({ success: true, message: "User Removed!" })
+  } catch (err) {
+    console.error(err)
+    res.json({ success: false, message: `Error in deleting user: ${err}` })
+  }
+}
+
 export {
+  deleteUser,
   getUsers,
   loginUser,
   registerUser,
