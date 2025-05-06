@@ -80,12 +80,15 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                   <td
                     key={header}
                     className="w-1/6 p-2 align-middle"
-                    onClick={() =>
-                      tableName !== "dish" &&
-                      tableName !== "orderitem" &&
-                      tableName !== "category" &&
-                      navigate(`/${tableName}s/${row["_id"]}`)
-                    }
+                    onClick={() => {
+                      if (tableName === "category")
+                        navigate(`/categories/${row["_id"]}`)
+                      else if (
+                        tableName !== "dish" &&
+                        tableName !== "orderitem"
+                      )
+                        navigate(`/${tableName}s/${row["_id"]}`)
+                    }}
                   >
                     {header === "unitPrice" ||
                     header === "price" ||

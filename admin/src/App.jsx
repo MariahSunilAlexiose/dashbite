@@ -5,6 +5,7 @@ import { Sidebar, Toasts } from "@cmp"
 import {
   AddForm,
   Categories,
+  Category,
   Dishes,
   Order,
   Orders,
@@ -30,6 +31,7 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/users/:userID" element={<User />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/categories/:categoryID" element={<Category />} />
         </Routes>
       </div>
     </div>

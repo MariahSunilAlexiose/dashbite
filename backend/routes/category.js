@@ -6,6 +6,7 @@ import {
   deleteCategory,
   getCategories,
   getCategory,
+  getCategoryDishes,
   updateCategory,
 } from "../controllers/category.js"
 import adminAuthMiddleware from "../middleware/adminauth.js"
@@ -36,5 +37,6 @@ categoryRouter.put(
 categoryRouter.delete("/:categoryID", adminAuthMiddleware, deleteCategory)
 categoryRouter.get("/:categoryID", getCategory)
 categoryRouter.get("/", getCategories)
+categoryRouter.get("/:categoryID/dishes", getCategoryDishes)
 
 export default categoryRouter

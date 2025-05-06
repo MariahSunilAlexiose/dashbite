@@ -142,7 +142,27 @@ const getCategories = async (req, res) => {
   }
 }
 
+const getCategoryDishes = async (req, res) => {
+  const { categoryID } = req.params
+
+  try {
+    const dishes = await foodModel.find({ categoryID })
+
+    if (!dishes.length)
+      return res.json({
+        success: false,
+        message: "No dishes found for this category!",
+      })
+
+    res.json({ success: true, data: dishes })
+  } catch (err) {
+    console.error(err)
+    res.json({ success: false, message: `Error retrieving dishes: ${err}` })
+  }
+}
+
 export {
+  getCategoryDishes,
   addCategory,
   updateCategory,
   deleteCategory,
