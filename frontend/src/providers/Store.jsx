@@ -21,6 +21,7 @@ export const StoreProvider = (props) => {
   const url = "http://localhost:4000"
 
   const [dishes, setDishes] = useState([])
+  const [categories, setCategories] = useState([])
 
   // Fetch cart items from the server
   const loadCartData = async (userToken) => {
@@ -44,6 +45,18 @@ export const StoreProvider = (props) => {
       if (!res.data.success)
         return addToast("error", "Error", `Error: ${res.data.message}`)
       setDishes(res.data.data)
+    } catch (err) {
+      console.error(err)
+      addToast("error", "Error", `Error in retrieving cart items: ${err}`)
+    }
+  }
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(`${url}/api/category/`)
+      if (!res.data.success)
+        return addToast("error", "Error", `Error: ${res.data.message}`)
+      setCategories(res.data.data)
     } catch (err) {
       console.error(err)
       addToast("error", "Error", `Error in retrieving cart items: ${err}`)
@@ -78,6 +91,7 @@ export const StoreProvider = (props) => {
 
   useEffect(() => {
     getUserID()
+    fetchCategories()
     fetchDishes()
   }, [])
 
@@ -150,6 +164,7 @@ export const StoreProvider = (props) => {
   }
 
   const context = {
+    categories,
     dishes,
     cartItems,
     setCartItems,

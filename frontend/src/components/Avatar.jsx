@@ -1,8 +1,10 @@
-import React from "react"
+import React, { useContext } from "react"
 
+import { StoreContext } from "@context"
 import PropTypes from "prop-types"
 
 const Avatar = ({ image, title, onClick, isSelected }) => {
+  const { url } = useContext(StoreContext)
   return (
     <div
       className="m-5 flex cursor-pointer flex-col gap-4 text-center"
@@ -16,7 +18,7 @@ const Avatar = ({ image, title, onClick, isSelected }) => {
         >
           {image ? (
             <img
-              src={image}
+              src={`${url}/images/${image}`}
               alt={title}
               className="aspect-square h-full w-full"
             />

@@ -3,14 +3,11 @@ import React, { useContext, useState } from "react"
 import { Avatar, Card } from "@cmp"
 import { StoreContext } from "@context"
 
-import { categoryLinks } from "@/constants"
-
 const Menu = () => {
   const [selectedAvatar, setSelectedAvatar] = useState(null)
-  const { dishes } = useContext(StoreContext)
-  const handleAvatarClick = (label) => {
-    setSelectedAvatar(label)
-  }
+  const { categories, dishes } = useContext(StoreContext)
+
+  console.log(selectedAvatar)
 
   return (
     <div className="flex flex-col gap-6">
@@ -22,13 +19,15 @@ const Menu = () => {
           experience, one delicious meal at a time.
         </p>
         <div className="mt-6 flex gap-1.5 overflow-x-scroll">
-          {categoryLinks.map((link, index) => (
+          {categories.map((link) => (
             <Avatar
-              key={index}
+              key={link._id}
               image={link.image}
-              title={link.label}
-              isSelected={selectedAvatar === link.label}
-              onClick={() => handleAvatarClick(link.label)}
+              title={link.name}
+              isSelected={selectedAvatar === link._id}
+              onClick={() => {
+                setSelectedAvatar(link._id)
+              }}
             />
           ))}
         </div>
@@ -38,7 +37,7 @@ const Menu = () => {
         <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {dishes
             .filter((dish) =>
-              selectedAvatar ? dish.category === selectedAvatar : true
+              selectedAvatar ? dish.categoryID === selectedAvatar : true
             )
             .map((dish) => (
               <Card
