@@ -7,14 +7,20 @@ const DropDown = ({
   options,
   onChange,
   defaultValue = "Select an option...",
+  label,
 }) => {
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState(defaultValue)
 
   useEffect(() => {
     if (defaultValue && options && options.length > 0) {
-      setValue(defaultValue)
-      onChange(defaultValue)
+      const selectedOption = options.find(
+        (option) => option._id === defaultValue
+      )
+      if (selectedOption) {
+        setValue(label === "category" ? selectedOption.name : defaultValue)
+        onChange(defaultValue)
+      }
     }
   }, [defaultValue, options])
 
@@ -45,11 +51,11 @@ const DropDown = ({
                   className="hover:bg-accent/40 relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => {
                     setOpen(false)
-                    onChange(option)
-                    setValue(option)
+                    onChange(option._id)
+                    setValue(option.name)
                   }}
                 >
-                  {option}
+                  {option.name}
                 </div>
               ))}
             </div>
@@ -64,6 +70,7 @@ DropDown.propTypes = {
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string,
+  label: PropTypes.string,
 }
 
 export default DropDown

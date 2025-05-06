@@ -4,6 +4,8 @@ import {
   InformationCircleIcon,
   ShoppingCartIcon,
   ShoppingCartWhiteIcon,
+  TagIcon,
+  TagWhiteIcon,
   UserIcon,
   UserWhiteIcon,
   UtensilsCrossedIcon,
@@ -36,6 +38,13 @@ export const sidebarItems = [
     iconName: "User Icon",
     text: "Users",
     link: "/users",
+  },
+  {
+    icon: TagIcon,
+    iconDark: TagWhiteIcon,
+    iconName: "Tag Icon",
+    text: "Categories",
+    link: "/categories",
   },
 ]
 
@@ -119,8 +128,19 @@ export const formatDate = (dateString) => {
   return `${day} ${month} ${year}`
 }
 
-export const payment = ["Not Paid", "Paid"]
+export const payment = [
+  { _id: "Not Paid", name: "Not Paid" },
+  { _id: "Paid", name: "Paid" },
+]
 
-export const deliveryType = ["Free Shipping", "Express Shipping", "Pick Up"]
+export const deliveryType = [
+  { _id: "Free Shipping", name: "Free Shipping" },
+  { _id: "Express Shipping", name: "Express Shipping" },
+  { _id: "Pick Up", name: "Pick Up" },
+]
 
-export const orderStatus = ["Dish Processing...", "Shipped", "Delivered Up"]
+export const orderStatus = [
+  { _id: "Dish Processing...", name: "Dish Processing..." },
+  { _id: "Shipped", name: "Shipped" },
+  { _id: "Delivered Up", name: "Delivered" },
+]

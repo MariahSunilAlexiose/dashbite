@@ -8,6 +8,7 @@ import ChevronFirstWhiteIcon from "./dark_mode/chevron-first.svg"
 import ChevronLastWhiteIcon from "./dark_mode/chevron-last.svg"
 import LogoWhite from "./dark_mode/logo.png"
 import ShoppingCartWhiteIcon from "./dark_mode/shopping-cart.svg"
+import TagWhiteIcon from "./dark_mode/tag.svg"
 import UserWhiteIcon from "./dark_mode/user.svg"
 import UtensilsCrossedWhiteIcon from "./dark_mode/utensils-crossed.svg"
 import EllipsisHorizontalIcon from "./ellipsis-horizontal.svg"
@@ -20,12 +21,15 @@ import PencilIcon from "./pencil.svg"
 import PlusIcon from "./plus.svg"
 import ShoppingCartIcon from "./shopping-cart.svg"
 import SunIcon from "./sun.svg"
+import TagIcon from "./tag.svg"
 import TrashIcon from "./trash.svg"
 import UserIcon from "./user.svg"
 import UtensilsCrossedIcon from "./utensils-crossed.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  TagWhiteIcon,
+  TagIcon,
   UserWhiteIcon,
   UserIcon,
   PencilIcon,

@@ -20,10 +20,19 @@ const Dishes = () => {
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },
       })
-      const cleanedDishesData = res.data.data.map((item) => {
-        const { __v, image, ...rest } = item // eslint-disable-line no-unused-vars
-        return { image, ...rest }
-      })
+      const cleanedDishesData = await Promise.all(
+        res.data.data.map(async (item) => {
+          const itemRes = await axios.get(
+            `${backendURL}/category/${item.categoryID}`
+          )
+          const { __v, image, ...rest } = item // eslint-disable-line no-unused-vars
+          return {
+            image,
+            ...rest,
+            category: itemRes.data.data.name || "Unknown",
+          }
+        })
+      )
       setList(cleanedDishesData)
     } catch (err) {
       console.error(err)

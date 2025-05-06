@@ -18,9 +18,8 @@ const handleDelete = async ({ addToast, ID, tableName }) => {
         token: import.meta.env.VITE_ADMIN_TOKEN,
       },
     })
-    if (res.data.success === false) {
+    if (res.data.success === false)
       return addToast("error", "Error", res.data.message)
-    }
     addToast("success", "Success", "Removed Item!")
     window.location.reload()
   } catch (err) {
@@ -59,7 +58,7 @@ const Table = ({ tableName, data, pageID, extraData }) => {
         <thead className="[&_tr]:border-b">
           <tr className="border-b transition-colors">
             {Object.keys(data[0])
-              .filter((key) => key !== "_id")
+              .filter((key) => key !== "_id" && key !== "categoryID")
               .map((key) => keyMapping[key] || key)
               .map((header) => (
                 <th
@@ -78,12 +77,17 @@ const Table = ({ tableName, data, pageID, extraData }) => {
               className="cursor-pointer border-b transition-colors hover:bg-[#f1f5f9]"
             >
               {Object.keys(data[0])
-                .filter((key) => key !== "_id")
+                .filter((key) => key !== "_id" && key !== "categoryID")
                 .map((header) => (
                   <td
                     key={header}
                     className="w-1/6 p-2 align-middle"
-                    onClick={() => navigate(`/${tableName}s/${row["_id"]}`)}
+                    onClick={() =>
+                      tableName !== "dish" &&
+                      tableName !== "orderitem" &&
+                      tableName !== "category" &&
+                      navigate(`/${tableName}s/${row["_id"]}`)
+                    }
                   >
                     {header === "unitPrice" ||
                     header === "price" ||

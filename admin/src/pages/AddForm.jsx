@@ -9,7 +9,6 @@ import axios from "axios"
 
 import {
   backendURL,
-  categories,
   deliveryType,
   keyMapping,
   orderStatus,
@@ -23,6 +22,7 @@ const AddForm = () => {
   const { addToast } = useToast()
   const [users, setUsers] = useState([])
   const [dishes, setDishes] = useState([])
+  const [categories, setCategories] = useState([])
   const navigate = useNavigate()
   const [selectedItems, setSelectedItems] = useState([])
   const [image, setImage] = useState(false)
@@ -40,17 +40,17 @@ const AddForm = () => {
       const res = await axios.post(`${backendURL}/${tableName}`, formData, {
         headers: {
           "Content-Type":
-            tableName === "dish" ? "multipart/form-data" : "application/json",
+            tableName === "dish" || tableName === "category"
+              ? "multipart/form-data"
+              : "application/json",
           token: import.meta.env.VITE_ADMIN_TOKEN,
         },
       })
-      if (res.data.success === false) {
+      if (res.data.success === false)
         return addToast("error", "Error", res.data.message)
-      }
       addToast("success", "Success", "Added")
       setFormData({})
-      if (tableName === "dish") navigate("/dishes")
-      else if (tableName === "order") navigate("/orders")
+      navigate(-1)
     } catch (err) {
       console.error(err)
       addToast("error", "Error", `Error in adding dish: ${err}`)
@@ -85,13 +85,20 @@ const AddForm = () => {
     }
   }
 
+  const fetchCategoryData = async () => {
+    try {
+      const response = await axios.get(`${backendURL}/category`)
+      setCategories(response.data.data)
+    } catch (err) {
+      console.error(err)
+      addToast("error", "Error", `Error fetching item data: ${err}`)
+    }
+  }
+
   const fetchData = async () => {
-    if (toBeAddedKeys?.includes("userID")) {
-      await fetchUserData()
-    }
-    if (toBeAddedKeys?.includes("items")) {
-      await fetchItemData()
-    }
+    if (toBeAddedKeys?.includes("userID")) await fetchUserData()
+    if (toBeAddedKeys?.includes("items")) await fetchItemData()
+    if (toBeAddedKeys?.includes("category")) await fetchCategoryData()
   }
 
   useEffect(() => {
@@ -154,7 +161,7 @@ const AddForm = () => {
                     </label>
                     <DropDown
                       options={payment}
-                      defaultValue={payment[0]}
+                      defaultValue={payment[0].label}
                       onChange={(status) => {
                         setFormData((prevFormData) => ({
                           ...prevFormData,
@@ -173,7 +180,7 @@ const AddForm = () => {
                     </label>
                     <DropDown
                       options={deliveryType}
-                      defaultValue={deliveryType[0]}
+                      defaultValue={deliveryType[0].label}
                       onChange={(type) => {
                         setFormData((prevFormData) => ({
                           ...prevFormData,
@@ -192,7 +199,7 @@ const AddForm = () => {
                     </label>
                     <DropDown
                       options={orderStatus}
-                      defaultValue={orderStatus[0]}
+                      defaultValue={orderStatus[0].label}
                       onChange={(type) => {
                         setFormData((prevFormData) => ({
                           ...prevFormData,
@@ -291,11 +298,10 @@ const AddForm = () => {
                     </label>
                     <DropDown
                       options={categories}
-                      defaultValue={formData.category}
                       onChange={(status) => {
                         setFormData((prevFormData) => ({
                           ...prevFormData,
-                          category: status,
+                          categoryID: status,
                         }))
                       }}
                     />

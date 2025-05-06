@@ -10,7 +10,6 @@ import axios from "axios"
 import {
   backendImgURL,
   backendURL,
-  categories,
   deliveryType,
   keyMapping,
   orderStatus,
@@ -38,6 +37,7 @@ const UpdateForm = () => {
   const [formData, setFormData] = useState(dataToBeUpdated)
   const [users, setUsers] = useState([])
   const [dishes, setDishes] = useState([])
+  const [categories, setCategories] = useState([])
   const [selectedItems, setSelectedItems] = useState([])
   const [isFormatted, setIsFormatted] = useState(true)
   const [totalSum, setTotalSum] = useState(0)
@@ -60,14 +60,15 @@ const UpdateForm = () => {
         {
           headers: {
             "Content-Type":
-              tableName === "dish" ? "multipart/form-data" : "application/json",
+              tableName === "dish" || tableName === "category"
+                ? "multipart/form-data"
+                : "application/json",
             token: import.meta.env.VITE_ADMIN_TOKEN,
           },
         }
       )
-      if (res.data.success === false) {
+      if (res.data.success === false)
         return addToast("error", "Error", res.data.message)
-      }
       addToast("success", "Success", "Updated!")
       setFormData({})
       navigate(-1)
@@ -105,13 +106,24 @@ const UpdateForm = () => {
     }
   }
 
+  const fetchCategoryData = async () => {
+    try {
+      const res = await axios.get(`${backendURL}/category/`, {
+        headers: {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        },
+      })
+      setCategories(res.data.data)
+    } catch (err) {
+      console.error(err)
+      addToast("error", "Error", `Error fetching user data: ${err}`)
+    }
+  }
+
   const fetchData = async () => {
-    if (Object.keys(formData)?.includes("userID")) {
-      await fetchUserData()
-    }
-    if (Object.keys(formData)?.includes("items")) {
-      await fetchItemData()
-    }
+    if (Object.keys(formData)?.includes("userID")) await fetchUserData()
+    if (Object.keys(formData)?.includes("items")) await fetchItemData()
+    if (Object.keys(formData)?.includes("category")) await fetchCategoryData()
   }
 
   useEffect(() => {
@@ -142,6 +154,126 @@ const UpdateForm = () => {
     }
   }, [formData.deliveryType, totalSum])
 
+  const filteredKeys = Object.keys(formData).filter(
+    (key) => !["_id", "__v", "amount", "categoryID"].includes(key)
+  )
+  const fullWidthKeys = filteredKeys.filter((key) =>
+    ["image", "description", "address", "items", "deliveryType"].includes(key)
+  )
+  const remainingKeys = filteredKeys.filter(
+    (key) => !fullWidthKeys.includes(key)
+  )
+  const halfLength = Math.ceil(remainingKeys.length / 2)
+  const firstColumnKeys = remainingKeys.slice(0, halfLength)
+  const secondColumnKeys = remainingKeys.slice(halfLength)
+
+  const keyComponents = {
+    userID: (
+      <div key="userID" className="pt-3">
+        <Label>User</Label>
+        <InputDropDown
+          label="users"
+          options={users}
+          onChange={(id) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              userID: id,
+            }))
+          }}
+          defaultValue={getNameByID(formData.userID, users, "user")}
+          disabled={true}
+        />
+      </div>
+    ),
+    payment: (
+      <div key="payment" className="pt-3">
+        <Label>Payment Status</Label>
+        <DropDown
+          options={payment}
+          defaultValue={formData.payment === true ? "Paid" : "Not Paid"}
+          onChange={(status) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              payment: status === "Not Paid" ? false : true,
+            }))
+          }}
+        />
+      </div>
+    ),
+    category: (
+      <div key="category">
+        <Label>Category</Label>
+        <DropDown
+          label="category"
+          options={categories}
+          defaultValue={formData.categoryID}
+          onChange={(id) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              categoryID: id,
+            }))
+          }}
+        />
+      </div>
+    ),
+    date: (
+      <div key="date" className="pt-3">
+        <Label className="block text-sm font-medium text-gray-700">Date</Label>
+        <Input
+          type="date"
+          id="date"
+          name="date"
+          value={isFormatted ? formFormatDate(formData.date) : formData.date}
+          onChange={(e) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              date: e.target.value,
+            }))
+            setIsFormatted(false)
+          }}
+          disabled={true}
+        />
+      </div>
+    ),
+    status: (
+      <div className="pt-3" key="status">
+        <Label className="block text-sm font-medium text-gray-700">
+          Order Status
+        </Label>
+        <DropDown
+          options={orderStatus}
+          defaultValue={formData.status}
+          onChange={(type) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              status: type,
+            }))
+          }}
+        />
+      </div>
+    ),
+  }
+
+  const renderField = (key) =>
+    keyComponents[key] || (
+      <div key={key}>
+        <Label>{keyMapping[key] || key}</Label>
+        <Input
+          name={key}
+          type="text"
+          value={formData[key] || ""}
+          onChange={(e) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              [e.target.name]: e.target.value,
+            }))
+          }}
+        />
+      </div>
+    )
+
+  console.log(formData)
+
   return (
     <div className="pt-10">
       <h2>
@@ -151,271 +283,76 @@ const UpdateForm = () => {
       </h2>
       <div>
         <div className="pt-3">
-          {Object.keys(formData)
-            .filter((key) => key !== "_id" && key !== "__v" && key !== "amount")
-            .map(
-              (key) =>
-                key === "image" && (
-                  <div key={key}>
-                    <Label>Upload Image</Label>
-                    <div className="flex items-center gap-3">
-                      <label htmlFor="image">
-                        <div className="flex items-center justify-center">
-                          <img
-                            src={
-                              image
-                                ? URL.createObjectURL(image)
-                                : formData.image
-                                  ? `${backendImgURL}/${formData.image}`
-                                  : UploadAreaImg
-                            }
-                            alt={formData.name || "Image"}
-                            className="w-32 cursor-pointer"
-                          />
-                        </div>
-                      </label>
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        onClick={() => {
-                          setImage(false)
-                          setFormData((prevFormData) => ({
-                            ...prevFormData,
-                            image: null,
-                          }))
-                        }}
-                      >
+          {fullWidthKeys.map((key) => {
+            if (key === "image")
+              return (
+                <div key={key}>
+                  <Label>Upload Image</Label>
+                  <div className="flex items-center gap-3">
+                    <label htmlFor="image">
+                      <div className="flex items-center justify-center">
                         <img
-                          src={TrashIcon}
-                          alt="Trash Icon"
-                          className="h-4 w-4"
+                          src={
+                            image
+                              ? URL.createObjectURL(image)
+                              : formData.image
+                                ? `${backendImgURL}/${formData.image}`
+                                : UploadAreaImg
+                          }
+                          alt={formData.name || "Image"}
+                          className="w-32 cursor-pointer"
                         />
-                      </Button>
-                    </div>
-                    <input
-                      type="file"
-                      name="image"
-                      id="image"
-                      hidden
-                      required
-                      onChange={(e) => {
-                        setImage(e.target.files[0])
+                      </div>
+                    </label>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => {
+                        setImage(false)
                         setFormData((prevFormData) => ({
                           ...prevFormData,
-                          image: e.target.files[0],
+                          image: null,
                         }))
                       }}
-                    />
+                    >
+                      <img
+                        src={TrashIcon}
+                        alt="Trash Icon"
+                        className="h-4 w-4"
+                      />
+                    </Button>
                   </div>
-                )
-            )}
+                  <input
+                    type="file"
+                    name="image"
+                    id="image"
+                    hidden
+                    required
+                    onChange={(e) => {
+                      setImage(e.target.files[0])
+                      setFormData((prevFormData) => ({
+                        ...prevFormData,
+                        image: e.target.files[0],
+                      }))
+                    }}
+                  />
+                </div>
+              )
+            return null
+          })}
         </div>
         <div className="flex gap-5 pt-3">
           <div className="flex flex-1 flex-col gap-3">
-            {Object.keys(formData)
-              .filter(
-                (key) =>
-                  key !== "_id" &&
-                  key !== "__v" &&
-                  key !== "amount" &&
-                  key !== "image"
-              )
-              .map((key) =>
-                key === "userID" ? (
-                  <div key={key} className="pt-3">
-                    <Label className="block text-sm font-medium text-gray-700">
-                      User
-                    </Label>
-                    <InputDropDown
-                      label="users"
-                      options={users}
-                      onChange={(id) => {
-                        setFormData((prevFormData) => ({
-                          ...prevFormData,
-                          userID: id,
-                        }))
-                      }}
-                      defaultValue={getNameByID(formData.userID, users, "user")}
-                      disabled={true}
-                    />
-                  </div>
-                ) : key === "payment" ? (
-                  <div className="pt-3">
-                    <Label className="block text-sm font-medium text-gray-700">
-                      Payment Status
-                    </Label>
-                    <DropDown
-                      options={payment}
-                      onChange={(status) => {
-                        setFormData((prevFormData) => ({
-                          ...prevFormData,
-                          payment: status === "Not Paid" ? false : true,
-                        }))
-                      }}
-                      defaultValue={
-                        formData.payment === true ? "Paid" : "Not Paid"
-                      }
-                    />
-                  </div>
-                ) : key === "category" ? (
-                  <div>
-                    <Label>Category</Label>
-                    <DropDown
-                      options={categories}
-                      defaultValue={formData.category}
-                      onChange={(status) => {
-                        setFormData((prevFormData) => ({
-                          ...prevFormData,
-                          category: status,
-                        }))
-                      }}
-                    />
-                  </div>
-                ) : (
-                  key === "price" && (
-                    <div key={key}>
-                      <Label className="block text-sm font-medium text-gray-700">
-                        Price
-                      </Label>
-                      <Input
-                        name={key}
-                        type="number"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        min="0"
-                        value={formData[key] || ""}
-                        onChange={(e) => {
-                          setFormData((prevFormData) => ({
-                            ...prevFormData,
-                            price: e.target.value,
-                          }))
-                        }}
-                        required
-                      />
-                    </div>
-                  )
-                )
-              )}
+            {firstColumnKeys.map((key) => renderField(key))}
           </div>
 
           <div className="flex flex-1 flex-col gap-3">
-            {Object.keys(formData)
-              .filter(
-                (key) =>
-                  key !== "_id" &&
-                  key !== "__v" &&
-                  key !== "amount" &&
-                  key !== "payment" &&
-                  key !== "address" &&
-                  key !== "items" &&
-                  key !== "deliveryType" &&
-                  key !== "userID" &&
-                  key !== "image" &&
-                  key !== "description" &&
-                  key !== "category" &&
-                  key !== "price"
-              )
-              .map((key) =>
-                key === "date" ? (
-                  <div key={key} className="pt-3">
-                    <Label className="block text-sm font-medium text-gray-700">
-                      Date
-                    </Label>
-                    <Input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={
-                        isFormatted
-                          ? formFormatDate(formData.date)
-                          : formData.date
-                      }
-                      onChange={(e) => {
-                        setFormData((prevFormData) => ({
-                          ...prevFormData,
-                          date: e.target.value,
-                        }))
-                        setIsFormatted(false)
-                      }}
-                      disabled={true}
-                    />
-                  </div>
-                ) : key === "status" ? (
-                  <div className="pt-3">
-                    <Label className="block text-sm font-medium text-gray-700">
-                      Order Status
-                    </Label>
-                    <DropDown
-                      options={orderStatus}
-                      defaultValue={formData.status}
-                      onChange={(type) => {
-                        setFormData((prevFormData) => ({
-                          ...prevFormData,
-                          status: type,
-                        }))
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div>
-                    <label
-                      htmlFor={key}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      {keyMapping[key] || key}
-                    </label>
-                    <Input
-                      name={key}
-                      type={
-                        key === "rating" ||
-                        key === "salary" ||
-                        key === "unitPrice" ||
-                        key === "price" ||
-                        key === "quantity"
-                          ? "number"
-                          : key === "phone"
-                            ? "tel"
-                            : key === "email"
-                              ? "email"
-                              : "text"
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                      step={
-                        key === "rating"
-                          ? "0.1"
-                          : key === "salary" ||
-                              key === "unitPrice" ||
-                              key === "price"
-                            ? "0.01"
-                            : undefined
-                      }
-                      min={
-                        key === "rating" || key === "unitPrice"
-                          ? "0"
-                          : key === "salary"
-                            ? "17.30"
-                            : key === "quantity"
-                              ? "1"
-                              : undefined
-                      }
-                      max={key === "rating" ? "5" : undefined}
-                      value={formData[key] || ""}
-                      onChange={(e) => {
-                        const { name, value } = e.target
-                        setFormData((prevFormData) => ({
-                          ...prevFormData,
-                          [name]: value,
-                        }))
-                      }}
-                      required
-                    />
-                  </div>
-                )
-              )}
+            {secondColumnKeys.map((key) => renderField(key))}
           </div>
         </div>
         <div className="pt-3">
-          {Object.keys(formData)
-            .filter((key) => key !== "_id" && key !== "__v" && key !== "amount")
+          {fullWidthKeys
+            .filter((key) => key !== "image")
             .map((key) =>
               key === "address" ? (
                 <div key={key} className="pt-3">
@@ -672,7 +609,7 @@ const UpdateForm = () => {
                 </div>
               ) : (
                 key === "description" && (
-                  <div>
+                  <div key={key}>
                     <Label>Description</Label>
                     <TextArea
                       placeholder=""

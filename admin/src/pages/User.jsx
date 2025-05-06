@@ -25,7 +25,6 @@ const User = () => {
           },
         })
         setUser(res.data.user)
-        console.log(res.data.user.shippingAddress)
         setShippingAddress(res.data.user.shippingAddress)
         setBillingAddress(res.data.user.billingAddress)
         const ordersRes = await axios.get(

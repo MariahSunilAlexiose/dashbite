@@ -6,7 +6,7 @@ import { checkMissingFields } from "../validationUtils.js"
 
 // add dish item
 const addDish = async (req, res) => {
-  const { name, description, price, category, rating } = req.body
+  const { name, description, price, categoryID, rating } = req.body
   const { filename } = req.file || {}
 
   // Check missing fields
@@ -14,7 +14,7 @@ const addDish = async (req, res) => {
     "name",
     "description",
     "price",
-    "category",
+    "categoryID",
     "rating",
   ])
 
@@ -38,7 +38,7 @@ const addDish = async (req, res) => {
     name,
     description,
     price,
-    category,
+    categoryID,
     rating,
     image: filename,
   })
@@ -107,12 +107,12 @@ const removeDish = async (req, res) => {
 // update dish item
 const updateDish = async (req, res) => {
   const { dishID } = req.params
-  const { name, description, price, category, rating } = req.body
+  const { name, description, price, categoryID, rating } = req.body
   let missingFieldsResponse = checkMissingFields("dish", req.body, [
     "name",
     "description",
     "price",
-    "category",
+    "categoryID",
     "rating",
   ])
 
@@ -129,7 +129,7 @@ const updateDish = async (req, res) => {
       name: name || dish.name,
       description: description || dish.description,
       price: price || dish.price,
-      category: category || dish.category,
+      categoryID: categoryID || dish.categoryID,
       rating: rating || dish.rating,
     }
 

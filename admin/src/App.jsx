@@ -2,7 +2,16 @@ import React from "react"
 import { Route, Routes } from "react-router-dom"
 
 import { Sidebar, Toasts } from "@cmp"
-import { AddForm, Dishes, Order, Orders, UpdateForm, User, Users } from "@pages"
+import {
+  AddForm,
+  Categories,
+  Dishes,
+  Order,
+  Orders,
+  UpdateForm,
+  User,
+  Users,
+} from "@pages"
 
 import { sidebarItems } from "@/constants"
 
@@ -20,6 +29,7 @@ function App() {
           <Route path="/update_form" element={<UpdateForm />} />
           <Route path="/users" element={<Users />} />
           <Route path="/users/:userID" element={<User />} />
+          <Route path="/categories" element={<Categories />} />
         </Routes>
       </div>
     </div>
