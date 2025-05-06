@@ -16,13 +16,9 @@ const ProtectedRoute = ({ children }) => {
     return () => clearTimeout(timer)
   }, [])
 
-  if (isWaiting) {
-    return null
-  }
+  if (isWaiting) return null
 
-  if (!token) {
-    return <Navigate to="/login" />
-  }
+  if (!token) return <Navigate to="/login" />
 
   return children
 }

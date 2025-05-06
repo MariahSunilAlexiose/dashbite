@@ -14,22 +14,18 @@ const Profile = () => {
 
   const setUpdates = async (updatedUser) => {
     try {
-      if (updatedUser.newPassword !== updatedUser.repeatNewPassword) {
-        addToast(
+      if (updatedUser.newPassword !== updatedUser.repeatNewPassword)
+        return addToast(
           "error",
           "Error",
           "New password and Repeat New Password do not match!"
         )
-        return
-      }
       const res = await axios.put(`${url}/api/user/`, updatedUser, {
         headers: { token },
       })
       addToast("success", "Success", "Updated user successfully!")
-      if (!res.data.success) {
-        addToast("error", "Error", `Error: ${res.data.message}`)
-        return
-      }
+      if (!res.data.success)
+        return addToast("error", "Error", `Error: ${res.data.message}`)
     } catch (err) {
       addToast("error", "Error", `Error in updating user: ${err}`)
     }
@@ -46,9 +42,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const fetchedUser = await fetchUser({ url, token, addToast })
-      if (fetchedUser) {
-        setUser(fetchedUser)
-      }
+      if (fetchedUser) setUser(fetchedUser)
     }
     fetchUserData()
   }, [token, userID])

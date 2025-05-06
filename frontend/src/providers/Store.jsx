@@ -28,10 +28,8 @@ export const StoreProvider = (props) => {
       const res = await axios.get(`${url}/api/cart/`, {
         headers: { token: userToken },
       })
-      if (!res.data.success) {
-        addToast("error", "Error", `Error: ${res.data.message}`)
-        return
-      }
+      if (!res.data.success)
+        return addToast("error", "Error", `Error: ${res.data.message}`)
       setCartItems(res.data.cartData)
     } catch (err) {
       console.error(err)
@@ -43,10 +41,8 @@ export const StoreProvider = (props) => {
   const fetchDishes = async () => {
     try {
       const res = await axios.get(`${url}/api/dish/`)
-      if (!res.data.success) {
-        addToast("error", "Error", `Error: ${res.data.message}`)
-        return
-      }
+      if (!res.data.success)
+        return addToast("error", "Error", `Error: ${res.data.message}`)
       setDishes(res.data.data)
     } catch (err) {
       console.error(err)
@@ -98,8 +94,7 @@ export const StoreProvider = (props) => {
       )
       if (!res.data.success) {
         console.error(res.data.message)
-        addToast("error", "Error", `Error: ${res.data.message}`)
-        return
+        return addToast("error", "Error", `Error: ${res.data.message}`)
       }
     }
   }
@@ -121,8 +116,7 @@ export const StoreProvider = (props) => {
       )
       if (!res.data.success) {
         console.error(res.data.message)
-        addToast("error", "Error", `Error: ${res.data.message}`)
-        return
+        return addToast("error", "Error", `Error: ${res.data.message}`)
       }
     }
   }
@@ -139,8 +133,7 @@ export const StoreProvider = (props) => {
       })
       if (!res.data.success) {
         console.error(res.data.message)
-        addToast("error", "Error", `Error: ${res.data.message}`)
-        return
+        return addToast("error", "Error", `Error: ${res.data.message}`)
       }
     }
   }
@@ -150,9 +143,7 @@ export const StoreProvider = (props) => {
     for (const item in cartItems) {
       if (cartItems[item] > 0) {
         let itemInfo = dishes.find((dish) => dish._id === item)
-        if (itemInfo) {
-          totalAmt += itemInfo.price * cartItems[item]
-        }
+        if (itemInfo) totalAmt += itemInfo.price * cartItems[item]
       }
     }
     return totalAmt

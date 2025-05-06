@@ -4,23 +4,21 @@ export const checkMissingFields = (tableName, data, requiredFields) => {
       (field) => data[field] && data[field] !== ""
     )
 
-    if (!hasAtLeastOneField) {
+    if (!hasAtLeastOneField)
       return {
         success: false,
         message: `At least one of the following fields must be provided: ${requiredFields.join(", ")}`,
       }
-    }
   } else {
     const missingFields = requiredFields.filter(
       (field) => !data[field] || data[field] === ""
     )
 
-    if (missingFields.length > 0) {
+    if (missingFields.length > 0)
       return {
         success: false,
         message: `Missing required fields: ${missingFields.join(", ")}`,
       }
-    }
   }
   return null
 }

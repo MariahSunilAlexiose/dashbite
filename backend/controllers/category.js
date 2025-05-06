@@ -7,6 +7,7 @@ import { checkMissingFields } from "../validationUtils.js"
 const addCategory = async (req, res) => {
   const { name } = req.body
   const { filename } = req.file || {}
+
   let missingFieldsResponse = checkMissingFields("order", req.body, ["name"])
   if (!filename) {
     if (!missingFieldsResponse)
@@ -17,6 +18,7 @@ const addCategory = async (req, res) => {
     else missingFieldsResponse.message += " image"
   }
   if (missingFieldsResponse) return res.json(missingFieldsResponse)
+
   try {
     const category = new categoryModel({ name, image: filename })
     await category.save()
@@ -31,15 +33,19 @@ const updateCategory = async (req, res) => {
   const { categoryID } = req.params
   const { name } = req.body
   const { filename } = req.file || {}
+
   let missingFieldsResponse = checkMissingFields("category", req.body, ["name"])
   if (missingFieldsResponse) return res.json(missingFieldsResponse)
+
   try {
     const category = await categoryModel.findById(categoryID)
     if (!category)
       return res.json({ success: false, message: "Category not found!" })
+
     let updatedData = {
       name: name || category.name,
     }
+
     if (req.file) {
       const image_filename = `${filename}`
       updatedData.image = image_filename
@@ -55,6 +61,7 @@ const updateCategory = async (req, res) => {
         })
       }
     }
+
     const newCategory = await categoryModel.findByIdAndUpdate(
       categoryID,
       updatedData,
@@ -74,18 +81,21 @@ const updateCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
   const { categoryID } = req.params
+
   try {
     const category = await categoryModel.findById(categoryID)
     if (!category)
       return res.json({ success: false, message: "Category not found!" })
+
     const dishOrders = await foodModel.find({ categoryID: categoryID })
-    console.log(dishOrders)
     if (dishOrders.length > 0)
       return res.json({
         success: false,
         message: "Category is present in dishes and cannot be deleted!",
       })
+
     fs.unlink(`uploads/${category.image}`, () => {})
+
     const deletedCategory = await categoryModel.findByIdAndDelete(categoryID)
     if (!deletedCategory)
       return res.json({
@@ -101,6 +111,7 @@ const deleteCategory = async (req, res) => {
 
 const getCategory = async (req, res) => {
   const { categoryID } = req.params
+
   try {
     const category = await categoryModel.findById(categoryID)
     if (!category)

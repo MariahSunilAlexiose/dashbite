@@ -48,9 +48,7 @@ const Table = ({ tableName, data, pageID, extraData }) => {
     dataMap.set(index, item)
   })
 
-  if (!data || data.length === 0) {
-    return <div>No data available</div>
-  }
+  if (!data || data.length === 0) return <div>No data available</div>
 
   return (
     <div className="relative w-full overflow-auto text-center">

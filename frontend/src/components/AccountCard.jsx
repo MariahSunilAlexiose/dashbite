@@ -24,10 +24,8 @@ const AccountCard = () => {
         const res = await axios.put(`${url}/api/user/profilePic`, formData, {
           headers: { "Content-Type": "multipart/form-data", token },
         })
-        if (!res.data.success) {
-          addToast("error", "Error", `Error: ${res.data.message}`)
-          return
-        }
+        if (!res.data.success)
+          return addToast("error", "Error", `Error: ${res.data.message}`)
         setUser((prevState) => ({
           ...prevState,
           profilePic: res.data.profilePic,
@@ -42,9 +40,7 @@ const AccountCard = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const fetchedUser = await fetchUser({ url, token, addToast })
-      if (fetchedUser) {
-        setUser(fetchedUser)
-      }
+      if (fetchedUser) setUser(fetchedUser)
     }
     fetchUserData()
   }, [token, userID])

@@ -14,9 +14,7 @@ const InputDropDown = ({
   const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
-    if (defaultValue) {
-      setSearchTerm(defaultValue)
-    }
+    if (defaultValue) setSearchTerm(defaultValue)
   }, [defaultValue])
 
   return (

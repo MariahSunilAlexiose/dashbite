@@ -11,19 +11,15 @@ const MyOrders = () => {
 
   const [orders, setOrders] = useState([])
   const fetchOrders = async () => {
-    const res = await axios.get(url + "/api/order/myorders", {
+    const res = await axios.get(`${url}/api/order/myorders`, {
       headers: { token },
     })
-    if (!res.data.success) {
-      addToast("error", "Error", `Error: ${res.data.message}`)
-      return
-    }
+    if (!res.data.success)
+      return addToast("error", "Error", `Error: ${res.data.message}`)
     setOrders(res.data.data)
   }
   useEffect(() => {
-    if (token) {
-      fetchOrders()
-    }
+    if (token) fetchOrders()
   }, [token])
   return (
     <div>

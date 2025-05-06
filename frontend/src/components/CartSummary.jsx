@@ -22,11 +22,8 @@ const CartSummary = ({ deliveryValue, deliveryInfo }) => {
   const totalCartAmt = getTotalCartAmt()
   let adjustedTotal = totalCartAmt
 
-  if (selectedValue === "Express Shipping") {
-    adjustedTotal += 15
-  } else if (selectedValue === "Pick Up") {
-    adjustedTotal -= totalCartAmt * 0.05
-  }
+  if (selectedValue === "Express Shipping") adjustedTotal += 15
+  else if (selectedValue === "Pick Up") adjustedTotal -= totalCartAmt * 0.05
 
   const placeOrder = async (e) => {
     e.preventDefault()
@@ -49,10 +46,8 @@ const CartSummary = ({ deliveryValue, deliveryInfo }) => {
       let res = await axios.post(url + "/api/order/place", orderData, {
         headers: { token },
       })
-      if (!res.data.success) {
-        addToast("error", "Error", `Error: ${res.data.message}`)
-        return
-      }
+      if (!res.data.success)
+        return addToast("error", "Error", `Error: ${res.data.message}`)
       window.location.replace(res.data.session_url)
     } catch (err) {
       addToast("error", "Error", `Error in placing order: ${err}`)
@@ -96,9 +91,8 @@ const CartSummary = ({ deliveryValue, deliveryInfo }) => {
           variant="ghost"
           className="bg-foreground hover:bg-blue-80 text-background hover:text-background! dark:hover:bg-blue-30 w-full"
           onClick={(e) => {
-            if (deliveryValue) {
-              placeOrder(e)
-            } else {
+            if (deliveryValue) placeOrder(e)
+            else {
               e.preventDefault()
               navigate("/order", { state: { selectedValue } })
             }

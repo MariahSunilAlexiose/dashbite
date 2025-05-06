@@ -11,6 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 const placeOrder = async (req, res) => {
   const { items, amount, address, deliveryType } = req.body
+
   let missingFieldsResponse = checkMissingFields("order", req.body, [
     "items",
     "amount",
@@ -68,6 +69,7 @@ const placeOrder = async (req, res) => {
 
 const verifyOrder = async (req, res) => {
   const { orderID, success } = req.body
+
   let missingFieldsResponse = checkMissingFields("order", req.body, [
     "orderID",
     "success",
@@ -79,15 +81,13 @@ const verifyOrder = async (req, res) => {
       const neworder = await orderModel.findByIdAndUpdate(orderID, {
         payment: true,
       })
-      if (!neworder) {
-        res.json({ success: false, message: "Error in updating order!" })
-        return
-      }
+      if (!neworder)
+        return res.json({ success: false, message: "Error in updating order!" })
+
       const order = await orderModel.findById(orderID)
-      if (!order) {
-        res.json({ success: false, message: "Order not found!" })
-        return
-      }
+      if (!order)
+        return res.json({ success: false, message: "Order not found!" })
+
       await userModel.findByIdAndUpdate(order.userID, { cartData: {} })
       res.json({ success: true, message: "Paid" })
     } else {
@@ -103,10 +103,8 @@ const userOrders = async (req, res) => {
   const userID = req.userID || req.params.userID
   try {
     const orders = await orderModel.find({ userID: userID }).sort({ date: -1 })
-    if (!orders) {
-      res.json({ success: false, message: "Orders not found!" })
-      return
-    }
+    if (!orders)
+      return res.json({ success: false, message: "Orders not found!" })
     res.json({ success: true, data: orders })
   } catch (err) {
     res.json({
@@ -121,19 +119,17 @@ const getOrderByID = async (req, res) => {
     const { orderID } = req.params
 
     const order = await orderModel.findById(orderID)
-    if (!order) {
+    if (!order)
       return res.json({
         success: false,
         message: "Order not found",
       })
-    }
 
-    if (order.userID.toString() !== req.userID) {
+    if (order.userID.toString() !== req.userID)
       return res.json({
         success: false,
         message: "Not authorized to access this order",
       })
-    }
 
     res.json({ success: true, data: order })
   } catch (err) {
@@ -144,10 +140,8 @@ const getOrderByID = async (req, res) => {
 const getOrders = async (req, res) => {
   try {
     const orders = await orderModel.find({}).sort({ date: -1 })
-    if (!orders) {
-      res.json({ success: false, message: "Orders not found!" })
-      return
-    }
+    if (!orders)
+      return res.json({ success: false, message: "Orders not found!" })
     res.json({ success: true, data: orders })
   } catch (err) {
     res.json({ success: false, message: `Error: ${err}` })
@@ -158,10 +152,7 @@ const getOrder = async (req, res) => {
   const { orderID } = req.params
   try {
     const order = await orderModel.findOne({ _id: orderID })
-    if (!order) {
-      res.json({ success: false, message: "Order not found!" })
-      return
-    }
+    if (!order) return res.json({ success: false, message: "Order not found!" })
     res.json({ success: true, data: order })
   } catch (err) {
     res.json({ success: false, message: `Error! ${err}` })
@@ -170,18 +161,14 @@ const getOrder = async (req, res) => {
 
 const deleteOrder = async (req, res) => {
   const { orderID } = req.params
-  const order = await orderModel.findById(orderID)
-  if (!order) {
-    res.json({ success: false, message: "Order not found!" })
-    return
-  }
 
   try {
-    const order = await orderModel.findByIdAndDelete(orderID)
-    if (!order) {
-      res.json({ success: false, message: "Error in deleting order!" })
-      return
-    }
+    const order = await orderModel.findById(orderID)
+    if (!order) return res.json({ success: false, message: "Order not found!" })
+
+    const deletedOrder = await orderModel.findByIdAndDelete(orderID)
+    if (!deletedOrder)
+      return res.json({ success: false, message: "Error in deleting order!" })
     res.json({
       success: true,
       message: `Order with ID ${orderID} has been deleted successfully.`,
@@ -194,6 +181,7 @@ const deleteOrder = async (req, res) => {
 const addOrder = async (req, res) => {
   const { userID, items, amount, deliveryType, status, payment, address } =
     req.body
+
   let missingFieldsResponse = checkMissingFields("order", req.body, [
     "items",
     "amount",
@@ -202,9 +190,8 @@ const addOrder = async (req, res) => {
     "address",
   ])
   if (missingFieldsResponse) return res.json(missingFieldsResponse)
-  if (!payment) {
+  if (!payment)
     return res.json({ success: false, message: "Payment not done!" })
-  }
 
   const newOrder = new orderModel({
     userID: userID,
@@ -236,6 +223,7 @@ const updateOrder = async (req, res) => {
     payment,
     address,
   } = req.body
+
   let missingFieldsResponse = checkMissingFields("order", req.body, [
     "userID",
     "items",
@@ -245,14 +233,11 @@ const updateOrder = async (req, res) => {
     "payment",
     "address",
   ])
-
   if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
   try {
     const order = await orderModel.findById(orderID)
-    if (!order) {
-      return res.json({ success: false, message: "Order not found!" })
-    }
+    if (!order) return res.json({ success: false, message: "Order not found!" })
 
     const newOrder = await orderModel.findByIdAndUpdate(
       orderID,
@@ -270,13 +255,10 @@ const updateOrder = async (req, res) => {
         new: true,
       }
     )
-    if (!newOrder) {
+    if (!newOrder)
       return res.json({ success: false, message: "Error in updating order!" })
-    }
 
-    // Save the updated order
     await order.save()
-
     res.json({
       success: true,
       message: `Order ${orderID} updated successfully.`,

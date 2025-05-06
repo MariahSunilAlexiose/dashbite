@@ -26,19 +26,14 @@ const Verify = () => {
         setTimeout(() => {
           window.location.reload()
         }, 100)
-      } else {
-        addToast("error", "Error", `Error: ${res.data.message}`)
-        return
-      }
+      } else return addToast("error", "Error", `Error: ${res.data.message}`)
     } catch (err) {
       addToast("error", "Error", `Error in retrieving order: ${err}`)
     }
   }
 
   useEffect(() => {
-    if (success && orderID) {
-      verifyPayment()
-    }
+    if (success && orderID) verifyPayment()
   }, [orderID, success])
 
   return (

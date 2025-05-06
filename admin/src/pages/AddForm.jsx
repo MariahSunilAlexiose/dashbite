@@ -478,11 +478,9 @@ const AddForm = () => {
                       onChange={(e) => {
                         const { name, value } = e.target
                         let parsedValue
-                        if (name === "price" || key === "rating") {
+                        if (name === "price" || key === "rating")
                           parsedValue = parseFloat(value)
-                        } else {
-                          parsedValue = value
-                        }
+                        else parsedValue = value
                         setFormData((prevFormData) => ({
                           ...prevFormData,
                           [name]: parsedValue,

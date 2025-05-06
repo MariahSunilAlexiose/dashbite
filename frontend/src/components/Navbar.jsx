@@ -37,9 +37,7 @@ const MobileNavBar = ({
   useEffect(() => {
     const fetchUserData = async () => {
       const fetchedUser = await fetchUser({ url, token, addToast })
-      if (fetchedUser) {
-        setUser(fetchedUser)
-      }
+      if (fetchedUser) setUser(fetchedUser)
     }
     fetchUserData()
   }, [token, userID])
@@ -208,9 +206,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const fetchedUser = await fetchUser({ url, token, addToast })
-      if (fetchedUser) {
-        setUser(fetchedUser)
-      }
+      if (fetchedUser) setUser(fetchedUser)
     }
     fetchUserData()
   }, [token, userID])

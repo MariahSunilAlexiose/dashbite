@@ -50,14 +50,11 @@ const Pagination = ({
   currentPage,
   setCurrentPage,
 }) => {
-  if (totalItems <= itemsPerPage) {
-    return null
-  }
+  if (totalItems <= itemsPerPage) return null
 
   const pageNumbers = []
-  for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
+  for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++)
     pageNumbers.push(i)
-  }
 
   const maxPageNum = 5 // Maximum page numbers to display at once
   const pageNumLimit = Math.floor(maxPageNum / 2) // Current page should be in the middle if possible
@@ -68,15 +65,11 @@ const Pagination = ({
   )
 
   const handleNextPage = () => {
-    if (currentPage < pageNumbers.length) {
-      setCurrentPage(currentPage + 1)
-    }
+    if (currentPage < pageNumbers.length) setCurrentPage(currentPage + 1)
   }
 
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
-    }
+    if (currentPage > 1) setCurrentPage(currentPage - 1)
   }
 
   const renderPages = () => {

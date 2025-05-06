@@ -611,7 +611,6 @@ export const fetchUser = async ({ url, token, addToast }) => {
     return userRes.data.user
   } catch (err) {
     console.error(err)
-    addToast("error", "Error", `Error in retrieving user: ${err}`)
-    return
+    return addToast("error", "Error", `Error in retrieving user: ${err}`)
   }
 }

@@ -272,8 +272,6 @@ const UpdateForm = () => {
       </div>
     )
 
-  console.log(formData)
-
   return (
     <div className="pt-10">
       <h2>
