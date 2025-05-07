@@ -3,6 +3,7 @@ import DropDown from "./DropDown"
 import Input from "./Input"
 import InputDropDown from "./InputDropDown"
 import Label from "./Label"
+import MultiSelectDropDown from "./MultiSelectDropdown"
 import Pagination from "./Pagination"
 import Sidebar from "./Sidebar"
 import Table from "./Table"
@@ -12,6 +13,7 @@ import Toast from "./Toast"
 import Toasts from "./Toasts"
 
 export {
+  MultiSelectDropDown,
   InputDropDown,
   Pagination,
   Table,

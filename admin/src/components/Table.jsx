@@ -11,13 +11,24 @@ import { backendImgURL, backendURL, formatDate, keyMapping } from "@/constants"
 
 import { Pagination } from "."
 
-const handleDelete = async ({ addToast, ID, tableName }) => {
+const handleDelete = async ({ addToast, ID, tableName, tableID }) => {
   try {
-    const res = await axios.delete(`${backendURL}/${tableName}/${ID}`, {
-      headers: {
-        token: import.meta.env.VITE_ADMIN_TOKEN,
-      },
-    })
+    let res
+    if (tableName === "cuisineDish")
+      res = await axios.delete(
+        `${backendURL}/cuisine/${tableID}/dishes/${ID}`,
+        {
+          headers: {
+            token: import.meta.env.VITE_ADMIN_TOKEN,
+          },
+        }
+      )
+    else
+      res = await axios.delete(`${backendURL}/${tableName}/${ID}`, {
+        headers: {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        },
+      })
     if (res.data.success === false)
       return addToast("error", "Error", res.data.message)
     addToast("success", "Success", "Removed Item!")
@@ -56,7 +67,10 @@ const Table = ({ tableName, data, pageID, extraData }) => {
         <thead className="[&_tr]:border-b">
           <tr className="border-b transition-colors">
             {Object.keys(data[0])
-              .filter((key) => key !== "_id" && key !== "categoryID")
+              .filter(
+                (key) =>
+                  key !== "_id" && key !== "categoryID" && key !== "cuisineIDs"
+              )
               .map((key) => keyMapping[key] || key)
               .map((header) => (
                 <th
@@ -75,7 +89,12 @@ const Table = ({ tableName, data, pageID, extraData }) => {
               className="cursor-pointer border-b transition-colors hover:bg-[#f1f5f9]"
             >
               {Object.keys(data[0])
-                .filter((key) => key !== "_id" && key !== "categoryID")
+                .filter(
+                  (key) =>
+                    key !== "_id" &&
+                    key !== "categoryID" &&
+                    key !== "cuisineIDs"
+                )
                 .map((header) => (
                   <td
                     key={header}
@@ -186,7 +205,15 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                     size="icon"
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleDelete({ addToast, ID: row._id, tableName })
+                      if (tableName === "cuisineDish") {
+                        handleDelete({
+                          addToast,
+                          tableID: pageID,
+                          ID: row._id,
+                          tableName,
+                        })
+                        console.log(pageID, row._id)
+                      } else handleDelete({ addToast, ID: row._id, tableName })
                     }}
                   >
                     <img src={TrashIcon} alt="Trash Icon" className="h-4 w-4" />

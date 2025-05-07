@@ -1,5 +1,7 @@
 import {
   CheckCircleIcon,
+  CuisineIcon,
+  CuisineWhiteIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
   ShoppingCartIcon,
@@ -45,6 +47,13 @@ export const sidebarItems = [
     iconName: "Tag Icon",
     text: "Categories",
     link: "/categories",
+  },
+  {
+    icon: CuisineIcon,
+    iconDark: CuisineWhiteIcon,
+    iconName: "Cuisine Icon",
+    text: "Cuisines",
+    link: "/cuisines",
   },
 ]
 
@@ -117,6 +126,7 @@ export const keyMapping = {
   email: "Email",
   shippingAddress: "Shipping Address",
   billingAddress: "Billing Address",
+  cuisineNames: "Cuisines",
 }
 
 export const formatDate = (dateString) => {

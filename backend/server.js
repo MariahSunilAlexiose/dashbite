@@ -4,6 +4,7 @@ import express from "express"
 import { connectDB } from "./config/db.js"
 import cartRouter from "./routes/cart.js"
 import categoryRouter from "./routes/category.js"
+import cuisineRouter from "./routes/cuisine.js"
 import dishRouter from "./routes/food.js"
 import orderRouter from "./routes/order.js"
 import userRouter from "./routes/user.js"
@@ -38,3 +39,4 @@ app.use("/api/user", userRouter)
 app.use("/api/cart", cartRouter)
 app.use("/api/order", orderRouter)
 app.use("/api/category", categoryRouter)
+app.use("/api/cuisine", cuisineRouter)

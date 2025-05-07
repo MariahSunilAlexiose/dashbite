@@ -4,8 +4,10 @@ import ChevronLastIcon from "./chevron-last.svg"
 import ChevronLeftIcon from "./chevron-left.svg"
 import ChevronRightIcon from "./chevron-right.svg"
 import ChevronUpDownIcon from "./chevron-up-down.svg"
+import CuisineIcon from "./cuisine.svg"
 import ChevronFirstWhiteIcon from "./dark_mode/chevron-first.svg"
 import ChevronLastWhiteIcon from "./dark_mode/chevron-last.svg"
+import CuisineWhiteIcon from "./dark_mode/cuisine.svg"
 import LogoWhite from "./dark_mode/logo.png"
 import ShoppingCartWhiteIcon from "./dark_mode/shopping-cart.svg"
 import TagWhiteIcon from "./dark_mode/tag.svg"
@@ -28,6 +30,8 @@ import UtensilsCrossedIcon from "./utensils-crossed.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  CuisineIcon,
+  CuisineWhiteIcon,
   TagWhiteIcon,
   TagIcon,
   UserWhiteIcon,

@@ -29,15 +29,17 @@ const Category = () => {
           },
         }
       )
-      const filteredDishes = res.data.data.map((item) => {
-        const { __v, image, createdAt, updatedAt, ...rest } = item // eslint-disable-line no-unused-vars
+      if (res.data.success) {
+        const filteredDishes = res.data.data.map((item) => {
+          const { __v, image, createdAt, updatedAt, cuisineIDs, ...rest } = item // eslint-disable-line no-unused-vars
 
-        return {
-          image,
-          ...rest,
-        }
-      })
-      setDishes(filteredDishes)
+          return {
+            image,
+            ...rest,
+          }
+        })
+        setDishes(filteredDishes)
+      }
     } catch (err) {
       console.error(err)
       addToast("error", "Error", `Error in retrieiving dishes: ${err}`)

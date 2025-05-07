@@ -1,5 +1,6 @@
 import fs from "fs"
 
+import cuisineModel from "../models/cuisine.js"
 import dishModel from "../models/food.js"
 import orderModel from "../models/order.js"
 import { checkMissingFields } from "../validationUtils.js"
@@ -88,7 +89,7 @@ const removeDish = async (req, res) => {
 
 const updateDish = async (req, res) => {
   const { dishID } = req.params
-  const { name, description, price, categoryID, rating } = req.body
+  const { name, description, price, categoryID, rating, cuisineIDs } = req.body
 
   let missingFieldsResponse = checkMissingFields("dish", req.body, [
     "name",
@@ -96,6 +97,7 @@ const updateDish = async (req, res) => {
     "price",
     "categoryID",
     "rating",
+    "cuisineIDs",
   ])
   if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
@@ -103,12 +105,15 @@ const updateDish = async (req, res) => {
     const dish = await dishModel.findById(dishID)
     if (!dish) return res.json({ success: false, message: "Dish not found!" })
 
+    const previousCuisineIDs = dish.cuisineIDs // Find previous cuisines linked to this dish
+
     let updatedData = {
       name: name || dish.name,
       description: description || dish.description,
       price: price || dish.price,
       categoryID: categoryID || dish.categoryID,
       rating: rating || dish.rating,
+      cuisineIDs: cuisineIDs || dish.cuisineIDs,
     }
 
     if (req.file) {
@@ -119,7 +124,7 @@ const updateDish = async (req, res) => {
       if (dish.image)
         fs.unlink(`uploads/${dish.image}`, (err) => {
           if (err)
-            res.json({
+            return res.json({
               success: false,
               message: `Error removing old image: ${err}`,
             })
@@ -129,9 +134,25 @@ const updateDish = async (req, res) => {
     const newDish = await dishModel.findByIdAndUpdate(dishID, updatedData, {
       new: true,
     })
+
     if (!newDish)
       return res.json({ success: false, message: "Error in updating dish!" })
-    res.json({ success: true, message: "Dish updated!" })
+
+    await Promise.all([
+      ...previousCuisineIDs.map((cuisineID) =>
+        cuisineModel.findByIdAndUpdate(cuisineID, {
+          $pull: { dishIDs: dishID }, // Remove dishID from array
+        })
+      ),
+
+      ...cuisineIDs.map((cuisineID) =>
+        cuisineModel.findByIdAndUpdate(cuisineID, {
+          $addToSet: { dishIDs: dishID }, // Ensure dishID is added to array
+        })
+      ),
+    ])
+
+    res.json({ success: true, message: "Dish and cuisines updated!" })
   } catch (err) {
     console.error(err)
     res.json({ success: false, message: `Error in updating dish: ${err}` })

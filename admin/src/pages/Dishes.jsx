@@ -25,11 +25,27 @@ const Dishes = () => {
           const itemRes = await axios.get(
             `${backendURL}/category/${item.categoryID}`
           )
+
+          const cuisineNames = item.cuisineIDs.length
+            ? (
+                await Promise.all(
+                  item.cuisineIDs.map(async (citem) => {
+                    const cuisineRes = await axios.get(
+                      `${backendURL}/cuisine/${citem}`
+                    )
+                    return cuisineRes.data.data.name
+                  })
+                )
+              ).join(", ")
+            : "-"
+
           const { __v, image, ...rest } = item // eslint-disable-line no-unused-vars
+
           return {
             image,
             ...rest,
             category: itemRes.data.data.name || "Unknown",
+            cuisineNames: cuisineNames,
           }
         })
       )
@@ -62,6 +78,7 @@ const Dishes = () => {
                   "description",
                   "price",
                   "rating",
+                  "cuisines",
                 ],
               },
             })

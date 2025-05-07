@@ -7,7 +7,6 @@ import { checkMissingFields } from "../validationUtils.js"
 const addCategory = async (req, res) => {
   const { name } = req.body
   const { filename } = req.file || {}
-
   let missingFieldsResponse = checkMissingFields("order", req.body, ["name"])
   if (!filename) {
     if (!missingFieldsResponse)
@@ -15,7 +14,7 @@ const addCategory = async (req, res) => {
         success: false,
         message: "Missing required field: image",
       }
-    else missingFieldsResponse.message += " image"
+    else missingFieldsResponse.message += ", image"
   }
   if (missingFieldsResponse) return res.json(missingFieldsResponse)
 

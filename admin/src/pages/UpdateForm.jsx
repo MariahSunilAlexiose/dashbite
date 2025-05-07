@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import { Button, DropDown, Input, InputDropDown, Label, TextArea } from "@cmp"
+import {
+  Button,
+  DropDown,
+  Input,
+  InputDropDown,
+  Label,
+  MultiSelectDropDown,
+  TextArea,
+} from "@cmp"
 import { PlusIcon, TrashIcon } from "@icons"
 import { UploadAreaImg } from "@img"
 import { useToast } from "@providers"
@@ -37,6 +45,7 @@ const UpdateForm = () => {
   const [formData, setFormData] = useState(dataToBeUpdated)
   const [users, setUsers] = useState([])
   const [dishes, setDishes] = useState([])
+  const [cuisines, setCuisines] = useState([])
   const [categories, setCategories] = useState([])
   const [selectedItems, setSelectedItems] = useState([])
   const [isFormatted, setIsFormatted] = useState(true)
@@ -120,10 +129,21 @@ const UpdateForm = () => {
     }
   }
 
+  const fetchCuisineData = async () => {
+    try {
+      const response = await axios.get(`${backendURL}/cuisine`)
+      setCuisines(response.data.data)
+    } catch (err) {
+      console.error(err)
+      addToast("error", "Error", `Error fetching item data: ${err}`)
+    }
+  }
+
   const fetchData = async () => {
     if (Object.keys(formData)?.includes("userID")) await fetchUserData()
     if (Object.keys(formData)?.includes("items")) await fetchItemData()
     if (Object.keys(formData)?.includes("category")) await fetchCategoryData()
+    if (Object.keys(formData)?.includes("cuisineIDs")) await fetchCuisineData()
   }
 
   useEffect(() => {
@@ -155,7 +175,8 @@ const UpdateForm = () => {
   }, [formData.deliveryType, totalSum])
 
   const filteredKeys = Object.keys(formData).filter(
-    (key) => !["_id", "__v", "amount", "categoryID"].includes(key)
+    (key) =>
+      !["_id", "__v", "amount", "categoryID", "cuisineNames"].includes(key)
   )
   const fullWidthKeys = filteredKeys.filter((key) =>
     ["image", "description", "address", "items", "deliveryType"].includes(key)
@@ -247,6 +268,26 @@ const UpdateForm = () => {
             setFormData((prevFormData) => ({
               ...prevFormData,
               status: type,
+            }))
+          }}
+        />
+      </div>
+    ),
+    cuisineIDs: (
+      <div>
+        <label
+          htmlFor="cuisines"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Cuisines
+        </label>
+        <MultiSelectDropDown
+          options={cuisines}
+          defaultValue={formData.cuisineIDs}
+          onChange={(selectedIDs) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              cuisineIDs: selectedIDs,
             }))
           }}
         />

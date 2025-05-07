@@ -6,6 +6,8 @@ import {
   AddForm,
   Categories,
   Category,
+  Cuisine,
+  Cuisines,
   Dishes,
   Order,
   Orders,
@@ -32,6 +34,8 @@ function App() {
           <Route path="/users/:userID" element={<User />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/categories/:categoryID" element={<Category />} />
+          <Route path="/cuisines" element={<Cuisines />} />
+          <Route path="/cuisines/:cuisineID" element={<Cuisine />} />
         </Routes>
       </div>
     </div>

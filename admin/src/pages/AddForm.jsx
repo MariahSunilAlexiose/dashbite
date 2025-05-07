@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import { Button, DropDown, Input, InputDropDown } from "@cmp"
+import {
+  Button,
+  DropDown,
+  Input,
+  InputDropDown,
+  MultiSelectDropDown,
+} from "@cmp"
 import { PlusIcon, TrashIcon } from "@icons"
 import { UploadAreaImg } from "@img"
 import { useToast } from "@providers"
@@ -17,12 +23,13 @@ import {
 
 const AddForm = () => {
   const location = useLocation()
-  const { toBeAddedKeys, tableName } = location.state || {}
+  const { toBeAddedKeys, tableName, pageID } = location.state || {}
   const [formData, setFormData] = useState({})
   const { addToast } = useToast()
   const [users, setUsers] = useState([])
   const [dishes, setDishes] = useState([])
   const [categories, setCategories] = useState([])
+  const [cuisines, setCuisines] = useState([])
   const navigate = useNavigate()
   const [selectedItems, setSelectedItems] = useState([])
   const [image, setImage] = useState(false)
@@ -37,15 +44,35 @@ const AddForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await axios.post(`${backendURL}/${tableName}`, formData, {
-        headers: {
-          "Content-Type":
-            tableName === "dish" || tableName === "category"
-              ? "multipart/form-data"
-              : "application/json",
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
-      })
+      let res
+      if (tableName === "cuisineDish")
+        res = await axios.post(
+          `${backendURL}/cuisine/${pageID}/dishes`,
+          formData,
+          {
+            headers: {
+              "Content-Type":
+                tableName === "dish" ||
+                tableName === "category" ||
+                tableName === "cuisine"
+                  ? "multipart/form-data"
+                  : "application/json",
+              token: import.meta.env.VITE_ADMIN_TOKEN,
+            },
+          }
+        )
+      else
+        res = await axios.post(`${backendURL}/${tableName}`, formData, {
+          headers: {
+            "Content-Type":
+              tableName === "dish" ||
+              tableName === "category" ||
+              tableName === "cuisine"
+                ? "multipart/form-data"
+                : "application/json",
+            token: import.meta.env.VITE_ADMIN_TOKEN,
+          },
+        })
       if (res.data.success === false)
         return addToast("error", "Error", res.data.message)
       addToast("success", "Success", "Added")
@@ -95,10 +122,22 @@ const AddForm = () => {
     }
   }
 
+  const fetchCuisineData = async () => {
+    try {
+      const response = await axios.get(`${backendURL}/cuisine`)
+      setCuisines(response.data.data)
+    } catch (err) {
+      console.error(err)
+      addToast("error", "Error", `Error fetching item data: ${err}`)
+    }
+  }
+
   const fetchData = async () => {
     if (toBeAddedKeys?.includes("userID")) await fetchUserData()
-    if (toBeAddedKeys?.includes("items")) await fetchItemData()
+    if (toBeAddedKeys?.includes("items") || toBeAddedKeys?.includes("dishName"))
+      await fetchItemData()
     if (toBeAddedKeys?.includes("category")) await fetchCategoryData()
+    if (toBeAddedKeys?.includes("cuisines")) await fetchCuisineData()
   }
 
   useEffect(() => {
@@ -306,6 +345,24 @@ const AddForm = () => {
                       }}
                     />
                   </div>
+                ) : key === "cuisines" ? (
+                  <div>
+                    <label
+                      htmlFor="cuisines"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Cuisines
+                    </label>
+                    <MultiSelectDropDown
+                      options={cuisines}
+                      onChange={(selectedIDs) => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          cuisineIDs: selectedIDs,
+                        }))
+                      }}
+                    />
+                  </div>
                 ) : key === "image" ? (
                   <div>
                     <label
@@ -347,6 +404,24 @@ const AddForm = () => {
                         setFormData((prevFormData) => ({
                           ...prevFormData,
                           image: e.target.files[0],
+                        }))
+                      }}
+                    />
+                  </div>
+                ) : key === "dishName" ? (
+                  <div>
+                    <label
+                      htmlFor="status"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Dish Name{" "}
+                    </label>
+                    <MultiSelectDropDown
+                      options={dishes}
+                      onChange={(selectedIDs) => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          dishIDs: selectedIDs,
                         }))
                       }}
                     />

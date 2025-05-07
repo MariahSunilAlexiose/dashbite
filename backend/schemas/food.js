@@ -6,8 +6,19 @@ const dishSchema = new mongoose.Schema(
     description: { type: String, required: true },
     price: { type: Number, required: true },
     image: { type: String, required: true },
-    categoryID: { type: String, required: true },
+    categoryID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "categories",
+      required: true,
+    },
     rating: { type: Number, required: true },
+    cuisineIDs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "cuisine",
+        required: true,
+      },
+    ],
   },
   { timestamps: true }
 )
