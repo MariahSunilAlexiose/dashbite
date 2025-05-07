@@ -22,6 +22,7 @@ export const StoreProvider = (props) => {
 
   const [dishes, setDishes] = useState([])
   const [categories, setCategories] = useState([])
+  const [cuisines, setCuisines] = useState([])
 
   // Fetch cart items from the server
   const loadCartData = async (userToken) => {
@@ -63,6 +64,18 @@ export const StoreProvider = (props) => {
     }
   }
 
+  const fetchCuisines = async () => {
+    try {
+      const res = await axios.get(`${url}/api/cuisine/`)
+      if (!res.data.success)
+        return addToast("error", "Error", `Error: ${res.data.message}`)
+      setCuisines(res.data.data)
+    } catch (err) {
+      console.error(err)
+      addToast("error", "Error", `Error in retrieving cart items: ${err}`)
+    }
+  }
+
   const getUserID = async () => {
     const storedToken = localStorage.getItem("token")
     if (storedToken) {
@@ -93,6 +106,7 @@ export const StoreProvider = (props) => {
     getUserID()
     fetchCategories()
     fetchDishes()
+    fetchCuisines()
   }, [])
 
   const addToCart = async (itemID) => {
@@ -164,6 +178,7 @@ export const StoreProvider = (props) => {
   }
 
   const context = {
+    cuisines,
     categories,
     dishes,
     cartItems,

@@ -5,6 +5,7 @@ import { Navbar, Toasts } from "@cmp"
 import {
   Address,
   Cart,
+  Cuisine,
   Home,
   Login,
   MyOrders,
@@ -61,6 +62,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/cuisine/:cuisineID" element={<Cuisine />} />
         </Routes>
       </div>
       <Footer />
