@@ -8,7 +8,7 @@ const dishSchema = new mongoose.Schema(
     image: { type: String, required: true },
     categoryID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "categories",
+      ref: "category",
       required: true,
     },
     rating: { type: Number, required: true },

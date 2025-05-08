@@ -7,7 +7,7 @@ import {
   listDishes,
   removeDish,
   updateDish,
-} from "../controllers/food.js"
+} from "../controllers/dish.js"
 import adminAuthMiddleware from "../middleware/adminauth.js"
 
 const dishRouter = express.Router()

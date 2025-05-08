@@ -1,7 +1,7 @@
 import fs from "fs"
 
 import categoryModel from "../models/category.js"
-import foodModel from "../models/food.js"
+import dishModel from "../models/dish.js"
 import { checkMissingFields } from "../validationUtils.js"
 
 const addCategory = async (req, res) => {
@@ -86,7 +86,7 @@ const deleteCategory = async (req, res) => {
     if (!category)
       return res.json({ success: false, message: "Category not found!" })
 
-    const dishOrders = await foodModel.find({ categoryID: categoryID })
+    const dishOrders = await dishModel.find({ categoryID: categoryID })
     if (dishOrders.length > 0)
       return res.json({
         success: false,
@@ -145,7 +145,7 @@ const getCategoryDishes = async (req, res) => {
   const { categoryID } = req.params
 
   try {
-    const dishes = await foodModel.find({ categoryID })
+    const dishes = await dishModel.find({ categoryID })
 
     if (!dishes.length)
       return res.json({

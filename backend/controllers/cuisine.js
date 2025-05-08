@@ -1,7 +1,7 @@
 import fs from "fs"
 
 import cuisineModel from "../models/cuisine.js"
-import foodModel from "../models/food.js"
+import dishModel from "../models/dish.js"
 import { checkMissingFields } from "../validationUtils.js"
 
 const addCuisine = async (req, res) => {
@@ -73,7 +73,7 @@ const deleteCuisine = async (req, res) => {
     if (!cuisine)
       return res.json({ success: false, message: "Cuisine not found!" })
 
-    const cuisineDishes = await foodModel.find({ cuisineID })
+    const cuisineDishes = await dishModel.find({ cuisineID })
     if (cuisineDishes.length > 0) {
       return res.json({
         success: false,
@@ -126,7 +126,7 @@ const getCuisineDishes = async (req, res) => {
     if (!cuisine)
       return res.json({ success: false, message: "Cuisine not found!" })
 
-    const dishes = await foodModel.find({ _id: { $in: cuisine.dishIDs } })
+    const dishes = await dishModel.find({ _id: { $in: cuisine.dishIDs } })
     if (!dishes.length)
       return res.json({
         success: false,
@@ -160,7 +160,7 @@ const addCuisineDishes = async (req, res) => {
     await cuisine.save()
 
     // Update each dish to include the cuisineID
-    await foodModel.updateMany(
+    await dishModel.updateMany(
       { _id: { $in: uniqueDishIDs } },
       { $addToSet: { cuisineIDs: cuisineID } } // prevent duplicates in array
     )
@@ -189,7 +189,7 @@ const deleteCuisineDishes = async (req, res) => {
     cuisine.dishIDs = cuisine.dishIDs.filter((id) => id.toString() !== dishID) // Remove the dish reference
     await cuisine.save()
 
-    const dish = await foodModel.findById(dishID)
+    const dish = await dishModel.findById(dishID)
     if (!dish) return res.json({ success: false, message: "Dish not found!" })
 
     dish.cuisineIDs = dish.cuisineIDs.filter(

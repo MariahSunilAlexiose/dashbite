@@ -5,7 +5,7 @@ import { connectDB } from "./config/db.js"
 import cartRouter from "./routes/cart.js"
 import categoryRouter from "./routes/category.js"
 import cuisineRouter from "./routes/cuisine.js"
-import dishRouter from "./routes/food.js"
+import dishRouter from "./routes/dish.js"
 import orderRouter from "./routes/order.js"
 import restaurantRouter from "./routes/restaurant.js"
 import userRouter from "./routes/user.js"
@@ -25,6 +25,13 @@ connectDB()
 
 app.get("/", (req, res) => {
   res.send("API is working!")
+})
+
+// eslint-disable-next-line no-unused-vars
+app.use((error, req, res, next) => {
+  const message = `This is the unexpected field: ${error.field}`
+  console.log(message)
+  return res.status(500).send(message)
 })
 
 app.listen(port, () => {
