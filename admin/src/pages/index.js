@@ -6,11 +6,15 @@ import Cuisines from "./Cuisines"
 import Dishes from "./Dishes"
 import Order from "./Order"
 import Orders from "./Orders"
+import Restaurant from "./Restaurant"
+import Restaurants from "./Restaurants"
 import UpdateForm from "./UpdateForm"
 import User from "./User"
 import Users from "./Users"
 
 export {
+  Restaurant,
+  Restaurants,
   Cuisine,
   Cuisines,
   Category,

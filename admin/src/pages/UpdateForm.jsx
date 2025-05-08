@@ -47,6 +47,7 @@ const UpdateForm = () => {
   const [dishes, setDishes] = useState([])
   const [cuisines, setCuisines] = useState([])
   const [categories, setCategories] = useState([])
+  const [restaurants, setRestaurants] = useState([])
   const [selectedItems, setSelectedItems] = useState([])
   const [isFormatted, setIsFormatted] = useState(true)
   const [totalSum, setTotalSum] = useState(0)
@@ -139,11 +140,27 @@ const UpdateForm = () => {
     }
   }
 
+  const fetchRestaurantData = async () => {
+    try {
+      const response = await axios.get(`${backendURL}/restaurant`)
+      setRestaurants(response.data.data)
+    } catch (err) {
+      console.error(err)
+      addToast("error", "Error", `Error fetching item data: ${err}`)
+    }
+  }
+
   const fetchData = async () => {
     if (Object.keys(formData)?.includes("userID")) await fetchUserData()
-    if (Object.keys(formData)?.includes("items")) await fetchItemData()
+    if (
+      Object.keys(formData)?.includes("items") ||
+      Object.keys(formData)?.includes("dishIDs")
+    )
+      await fetchItemData()
     if (Object.keys(formData)?.includes("category")) await fetchCategoryData()
     if (Object.keys(formData)?.includes("cuisineIDs")) await fetchCuisineData()
+    if (Object.keys(formData)?.includes("restaurantID"))
+      await fetchRestaurantData()
   }
 
   useEffect(() => {
@@ -176,10 +193,25 @@ const UpdateForm = () => {
 
   const filteredKeys = Object.keys(formData).filter(
     (key) =>
-      !["_id", "__v", "amount", "categoryID", "cuisineNames"].includes(key)
+      ![
+        "_id",
+        "__v",
+        "amount",
+        "categoryID",
+        "cuisineNames",
+        "restaurantName",
+      ].includes(key)
   )
   const fullWidthKeys = filteredKeys.filter((key) =>
-    ["image", "description", "address", "items", "deliveryType"].includes(key)
+    [
+      "image",
+      "images",
+      "description",
+      "address",
+      "items",
+      "deliveryType",
+      "streetAddress",
+    ].includes(key)
   )
   const remainingKeys = filteredKeys.filter(
     (key) => !fullWidthKeys.includes(key)
@@ -274,7 +306,7 @@ const UpdateForm = () => {
       </div>
     ),
     cuisineIDs: (
-      <div>
+      <div key="cuisineIDs">
         <label
           htmlFor="cuisines"
           className="block text-sm font-medium text-gray-700"
@@ -288,6 +320,46 @@ const UpdateForm = () => {
             setFormData((prevFormData) => ({
               ...prevFormData,
               cuisineIDs: selectedIDs,
+            }))
+          }}
+        />
+      </div>
+    ),
+    dishIDs: (
+      <div key="dishIDs">
+        <label
+          htmlFor="dish"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Dishes
+        </label>
+        <MultiSelectDropDown
+          options={dishes}
+          defaultValue={formData.dishIDs}
+          onChange={(selectedIDs) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              dishIDs: selectedIDs,
+            }))
+          }}
+        />
+      </div>
+    ),
+    restaurantID: (
+      <div key="restaurantID">
+        <label
+          htmlFor="restaurant"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Restaurant
+        </label>
+        <DropDown
+          options={restaurants}
+          defaultValue={formData.restaurantName}
+          onChange={(id) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              restaurantID: id,
             }))
           }}
         />
@@ -325,7 +397,7 @@ const UpdateForm = () => {
           {fullWidthKeys.map((key) => {
             if (key === "image")
               return (
-                <div key={key}>
+                <div key="image">
                   <Label>Upload Image</Label>
                   <div className="flex items-center gap-3">
                     <label htmlFor="image">
@@ -394,7 +466,7 @@ const UpdateForm = () => {
             .filter((key) => key !== "image")
             .map((key) =>
               key === "address" ? (
-                <div key={key} className="pt-3">
+                <div key="address" className="pt-3">
                   <Label className="block text-sm font-medium text-gray-700">
                     Address
                   </Label>
@@ -479,8 +551,60 @@ const UpdateForm = () => {
                     />
                   </div>
                 </div>
+              ) : key === "streetAddress" ? (
+                <div key="streetAddress" className="pt-3">
+                  <Label className="block text-sm font-medium text-gray-700">
+                    Address
+                  </Label>
+                  <div className="flex flex-col gap-4 pt-4">
+                    <Input
+                      type="text"
+                      placeholder="Street"
+                      name="street"
+                      onChange={onChangeHandler}
+                      value={formData.streetAddress.street}
+                      required
+                    />
+                    <div className="flex gap-4">
+                      <Input
+                        type="text"
+                        placeholder="City"
+                        name="city"
+                        onChange={onChangeHandler}
+                        value={formData.streetAddress.city}
+                        required
+                      />
+                      <Input
+                        type="text"
+                        placeholder="State"
+                        name="state"
+                        onChange={onChangeHandler}
+                        value={formData.streetAddress.state}
+                        required
+                      />
+                    </div>
+                    <div className="flex gap-4">
+                      <Input
+                        type="text"
+                        placeholder="Zip Code"
+                        name="zipcode"
+                        onChange={onChangeHandler}
+                        value={formData.streetAddress.zipcode}
+                        required
+                      />
+                      <Input
+                        type="text"
+                        placeholder="Country"
+                        name="country"
+                        onChange={onChangeHandler}
+                        value={formData.streetAddress.country}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
               ) : key === "items" ? (
-                <div key={key} className="pt-3">
+                <div key="items" className="pt-3">
                   <div className="flex justify-between">
                     <Label className="block text-sm font-medium text-gray-700">
                       Menu Items
@@ -624,7 +748,7 @@ const UpdateForm = () => {
                   )}
                 </div>
               ) : key === "deliveryType" ? (
-                <div key={key} className="flex justify-between gap-5">
+                <div key="deliveryType" className="flex justify-between gap-5">
                   <div className="w-full">
                     <Label className="block text-sm font-medium text-gray-700">
                       Delivery Type
@@ -648,7 +772,7 @@ const UpdateForm = () => {
                 </div>
               ) : (
                 key === "description" && (
-                  <div key={key}>
+                  <div key="description">
                     <Label>Description</Label>
                     <TextArea
                       placeholder=""

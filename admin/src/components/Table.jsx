@@ -59,6 +59,11 @@ const Table = ({ tableName, data, pageID, extraData }) => {
     dataMap.set(index, item)
   })
 
+  let updatedTableName = tableName
+  if (tableName === "cuisineDish") {
+    updatedTableName = "dish" // Reset the tableName if it matches these conditions
+  }
+
   if (!data || data.length === 0) return <div>No data available</div>
 
   return (
@@ -69,7 +74,10 @@ const Table = ({ tableName, data, pageID, extraData }) => {
             {Object.keys(data[0])
               .filter(
                 (key) =>
-                  key !== "_id" && key !== "categoryID" && key !== "cuisineIDs"
+                  key !== "_id" &&
+                  key !== "categoryID" &&
+                  key !== "cuisineIDs" &&
+                  key !== "restaurantID"
               )
               .map((key) => keyMapping[key] || key)
               .map((header) => (
@@ -93,7 +101,8 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                   (key) =>
                     key !== "_id" &&
                     key !== "categoryID" &&
-                    key !== "cuisineIDs"
+                    key !== "cuisineIDs" &&
+                    key !== "restaurantID"
                 )
                 .map((header) => (
                   <td
@@ -104,7 +113,8 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                         navigate(`/categories/${row["_id"]}`)
                       else if (
                         tableName !== "dish" &&
-                        tableName !== "orderitem"
+                        tableName !== "orderitem" &&
+                        tableName !== "cuisineDish"
                       )
                         navigate(`/${tableName}s/${row["_id"]}`)
                     }}
@@ -177,43 +187,44 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                 ))}
               {tableName !== "orderitem" && (
                 <td className="flex items-center justify-center gap-3 py-8 align-middle">
-                  {tableName !== "order" && tableName !== "user" && (
-                    <Button
-                      size="icon"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        navigate(`/update_form`, {
-                          state: {
-                            tableName,
-                            pageID: pageID || row._id,
-                            dataToBeUpdated: data.find(
-                              (d) => d._id === row._id
-                            ),
-                          },
-                        })
-                      }}
-                    >
-                      <img
-                        src={PencilIcon}
-                        alt="Pencil Icon"
-                        className="h-4 w-4"
-                      />
-                    </Button>
-                  )}
+                  {tableName !== "order" &&
+                    tableName !== "user" &&
+                    tableName !== "restaurant" && (
+                      <Button
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          navigate(`/update_form`, {
+                            state: {
+                              tableName: updatedTableName || tableName,
+                              pageID: pageID || row._id,
+                              dataToBeUpdated: data.find(
+                                (d) => d._id === row._id
+                              ),
+                            },
+                          })
+                        }}
+                      >
+                        <img
+                          src={PencilIcon}
+                          alt="Pencil Icon"
+                          className="h-4 w-4"
+                        />
+                      </Button>
+                    )}
                   <Button
                     variant="destructive"
                     size="icon"
                     onClick={(e) => {
                       e.stopPropagation()
-                      if (tableName === "cuisineDish") {
+                      if (tableName === "cuisineDish")
                         handleDelete({
                           addToast,
                           tableID: pageID,
                           ID: row._id,
                           tableName,
                         })
-                        console.log(pageID, row._id)
-                      } else handleDelete({ addToast, ID: row._id, tableName })
+                      else handleDelete({ addToast, ID: row._id, tableName })
                     }}
                   >
                     <img src={TrashIcon} alt="Trash Icon" className="h-4 w-4" />

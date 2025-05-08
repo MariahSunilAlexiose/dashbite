@@ -39,6 +39,11 @@ const Dishes = () => {
               ).join(", ")
             : "-"
 
+          const restaurantName = item.restaurantID
+            ? (await axios.get(`${backendURL}/restaurant/${item.restaurantID}`))
+                .data.data.name
+            : "-"
+
           const { __v, image, ...rest } = item // eslint-disable-line no-unused-vars
 
           return {
@@ -46,6 +51,7 @@ const Dishes = () => {
             ...rest,
             category: itemRes.data.data.name || "Unknown",
             cuisineNames: cuisineNames,
+            restaurantName: restaurantName,
           }
         })
       )
@@ -79,6 +85,7 @@ const Dishes = () => {
                   "price",
                   "rating",
                   "cuisines",
+                  "restaurant",
                 ],
               },
             })

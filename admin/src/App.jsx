@@ -11,6 +11,8 @@ import {
   Dishes,
   Order,
   Orders,
+  Restaurant,
+  Restaurants,
   UpdateForm,
   User,
   Users,
@@ -36,6 +38,8 @@ function App() {
           <Route path="/categories/:categoryID" element={<Category />} />
           <Route path="/cuisines" element={<Cuisines />} />
           <Route path="/cuisines/:cuisineID" element={<Cuisine />} />
+          <Route path="/restaurants" element={<Restaurants />} />
+          <Route path="/restaurants/:restaurantID" element={<Restaurant />} />
         </Routes>
       </div>
     </div>

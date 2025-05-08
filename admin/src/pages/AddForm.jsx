@@ -30,9 +30,11 @@ const AddForm = () => {
   const [dishes, setDishes] = useState([])
   const [categories, setCategories] = useState([])
   const [cuisines, setCuisines] = useState([])
+  const [restaurants, setRestaurants] = useState([])
   const navigate = useNavigate()
   const [selectedItems, setSelectedItems] = useState([])
   const [image, setImage] = useState(false)
+  const [images, setImages] = useState([])
 
   const onChangeHandler = (e) => {
     setFormData((prevFormData) => ({
@@ -51,12 +53,7 @@ const AddForm = () => {
           formData,
           {
             headers: {
-              "Content-Type":
-                tableName === "dish" ||
-                tableName === "category" ||
-                tableName === "cuisine"
-                  ? "multipart/form-data"
-                  : "application/json",
+              "Content-Type": "application/json",
               token: import.meta.env.VITE_ADMIN_TOKEN,
             },
           }
@@ -67,7 +64,8 @@ const AddForm = () => {
             "Content-Type":
               tableName === "dish" ||
               tableName === "category" ||
-              tableName === "cuisine"
+              tableName === "cuisine" ||
+              tableName === "restaurant"
                 ? "multipart/form-data"
                 : "application/json",
             token: import.meta.env.VITE_ADMIN_TOKEN,
@@ -132,12 +130,23 @@ const AddForm = () => {
     }
   }
 
+  const fetchRestaurantData = async () => {
+    try {
+      const response = await axios.get(`${backendURL}/restaurant`)
+      setRestaurants(response.data.data)
+    } catch (err) {
+      console.error(err)
+      addToast("error", "Error", `Error fetching item data: ${err}`)
+    }
+  }
+
   const fetchData = async () => {
     if (toBeAddedKeys?.includes("userID")) await fetchUserData()
     if (toBeAddedKeys?.includes("items") || toBeAddedKeys?.includes("dishName"))
       await fetchItemData()
     if (toBeAddedKeys?.includes("category")) await fetchCategoryData()
     if (toBeAddedKeys?.includes("cuisines")) await fetchCuisineData()
+    if (toBeAddedKeys?.includes("restaurant")) await fetchRestaurantData()
   }
 
   useEffect(() => {
@@ -157,6 +166,8 @@ const AddForm = () => {
       }))
     }
   }, [formData.items, dishes])
+
+  console.log(formData)
 
   return (
     <div className="pt-10">
@@ -327,6 +338,56 @@ const AddForm = () => {
                       />
                     </div>
                   </div>
+                ) : key === "streetAddress" ? (
+                  <div>
+                    <label
+                      htmlFor="a"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Address
+                    </label>
+                    <div className="flex flex-col gap-4 pt-4">
+                      <Input
+                        type="text"
+                        placeholder="Street"
+                        name="street"
+                        onChange={onChangeHandler}
+                        required
+                      />
+                      <div className="flex gap-4">
+                        <Input
+                          type="text"
+                          placeholder="City"
+                          name="city"
+                          onChange={onChangeHandler}
+                          required
+                        />
+                        <Input
+                          type="text"
+                          placeholder="State"
+                          name="state"
+                          onChange={onChangeHandler}
+                          required
+                        />
+                      </div>
+                      <div className="flex gap-4">
+                        <Input
+                          type="text"
+                          placeholder="Zip Code"
+                          name="zipcode"
+                          onChange={onChangeHandler}
+                          required
+                        />
+                        <Input
+                          type="text"
+                          placeholder="Country"
+                          name="country"
+                          onChange={onChangeHandler}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
                 ) : key === "category" ? (
                   <div>
                     <label
@@ -408,6 +469,67 @@ const AddForm = () => {
                       }}
                     />
                   </div>
+                ) : key === "images" ? (
+                  <div>
+                    <label
+                      htmlFor="images"
+                      className="block cursor-pointer text-sm font-medium text-gray-700"
+                    >
+                      Upload Images
+                    </label>
+
+                    <label
+                      htmlFor="images"
+                      className="flex cursor-pointer flex-wrap items-center gap-3"
+                    >
+                      {images.length > 0 ? (
+                        images.map((img, index) => (
+                          <div key={index} className="relative">
+                            <img
+                              src={URL.createObjectURL(img)}
+                              alt={`Uploaded Image ${index + 1}`}
+                              className="h-32 w-32"
+                            />
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              onClick={() =>
+                                setImages(images.filter((_, i) => i !== index))
+                              }
+                            >
+                              <img
+                                src={TrashIcon}
+                                alt="Trash Icon"
+                                className="h-4 w-4"
+                              />
+                            </Button>
+                          </div>
+                        ))
+                      ) : (
+                        <img
+                          src={UploadAreaImg}
+                          alt="Upload Area Placeholder"
+                          className="w-32"
+                        />
+                      )}
+                    </label>
+
+                    <input
+                      type="file"
+                      name="images"
+                      id="images"
+                      hidden
+                      multiple
+                      required
+                      onChange={(e) => {
+                        setImages([...images, ...e.target.files]) // Add selected images to state
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          images: [...images, ...e.target.files],
+                        }))
+                      }}
+                    />
+                  </div>
                 ) : key === "dishName" ? (
                   <div>
                     <label
@@ -422,6 +544,24 @@ const AddForm = () => {
                         setFormData((prevFormData) => ({
                           ...prevFormData,
                           dishIDs: selectedIDs,
+                        }))
+                      }}
+                    />
+                  </div>
+                ) : key === "restaurant" ? (
+                  <div>
+                    <label
+                      htmlFor="status"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Restaurant Name{" "}
+                    </label>
+                    <DropDown
+                      options={restaurants}
+                      onChange={(id) => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          restaurantID: id,
                         }))
                       }}
                     />

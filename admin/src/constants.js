@@ -2,6 +2,8 @@ import {
   CheckCircleIcon,
   CuisineIcon,
   CuisineWhiteIcon,
+  DinnerIcon,
+  DinnerWhiteIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
   ShoppingCartIcon,
@@ -20,8 +22,8 @@ export const backendImgURL = "http://localhost:4000/images"
 
 export const sidebarItems = [
   {
-    icon: UtensilsCrossedIcon,
-    iconDark: UtensilsCrossedWhiteIcon,
+    icon: DinnerIcon,
+    iconDark: DinnerWhiteIcon,
     iconName: "Utensils Crossed Icon",
     text: "Dishes",
     alert: true,
@@ -54,6 +56,13 @@ export const sidebarItems = [
     iconName: "Cuisine Icon",
     text: "Cuisines",
     link: "/cuisines",
+  },
+  {
+    icon: UtensilsCrossedIcon,
+    iconDark: UtensilsCrossedWhiteIcon,
+    iconName: "Restaurant Icon",
+    text: "Restaurants",
+    link: "/restaurants",
   },
 ]
 
@@ -127,6 +136,11 @@ export const keyMapping = {
   shippingAddress: "Shipping Address",
   billingAddress: "Billing Address",
   cuisineNames: "Cuisines",
+  website: "Website",
+  address: "Address",
+  phone: "Phone",
+  openingHours: "Opening Hours",
+  restaurantName: "Restaurant",
 }
 
 export const formatDate = (dateString) => {

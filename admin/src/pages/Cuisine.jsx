@@ -23,17 +23,12 @@ const Cuisine = () => {
         },
       })
       setCuisine(catRes.data.data.name)
-      const res = await axios.get(
-        `${backendURL}/cuisine/${cuisineID}/dishes/`,
-        {
-          headers: {
-            token: import.meta.env.VITE_ADMIN_TOKEN,
-          },
-        }
-      )
+      const res = await axios.get(`${backendURL}/cuisine/${cuisineID}/dishes/`)
       if (res.data.success) {
         const filteredDishes = res.data.data.map((item) => {
-          const { __v, image, createdAt, updatedAt, ...rest } = item // eslint-disable-line no-unused-vars
+          // eslint-disable-next-line no-unused-vars
+          const { __v, image, createdAt, updatedAt, restaurantID, ...rest } =
+            item
 
           return {
             image,
@@ -55,7 +50,7 @@ const Cuisine = () => {
   return (
     <div className="py-10">
       <div className="flex items-center justify-between">
-        <h2>{cuisine} Cuisine</h2>
+        <h2>{cuisine} Cuisine Dishes</h2>
         <Button
           size="sm"
           variant="success"

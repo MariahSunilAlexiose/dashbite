@@ -7,6 +7,7 @@ import categoryRouter from "./routes/category.js"
 import cuisineRouter from "./routes/cuisine.js"
 import dishRouter from "./routes/food.js"
 import orderRouter from "./routes/order.js"
+import restaurantRouter from "./routes/restaurant.js"
 import userRouter from "./routes/user.js"
 
 import "dotenv/config.js"
@@ -40,3 +41,4 @@ app.use("/api/cart", cartRouter)
 app.use("/api/order", orderRouter)
 app.use("/api/category", categoryRouter)
 app.use("/api/cuisine", cuisineRouter)
+app.use("/api/restaurant", restaurantRouter)

@@ -19,6 +19,11 @@ const dishSchema = new mongoose.Schema(
         required: true,
       },
     ],
+    restaurantID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "restaurant",
+      required: true,
+    },
   },
   { timestamps: true }
 )
