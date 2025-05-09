@@ -6,6 +6,11 @@ import {
   DinnerWhiteIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
+  Rating1Icon,
+  Rating2Icon,
+  Rating3Icon,
+  Rating4Icon,
+  Rating5Icon,
   ShoppingCartIcon,
   ShoppingCartWhiteIcon,
   TagIcon,
@@ -141,7 +146,37 @@ export const keyMapping = {
   phone: "Phone",
   openingHours: "Opening Hours",
   restaurantName: "Restaurant",
+  comment: "Comment",
+  username: "User",
 }
+
+export const ratings = [
+  {
+    label: "Ratings 1",
+    image: Rating1Icon,
+    number: 1,
+  },
+  {
+    label: "Ratings 2",
+    image: Rating2Icon,
+    number: 2,
+  },
+  {
+    label: "Ratings 3",
+    image: Rating3Icon,
+    number: 3,
+  },
+  {
+    label: "Ratings 4",
+    image: Rating4Icon,
+    number: 4,
+  },
+  {
+    label: "Ratings 5",
+    image: Rating5Icon,
+    number: 5,
+  },
+]
 
 export const formatDate = (dateString) => {
   const options = { day: "numeric", month: "short", year: "numeric" }

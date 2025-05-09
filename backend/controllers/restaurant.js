@@ -20,7 +20,6 @@ const addRestaurant = async (req, res) => {
   const filenames = Array.isArray(req.files)
     ? req.files.map((file) => file.filename)
     : [] // Extract multiple filenames
-  console.log(req)
 
   let missingFieldsResponse = checkMissingFields("restaurant", req.body, [
     "name",

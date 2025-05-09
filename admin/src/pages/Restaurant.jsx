@@ -13,6 +13,8 @@ const Restaurant = () => {
   const { restaurantID } = useParams()
   const [dishes, setDishes] = useState({})
   const [restaurant, setRestaurant] = useState({})
+
+  const [reviews, setReviews] = useState([])
   const [toBeUpdatedRestaurant, setToBeUpdatedRestaurant] = useState({})
   const [address, setAddress] = useState({})
   const { addToast } = useToast()
@@ -20,14 +22,7 @@ const Restaurant = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `${backendURL}/restaurant/${restaurantID}`,
-          {
-            headers: {
-              token: import.meta.env.VITE_ADMIN_TOKEN,
-            },
-          }
-        )
+        const res = await axios.get(`${backendURL}/restaurant/${restaurantID}`)
 
         setRestaurant(res.data.data)
         const { __v, createdAt, updatedAt, address, ...rest } = res.data.data // eslint-disable-line no-unused-vars
@@ -65,6 +60,31 @@ const Restaurant = () => {
           })
 
           setDishes(filteredDishes)
+
+          const revRes = await axios.get(
+            `${backendURL}/review/restaurant/${restaurantID}`
+          )
+
+          if (revRes.data.length > 0) {
+            const reviewsWithUsernames = await Promise.all(
+              revRes.data.map(
+                // eslint-disable-next-line no-unused-vars
+                async ({ __v, createdAt, updatedAt, ...rest }) => {
+                  const userRes = await axios.get(
+                    `${backendURL}/user/${rest.userID}`,
+                    {
+                      headers: {
+                        token: import.meta.env.VITE_ADMIN_TOKEN,
+                      },
+                    }
+                  )
+                  return { username: userRes.data.user.name, ...rest }
+                }
+              )
+            )
+
+            setReviews(reviewsWithUsernames)
+          }
         }
       } catch (err) {
         console.error(err)
@@ -139,6 +159,14 @@ const Restaurant = () => {
           <Table data={dishes} tableName="dish" />
         ) : (
           <>No dishes added yet!</>
+        )}
+      </div>
+      <div>
+        <h4 className="mb-2">Reviews</h4>
+        {reviews.length > 0 ? (
+          <Table data={reviews} tableName="review" />
+        ) : (
+          <>No reviews yet!</>
         )}
       </div>
     </div>

@@ -8,6 +8,7 @@ import {
   Category,
   Cuisine,
   Cuisines,
+  Dish,
   Dishes,
   Order,
   Orders,
@@ -28,6 +29,7 @@ function App() {
       <div className="flex-1 px-5 pt-6 lg:px-20">
         <Routes>
           <Route path="/dishes" element={<Dishes />} />
+          <Route path="/dishes/:dishID" element={<Dish />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:orderID" element={<Order />} />
           <Route path="/add_form" element={<AddForm />} />

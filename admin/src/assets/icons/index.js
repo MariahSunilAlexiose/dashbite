@@ -20,9 +20,15 @@ import ExclamationTriangleIcon from "./exclamation-triangle.svg"
 import ImageIcon from "./image.svg"
 import InformationCircleIcon from "./information-circle.svg"
 import Logo from "./logo.png"
+import MapPinIcon from "./map-pin.svg"
 import MoonIcon from "./moon.svg"
 import PencilIcon from "./pencil.svg"
 import PlusIcon from "./plus.svg"
+import Rating1Icon from "./rating-1.png"
+import Rating2Icon from "./rating-2.png"
+import Rating3Icon from "./rating-3.png"
+import Rating4Icon from "./rating-4.png"
+import Rating5Icon from "./rating-5.png"
 import ShoppingCartIcon from "./shopping-cart.svg"
 import SunIcon from "./sun.svg"
 import TagIcon from "./tag.svg"
@@ -32,6 +38,12 @@ import UtensilsCrossedIcon from "./utensils-crossed.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  MapPinIcon,
+  Rating5Icon,
+  Rating4Icon,
+  Rating3Icon,
+  Rating2Icon,
+  Rating1Icon,
   DinnerWhiteIcon,
   DinnerIcon,
   CuisineIcon,

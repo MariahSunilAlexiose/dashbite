@@ -8,6 +8,7 @@ import cuisineRouter from "./routes/cuisine.js"
 import dishRouter from "./routes/dish.js"
 import orderRouter from "./routes/order.js"
 import restaurantRouter from "./routes/restaurant.js"
+import reviewRouter from "./routes/review.js"
 import userRouter from "./routes/user.js"
 
 import "dotenv/config.js"
@@ -49,3 +50,4 @@ app.use("/api/order", orderRouter)
 app.use("/api/category", categoryRouter)
 app.use("/api/cuisine", cuisineRouter)
 app.use("/api/restaurant", restaurantRouter)
+app.use("/api/review", reviewRouter)

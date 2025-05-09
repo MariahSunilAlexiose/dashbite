@@ -77,7 +77,8 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                   key !== "_id" &&
                   key !== "categoryID" &&
                   key !== "cuisineIDs" &&
-                  key !== "restaurantID"
+                  key !== "restaurantID" &&
+                  key !== "userID"
               )
               .map((key) => keyMapping[key] || key)
               .map((header) => (
@@ -102,7 +103,8 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                     key !== "_id" &&
                     key !== "categoryID" &&
                     key !== "cuisineIDs" &&
-                    key !== "restaurantID"
+                    key !== "restaurantID" &&
+                    key !== "userID"
                 )
                 .map((header) => (
                   <td
@@ -111,10 +113,12 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                     onClick={() => {
                       if (tableName === "category")
                         navigate(`/categories/${row["_id"]}`)
+                      else if (tableName === "dish")
+                        navigate(`/dishes/${row["_id"]}`)
                       else if (
-                        tableName !== "dish" &&
                         tableName !== "orderitem" &&
-                        tableName !== "cuisineDish"
+                        tableName !== "cuisineDish" &&
+                        tableName !== "review"
                       )
                         navigate(`/${tableName}s/${row["_id"]}`)
                     }}
@@ -185,7 +189,7 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                     )}
                   </td>
                 ))}
-              {tableName !== "orderitem" && (
+              {tableName !== "orderitem" && tableName !== "review" && (
                 <td className="flex items-center justify-center gap-3 py-8 align-middle">
                   {tableName !== "order" &&
                     tableName !== "user" &&
