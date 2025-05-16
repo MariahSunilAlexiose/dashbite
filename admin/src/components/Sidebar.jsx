@@ -29,6 +29,14 @@ export default function Sidebar({ items }) {
     })
   }, [])
 
+  useEffect(() => {
+    // Update activeIndex when URL changes
+    const index = items.findIndex((item) =>
+      location.pathname.startsWith(item.link)
+    )
+    setActiveIndex(index)
+  }, [location.pathname, items])
+
   return (
     <aside>
       <nav
