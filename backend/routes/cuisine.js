@@ -3,11 +3,10 @@ import multer from "multer"
 
 import {
   addCuisine,
-  addCuisineDishes,
   deleteCuisine,
-  deleteCuisineDishes,
   getCuisine,
   getCuisineDishes,
+  getCuisineRestaurants,
   getCuisines,
   updateCuisine,
 } from "../controllers/cuisine.js"
@@ -34,12 +33,7 @@ cuisineRouter.put(
 cuisineRouter.delete("/:cuisineID", adminAuthMiddleware, deleteCuisine)
 cuisineRouter.get("/:cuisineID", getCuisine)
 cuisineRouter.get("/", getCuisines)
-cuisineRouter.post("/:cuisineID/dishes", adminAuthMiddleware, addCuisineDishes)
 cuisineRouter.get("/:cuisineID/dishes", getCuisineDishes)
-cuisineRouter.delete(
-  "/:cuisineID/dishes/:dishID",
-  adminAuthMiddleware,
-  deleteCuisineDishes
-)
+cuisineRouter.get("/:cuisineID/restaurants", getCuisineRestaurants)
 
 export default cuisineRouter

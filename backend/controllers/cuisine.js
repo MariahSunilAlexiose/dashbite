@@ -2,6 +2,7 @@ import fs from "fs"
 
 import cuisineModel from "../models/cuisine.js"
 import dishModel from "../models/dish.js"
+import restaurantModel from "../models/restaurant.js"
 import { checkMissingFields } from "../validationUtils.js"
 
 const addCuisine = async (req, res) => {
@@ -15,7 +16,7 @@ const addCuisine = async (req, res) => {
         success: false,
         message: "Missing required field: image",
       }
-    else missingFieldsResponse.message += " image"
+    else missingFieldsResponse.message += ", image"
   }
   if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
@@ -101,7 +102,7 @@ const getCuisine = async (req, res) => {
     res.json({ success: true, data: cuisine })
   } catch (err) {
     console.error(err)
-    res.json({ success: false, message: `Error retrieving cuisine: ${err}` })
+    res.json({ success: false, message: `Error fetching cuisine: ${err}` })
   }
 }
 
@@ -113,7 +114,7 @@ const getCuisines = async (req, res) => {
     console.error(err)
     res.status(500).json({
       success: false,
-      message: `Error retrieving cuisines: ${err.message}`,
+      message: `Error fetching cuisines: ${err.message}`,
     })
   }
 }
@@ -136,76 +137,33 @@ const getCuisineDishes = async (req, res) => {
     res.json({ success: true, data: dishes })
   } catch (err) {
     console.error(err)
-    res.json({ success: false, message: `Error retrieving dishes: ${err}` })
+    res.json({ success: false, message: `Error fetching dishes: ${err}` })
   }
 }
 
-const addCuisineDishes = async (req, res) => {
+const getCuisineRestaurants = async (req, res) => {
   const { cuisineID } = req.params
-  const { dishIDs } = req.body
-
-  if (!Array.isArray(dishIDs) || dishIDs.length === 0)
-    return res.json({
-      success: false,
-      message: "Invalid or empty dishIDs array!",
-    })
 
   try {
     const cuisine = await cuisineModel.findById(cuisineID)
     if (!cuisine)
       return res.json({ success: false, message: "Cuisine not found!" })
 
-    const uniqueDishIDs = dishIDs.filter((id) => !cuisine.dishIDs.includes(id)) // Avoid duplicates in cuisine's dish list
-    cuisine.dishIDs.push(...uniqueDishIDs)
-    await cuisine.save()
-
-    // Update each dish to include the cuisineID
-    await dishModel.updateMany(
-      { _id: { $in: uniqueDishIDs } },
-      { $addToSet: { cuisineIDs: cuisineID } } // prevent duplicates in array
-    )
-
-    res.json({
-      success: true,
-      message: "Dishes successfully added to cuisine and updated!",
+    const restaurants = await restaurantModel.find({
+      _id: { $in: cuisine.restaurantIDs },
     })
+    if (!restaurants.length)
+      return res.json({
+        success: false,
+        message: "No restaurants found for this cuisine!",
+      })
+
+    res.json({ success: true, data: restaurants })
   } catch (err) {
     console.error(err)
     res.json({
       success: false,
-      message: `Error adding dishes to cuisine: ${err}`,
-    })
-  }
-}
-
-const deleteCuisineDishes = async (req, res) => {
-  const { cuisineID, dishID } = req.params
-
-  try {
-    const cuisine = await cuisineModel.findById(cuisineID)
-    if (!cuisine)
-      return res.json({ success: false, message: "Cuisine not found!" })
-
-    cuisine.dishIDs = cuisine.dishIDs.filter((id) => id.toString() !== dishID) // Remove the dish reference
-    await cuisine.save()
-
-    const dish = await dishModel.findById(dishID)
-    if (!dish) return res.json({ success: false, message: "Dish not found!" })
-
-    dish.cuisineIDs = dish.cuisineIDs.filter(
-      (id) => id.toString() !== cuisineID
-    ) // Remove cuisine reference from the dish document
-    await dish.save()
-    res.json({
-      success: true,
-      message:
-        "Dish removed from cuisine and cuisine reference removed from dish!",
-    })
-  } catch (err) {
-    console.error(err)
-    res.json({
-      success: false,
-      message: `Error removing dish from cuisine: ${err}`,
+      message: `Error fetching restaurants: ${err}`,
     })
   }
 }
@@ -217,6 +175,5 @@ export {
   getCuisine,
   getCuisines,
   getCuisineDishes,
-  addCuisineDishes,
-  deleteCuisineDishes,
+  getCuisineRestaurants,
 }
