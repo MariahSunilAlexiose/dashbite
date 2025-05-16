@@ -4,8 +4,11 @@ import Bars3Icon from "./bars-3.svg"
 import CameraIcon from "./camera.svg"
 import CheckCircleIcon from "./check-circle.svg"
 import ChevronDownIcon from "./chevron-down.svg"
+import ChevronRightIcon from "./chevron-right.svg"
 import CopyrightIcon from "./copyright-sign.svg"
 import Bars3WhiteIcon from "./dark_mode/bars-3.svg"
+import ChevronLeftWhiteIcon from "./dark_mode/chevron-left.svg"
+import ChevronRightWhiteIcon from "./dark_mode/chevron-right.svg"
 import MagnifyingGlassWhiteIcon from "./dark_mode/magnifying-glass.svg"
 import PlusDarkIcon from "./dark_mode/plus.svg"
 import ShoppingCartWhiteIcon from "./dark_mode/shopping-cart.svg"
@@ -26,7 +29,9 @@ import Rating4Icon from "./rating-4.png"
 import Rating5Icon from "./rating-5.png"
 import ShoppingBagIcon from "./shopping-bag.svg"
 import ShoppingCartBlackIcon from "./shopping-cart.svg"
+import StarIcon from "./star.svg"
 import SunIcon from "./sun.svg"
+import TagIcon from "./tag.svg"
 import TicketIcon from "./ticket.svg"
 import TrashIcon from "./trash.svg"
 import TwitterXIcon from "./twitter-x.png"
@@ -34,6 +39,11 @@ import UserIcon from "./user.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  ChevronLeftWhiteIcon,
+  ChevronRightWhiteIcon,
+  StarIcon,
+  TagIcon,
+  ChevronRightIcon,
   ArrowRightIcon,
   PencilSquareIcon,
   CameraIcon,

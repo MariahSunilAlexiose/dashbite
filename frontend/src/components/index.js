@@ -13,11 +13,13 @@ import Modal from "./Modal"
 import Navbar from "./Navbar"
 import OrderTable from "./OrderTable"
 import RadioInput from "./RadioInput"
+import Separator from "./Separator"
 import ThemeToggle from "./ThemeToggle"
 import Toast from "./Toast"
 import Toasts from "./Toasts"
 
 export {
+  Separator,
   AddressForm,
   Modal,
   AddressCard,

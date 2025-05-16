@@ -6,6 +6,7 @@ import {
   Address,
   Cart,
   Cuisine,
+  Dish,
   Home,
   Login,
   MyOrders,
@@ -63,6 +64,7 @@ function App() {
             }
           />
           <Route path="/cuisine/:cuisineID" element={<Cuisine />} />
+          <Route path="/dish/:dishID" element={<Dish />} />
         </Routes>
       </div>
       <Footer />

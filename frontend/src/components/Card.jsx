@@ -1,17 +1,17 @@
 import React, { useContext } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { StoreContext } from "@context"
-import { MinusIcon, PlusDarkIcon, PlusIcon } from "@icons"
+import { MinusIcon, PlusDarkIcon, PlusIcon, StarIcon } from "@icons"
 import PropTypes from "prop-types"
 
-import { ratings } from "@/constants"
-
 const Card = ({ id, title, image, description, rating, price }) => {
+  const navigate = useNavigate()
   const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
   const cartItemCount =
     cartItems && cartItems[id] !== undefined ? cartItems[id] : 0
   return (
-    <div className="bg-border text-foreground flex flex-col rounded-xl border shadow">
+    <div className="bg-border text-foreground flex cursor-pointer flex-col rounded-xl border shadow">
       <div className="relative">
         <img
           src={url + "/images/" + image}
@@ -51,22 +51,15 @@ const Card = ({ id, title, image, description, rating, price }) => {
           </div>
         )}
       </div>
-      <div className="flex flex-col justify-between gap-2 px-3 py-5">
+      <div
+        className="flex flex-col justify-between gap-2 px-3 py-5"
+        onClick={() => navigate(`/dish/${id}`)}
+      >
         <div className="flex justify-between gap-2">
           <h3 className="font-semibold leading-none tracking-tight">{title}</h3>
-          <div className="content-center">
-            {ratings.map(
-              ({ label, image, number }) =>
-                rating === number && (
-                  <img
-                    key={number}
-                    src={image}
-                    alt={label}
-                    width={91}
-                    style={{ height: "18px" }}
-                  />
-                )
-            )}
+          <div className="flex items-center gap-1">
+            <img src={StarIcon} alt="Star Icon" className="h-5 w-5" />
+            <p className="text-primary m-0 font-black">{rating}</p>
           </div>
         </div>
         <p className="m-0 text-sm">{description}</p>

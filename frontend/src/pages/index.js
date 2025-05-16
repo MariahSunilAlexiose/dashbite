@@ -1,6 +1,7 @@
 import Address from "./Address"
 import Cart from "./Cart"
 import Cuisine from "./Cuisine"
+import Dish from "./Dish"
 import Home from "./Home"
 import Login from "./Login"
 import MyOrders from "./MyOrders"
@@ -10,6 +11,7 @@ import Signup from "./Signup"
 import Verify from "./Verify"
 
 export {
+  Dish,
   Cuisine,
   Address,
   Profile,
