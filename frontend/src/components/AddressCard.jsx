@@ -14,6 +14,10 @@ const AddressCard = ({
   handleSave,
   handleDelete,
 }) => {
+  const isEmpty =
+    !addressData ||
+    Object.keys(addressData).length === 0 ||
+    Object.values(addressData).every((value) => value === "")
   return (
     <div className="border-muted w-full max-w-sm rounded-lg border p-4">
       <div className="flex items-center justify-between">
@@ -26,7 +30,10 @@ const AddressCard = ({
           <img src={PencilSquareIcon} alt="Edit" className="h-4 w-4" />
         </Button>
         {modalOpen && (
-          <Modal title={`Update ${title}`} onClose={() => setModalOpen(false)}>
+          <Modal
+            title={isEmpty ? `Add ${title}` : `Update ${title}`}
+            onClose={() => setModalOpen(false)}
+          >
             <AddressForm
               addressType={
                 title.toLowerCase().includes("billing")
