@@ -27,6 +27,27 @@ export const backendImgURL = "http://localhost:4000/images"
 
 export const sidebarItems = [
   {
+    icon: TagIcon,
+    iconDark: TagWhiteIcon,
+    iconName: "Tag Icon",
+    text: "Categories",
+    link: "/categories",
+  },
+  {
+    icon: CuisineIcon,
+    iconDark: CuisineWhiteIcon,
+    iconName: "Cuisine Icon",
+    text: "Cuisines",
+    link: "/cuisines",
+  },
+  {
+    icon: UtensilsCrossedIcon,
+    iconDark: UtensilsCrossedWhiteIcon,
+    iconName: "Restaurant Icon",
+    text: "Restaurants",
+    link: "/restaurants",
+  },
+  {
     icon: DinnerIcon,
     iconDark: DinnerWhiteIcon,
     iconName: "Utensils Crossed Icon",
@@ -47,27 +68,6 @@ export const sidebarItems = [
     iconName: "User Icon",
     text: "Users",
     link: "/users",
-  },
-  {
-    icon: TagIcon,
-    iconDark: TagWhiteIcon,
-    iconName: "Tag Icon",
-    text: "Categories",
-    link: "/categories",
-  },
-  {
-    icon: CuisineIcon,
-    iconDark: CuisineWhiteIcon,
-    iconName: "Cuisine Icon",
-    text: "Cuisines",
-    link: "/cuisines",
-  },
-  {
-    icon: UtensilsCrossedIcon,
-    iconDark: UtensilsCrossedWhiteIcon,
-    iconName: "Restaurant Icon",
-    text: "Restaurants",
-    link: "/restaurants",
   },
 ]
 
@@ -203,3 +203,15 @@ export const orderStatus = [
   { _id: "Shipped", name: "Shipped" },
   { _id: "Delivered Up", name: "Delivered" },
 ]
+
+export const getNameByID = (id, list) => {
+  const item = list.find((i) => i["_id"] === id)
+  return item ? item.name : ""
+}
+
+export const onChangeHandler = (e, setFormData) => {
+  setFormData((prevFormData) => ({
+    ...prevFormData,
+    address: { ...prevFormData.address, [e.target.name]: e.target.value },
+  }))
+}
