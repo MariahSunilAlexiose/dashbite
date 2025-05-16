@@ -33,7 +33,7 @@ const reviewSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true, collection: "review" }
 )
 
 export { reviewSchema }

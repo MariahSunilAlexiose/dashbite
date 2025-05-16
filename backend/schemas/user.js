@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
       country: { type: String, default: "" },
     },
   },
-  { minimize: false }
+  { minimize: false, timestamps: true, collection: "user" }
 )
 
 export { userSchema }

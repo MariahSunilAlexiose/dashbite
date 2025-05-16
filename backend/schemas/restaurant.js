@@ -19,7 +19,7 @@ const restaurantSchema = new mongoose.Schema(
     images: [{ type: String }],
     dishIDs: [{ type: mongoose.Schema.Types.ObjectId, ref: "dish" }],
   },
-  { timestamps: true }
+  { timestamps: true, collection: "restaurant" }
 )
 
 export { restaurantSchema }
