@@ -5,6 +5,7 @@ import {
   addAddresses,
   deleteUser,
   getUser,
+  getUserForAdmin,
   getUsers,
   loginUser,
   registerUser,
@@ -40,11 +41,35 @@ userRouter.put(
 )
 userRouter.post("/address", authMiddleware, addAddresses)
 userRouter.put("/address", authMiddleware, updateAddresses)
-userRouter.get("/", authMiddleware, getUser)
+
+userRouter.get(
+  "/:userID",
+  (req, res, next) => {
+    if (req.headers.token === process.env.ADMIN_TOKEN)
+      return adminAuthMiddleware(req, res, next)
+    next()
+  },
+  (req, res) => {
+    if (req.headers.token === process.env.ADMIN_TOKEN)
+      return getUserForAdmin(req, res)
+    else return getUser(req, res)
+  }
+)
+
+userRouter.get(
+  "/",
+  (req, res, next) => {
+    if (req.headers.token === process.env.ADMIN_TOKEN)
+      return adminAuthMiddleware(req, res, next)
+    else return authMiddleware(req, res, next)
+  },
+  (req, res) => {
+    if (req.headers.token === process.env.ADMIN_TOKEN) return getUsers(req, res)
+    else return getUser(req, res)
+  }
+)
 
 // admin authenticated
-userRouter.get("/all", adminAuthMiddleware, getUsers)
-userRouter.get("/:userID", adminAuthMiddleware, getUser)
 userRouter.delete("/:userID", adminAuthMiddleware, deleteUser)
 
 export default userRouter

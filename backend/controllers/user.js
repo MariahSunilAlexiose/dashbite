@@ -90,19 +90,30 @@ const registerUser = async (req, res) => {
   }
 }
 
-const getUser = async (req, res) => {
+const getUserForAdmin = async (req, res) => {
   const userID = req.params.userID || req.userID
 
   try {
     const user = await userModel.findById(userID).select("-password")
     if (!user) return res.json({ success: false, message: "User not found!" })
-    res.json({ success: true, user })
+    res.json({ success: true, data: user })
   } catch (err) {
-    res.json({ success: false, message: `Error in retrieving user: ${err}` })
+    res.json({ success: false, message: `Error in fetching user: ${err}` })
   }
 }
 
-// update user
+const getUser = async (req, res) => {
+  const userID = req.params.userID || req.userID
+
+  try {
+    const user = await userModel.findById(userID)
+    if (!user) return res.json({ success: false, message: "User not found!" })
+    res.json({ success: true, user })
+  } catch (err) {
+    res.json({ success: false, message: `Error in fetching user: ${err}` })
+  }
+}
+
 const updateUser = async (req, res) => {
   const { name, email, oldPassword, newPassword } = req.body
 
@@ -141,7 +152,7 @@ const updateUser = async (req, res) => {
     }
 
     const updatedUser = await user.save()
-    res.json({ success: true, user: updatedUser })
+    res.json({ success: true, data: updatedUser })
   } catch (err) {
     res.json({ success: false, message: `Error in updating user: ${err}` })
   }
@@ -201,7 +212,7 @@ const addAddresses = async (req, res) => {
     user.billingAddress = billingAddress
 
     const updatedUser = await user.save()
-    res.json({ success: true, user: updatedUser })
+    res.json({ success: true, data: updatedUser })
   } catch (err) {
     res.json({
       success: false,
@@ -228,7 +239,7 @@ const updateAddresses = async (req, res) => {
       user.billingAddress = { ...user.billingAddress, ...billingAddress }
 
     const updatedUser = await user.save()
-    res.json({ success: true, user: updatedUser })
+    res.json({ success: true, data: updatedUser })
   } catch (err) {
     res.json({
       success: false,
@@ -243,7 +254,7 @@ const getUsers = async (req, res) => {
     if (!users) return res.json({ success: false, message: "Users not found!" })
     res.json({ success: true, data: users })
   } catch (err) {
-    res.json({ success: false, message: `Error in retrieving users: ${err}` })
+    res.json({ success: false, message: `Error in fetching users: ${err}` })
   }
 }
 
@@ -275,6 +286,7 @@ const deleteUser = async (req, res) => {
 }
 
 export {
+  getUserForAdmin,
   deleteUser,
   getUsers,
   loginUser,
