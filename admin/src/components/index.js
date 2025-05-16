@@ -2,6 +2,7 @@ import Button from "./Button"
 import DropDown from "./DropDown"
 import Input from "./Input"
 import InputDropDown from "./InputDropDown"
+import InputDropDownWithAdd from "./InputDropDownWithAdd"
 import Label from "./Label"
 import MultiSelectDropDown from "./MultiSelectDropdown"
 import Pagination from "./Pagination"
@@ -13,6 +14,7 @@ import Toast from "./Toast"
 import Toasts from "./Toasts"
 
 export {
+  InputDropDownWithAdd,
   MultiSelectDropDown,
   InputDropDown,
   Pagination,
