@@ -23,6 +23,7 @@ export const StoreProvider = (props) => {
   const [dishes, setDishes] = useState([])
   const [categories, setCategories] = useState([])
   const [cuisines, setCuisines] = useState([])
+  const [restaurants, setRestaurants] = useState([])
 
   // Fetch cart items from the server
   const loadCartData = async (userToken) => {
@@ -30,49 +31,109 @@ export const StoreProvider = (props) => {
       const res = await axios.get(`${url}/api/cart/`, {
         headers: { token: userToken },
       })
-      if (!res.data.success)
-        return addToast("error", "Error", `Error: ${res.data.message}`)
+      if (!res.data.success) {
+        console.error(res.data.message)
+        return addToast("error", "Error", res.data.message)
+      }
       setCartItems(res.data.cartData)
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in retrieving cart items: ${err}`)
+      console.error("Error fetching cart items:", err)
+      addToast("error", "Error", "Failed to fetch cart items!")
     }
   }
 
-  // Fetch dishes
   const fetchDishes = async () => {
     try {
       const res = await axios.get(`${url}/api/dish/`)
-      if (!res.data.success)
-        return addToast("error", "Error", `Error: ${res.data.message}`)
+      if (!res.data.success) {
+        console.error(res.data.message)
+        return addToast("error", "Error", res.data.message)
+      }
       setDishes(res.data.data)
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in retrieving cart items: ${err}`)
+      console.error("Error fetching dishes:", err)
+      addToast("error", "Error", "Failed to fetch dishes!")
     }
   }
 
   const fetchCategories = async () => {
     try {
       const res = await axios.get(`${url}/api/category/`)
-      if (!res.data.success)
-        return addToast("error", "Error", `Error: ${res.data.message}`)
+      if (!res.data.success) {
+        console.error(res.data.message)
+        return addToast("error", "Error", res.data.message)
+      }
       setCategories(res.data.data)
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in retrieving cart items: ${err}`)
+      console.error("Error fetching categories:", err)
+      addToast("error", "Error", "Failed to fetch categories!")
     }
   }
 
   const fetchCuisines = async () => {
     try {
       const res = await axios.get(`${url}/api/cuisine/`)
-      if (!res.data.success)
-        return addToast("error", "Error", `Error: ${res.data.message}`)
+      if (!res.data.success) {
+        console.error(res.data.message)
+        return addToast("error", "Error", res.data.message)
+      }
       setCuisines(res.data.data)
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in retrieving cart items: ${err}`)
+      console.error("Error fetching cuisines:", err)
+      addToast("error", "Error", "Failed to fetch cuisines!")
+    }
+  }
+
+  const fetchRestaurants = async () => {
+    try {
+      const res = await axios.get(`${url}/api/restaurant/`)
+      if (!res.data.success) {
+        console.error(res.data.message)
+        return addToast("error", "Error", res.data.message)
+      }
+
+      const restaurants = res.data.data // Map of restaurants
+      const enrichedRestaurants = await Promise.all(
+        restaurants.map(async (restaurant) => {
+          const { ...rest } = restaurant
+
+          if (restaurant.cuisineIDs) {
+            const cuisinePromises = restaurant.cuisineIDs.map(
+              async (cuisineID) => {
+                const cuisRes = await axios.get(
+                  `${url}/api/cuisine/${cuisineID}`
+                )
+                if (!cuisRes.data.success) {
+                  console.error(cuisRes.data.message)
+                  return addToast("error", "Error", cuisRes.data.message)
+                }
+                return cuisRes.data.data
+              }
+            )
+
+            rest.cuisines = (await Promise.all(cuisinePromises)).filter(Boolean)
+          }
+
+          if (restaurant.dishIDs) {
+            const dishPromises = restaurant.dishIDs.map(async (dishID) => {
+              const dishRes = await axios.get(`${url}/api/dish/${dishID}`)
+              if (!dishRes.data.success) {
+                addToast("error", "Error", dishRes.data.message)
+                return null
+              }
+              return dishRes.data.data
+            })
+
+            rest.dishes = (await Promise.all(dishPromises)).filter(Boolean)
+          }
+
+          return rest
+        })
+      )
+      setRestaurants(enrichedRestaurants)
+    } catch (err) {
+      console.error("Error fetching restaurants:", err)
+      addToast("error", "Error", "Failed to fetch restaurants!")
     }
   }
 
@@ -90,16 +151,15 @@ export const StoreProvider = (props) => {
           navigate("/login")
         }
       } catch (err) {
-        console.error(err)
-        addToast("error", "Error", `Invalid token: ${err}`)
+        console.error("Invalid token:", err)
+        addToast("error", "Error", "Must login first!")
         navigate("/login")
       }
     }
   }
 
-  // Save cartItems to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems))
+    localStorage.setItem("cartItems", JSON.stringify(cartItems)) // Save cartItems to localStorage whenever it changes
   }, [cartItems])
 
   useEffect(() => {
@@ -107,6 +167,7 @@ export const StoreProvider = (props) => {
     fetchCategories()
     fetchDishes()
     fetchCuisines()
+    fetchRestaurants()
   }, [])
 
   const addToCart = async (itemID) => {
@@ -122,7 +183,7 @@ export const StoreProvider = (props) => {
       )
       if (!res.data.success) {
         console.error(res.data.message)
-        return addToast("error", "Error", `Error: ${res.data.message}`)
+        return addToast("error", "Error", res.data.message)
       }
     }
   }
@@ -144,7 +205,7 @@ export const StoreProvider = (props) => {
       )
       if (!res.data.success) {
         console.error(res.data.message)
-        return addToast("error", "Error", `Error: ${res.data.message}`)
+        return addToast("error", "Error", res.data.message)
       }
     }
   }
@@ -161,7 +222,7 @@ export const StoreProvider = (props) => {
       })
       if (!res.data.success) {
         console.error(res.data.message)
-        return addToast("error", "Error", `Error: ${res.data.message}`)
+        return addToast("error", "Error", res.data.message)
       }
     }
   }
@@ -178,6 +239,7 @@ export const StoreProvider = (props) => {
   }
 
   const context = {
+    restaurants,
     cuisines,
     categories,
     dishes,
