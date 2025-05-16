@@ -11,7 +11,7 @@ export const checkMissingFields = (tableName, data, requiredFields) => {
       }
   } else {
     const missingFields = requiredFields.filter(
-      (field) => !data[field] || data[field] === ""
+      (field) => data[field] == null || data[field].toString().trim() === ""
     )
 
     if (missingFields.length > 0)
