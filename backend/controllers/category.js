@@ -123,7 +123,7 @@ const getCategory = async (req, res) => {
     console.error(err)
     res.json({
       success: false,
-      message: `Error in retrieving category: ${err}`,
+      message: `Error in fetching category: ${err}`,
     })
   }
 }
@@ -136,7 +136,7 @@ const getCategories = async (req, res) => {
     console.error(err)
     res.status(500).json({
       success: false,
-      message: `Error in retrieving categories: ${err.message}`,
+      message: `Error in fetching categories: ${err.message}`,
     })
   }
 }
@@ -156,7 +156,7 @@ const getCategoryDishes = async (req, res) => {
     res.json({ success: true, data: dishes })
   } catch (err) {
     console.error(err)
-    res.json({ success: false, message: `Error retrieving dishes: ${err}` })
+    res.json({ success: false, message: `Error fetching dishes: ${err}` })
   }
 }
 

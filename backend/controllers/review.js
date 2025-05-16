@@ -80,7 +80,7 @@ const getReview = async (req, res) => {
     res.json({ success: true, data: review })
   } catch (err) {
     console.error(err)
-    res.json({ success: false, message: `Error retrieving review: ${err}` })
+    res.json({ success: false, message: `Error fetching review: ${err}` })
   }
 }
 
@@ -90,15 +90,13 @@ const getReviews = async (req, res) => {
     res.json({ success: true, data: reviews })
   } catch (err) {
     console.error(err)
-    res.json({ success: false, message: `Error retrieving review: ${err}` })
+    res.json({ success: false, message: `Error fetching review: ${err}` })
   }
 }
 
 const getRestaurantReviews = async (req, res) => {
-  const { restaurantID } = req.params
-
   try {
-    const reviews = await reviewModel.find({ restaurantID: restaurantID })
+    const reviews = await reviewModel.find({ restaurantID: { $exists: true } })
     res.status(200).json(reviews)
   } catch (error) {
     res

@@ -98,7 +98,7 @@ const getCart = async (req, res) => {
   } catch (err) {
     res.json({
       success: false,
-      message: `Error in retrieving cart items: ${err}`,
+      message: `Error in fetching cart items: ${err}`,
     })
   }
 }
