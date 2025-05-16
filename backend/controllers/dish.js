@@ -1,5 +1,6 @@
 import fs from "fs"
 
+import categoryModel from "../models/category.js"
 import cuisineModel from "../models/cuisine.js"
 import dishModel from "../models/dish.js"
 import orderModel from "../models/order.js"
@@ -7,15 +8,6 @@ import restaurantModel from "../models/restaurant.js"
 import { checkMissingFields } from "../validationUtils.js"
 
 const addDish = async (req, res) => {
-  const {
-    name,
-    description,
-    price,
-    categoryID,
-    rating,
-    cuisineIDs,
-    restaurantID,
-  } = req.body
   const { filename } = req.file || {}
 
   let missingFieldsResponse = checkMissingFields("dish", req.body, [
@@ -26,6 +18,12 @@ const addDish = async (req, res) => {
     "rating",
     "cuisineIDs",
     "restaurantID",
+    "servingSize",
+    "ingredients",
+    "calories",
+    "protein",
+    "fat",
+    "carbs",
   ])
   if (!filename) {
     if (!missingFieldsResponse)
@@ -33,24 +31,35 @@ const addDish = async (req, res) => {
         success: false,
         message: "Missing required field: image",
       }
-    else missingFieldsResponse.message += " image"
+    else missingFieldsResponse.message += ", image"
   }
   if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
-  const food = new dishModel({
-    name,
-    description,
-    price,
-    categoryID,
-    rating,
-    cuisineIDs,
-    restaurantID,
-    image: filename,
-  })
-
   try {
-    await food.save()
-    res.json({ success: true, message: "Dish Added" })
+    const dish = new dishModel({
+      ...req.body,
+      image: filename,
+    })
+
+    await dish.save()
+
+    await Promise.all([
+      categoryModel.findByIdAndUpdate(dish.categoryID, {
+        $addToSet: { dishIDs: dish._id },
+      }),
+
+      ...dish.cuisineIDs.map((cuisineID) =>
+        cuisineModel.findByIdAndUpdate(cuisineID, {
+          $addToSet: { dishIDs: dish._id },
+        })
+      ),
+
+      restaurantModel.findByIdAndUpdate(dish.restaurantID, {
+        $addToSet: { dishIDs: dish._id },
+      }),
+    ])
+
+    res.json({ success: true, message: "Dish Added and Linked!" })
   } catch (err) {
     console.error(err)
     res.json({ success: false, message: `Error in adding dish: ${err}` })
@@ -59,10 +68,7 @@ const addDish = async (req, res) => {
 
 const listDishes = async (req, res) => {
   try {
-    const dishes = await dishModel
-      .find({})
-      .sort({ createdAt: -1 })
-      .select("-createdAt -updatedAt")
+    const dishes = await dishModel.find({}).sort({ createdAt: -1 })
     if (!dishes)
       return res.json({ success: false, message: "Dishes not found!" })
     res.json({ success: true, data: dishes })
@@ -110,6 +116,13 @@ const updateDish = async (req, res) => {
     rating,
     cuisineIDs,
     restaurantID,
+    servingSize,
+    ingredients,
+    calories,
+    protein,
+    fat,
+    carbs,
+    allergens,
   } = req.body
   const { filename } = req.file || {}
 
@@ -120,7 +133,14 @@ const updateDish = async (req, res) => {
     "categoryID",
     "rating",
     "cuisineIDs",
-    "restaurantIDs",
+    "restaurantID",
+    "servingSize",
+    "ingredients",
+    "calories",
+    "protein",
+    "fat",
+    "carbs",
+    "allergens",
   ])
   if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
@@ -130,7 +150,7 @@ const updateDish = async (req, res) => {
 
     const previousCuisineIDs = dish.cuisineIDs
     const previousRestaurantID = dish.restaurantID
-
+    const previousCategoryID = dish.previousCategoryID
     let updatedData = {
       name: name || dish.name,
       description: description || dish.description,
@@ -139,6 +159,13 @@ const updateDish = async (req, res) => {
       rating: rating || dish.rating,
       cuisineIDs: cuisineIDs || dish.cuisineIDs,
       restaurantID: restaurantID || dish.restaurantID,
+      servingSize: servingSize || dish.servingSize,
+      ingredients: ingredients || dish.ingredients,
+      calories: calories || dish.calories,
+      protein: protein || dish.protein,
+      fat: fat || dish.fat,
+      carbs: carbs || dish.carbs,
+      allergens: allergens || dish.allergens,
     }
 
     if (req.file) {
@@ -173,6 +200,7 @@ const updateDish = async (req, res) => {
           $addToSet: { dishIDs: dishID }, // Add new dishID to array
         })
       ),
+
       previousRestaurantID &&
         restaurantModel.findByIdAndUpdate(previousRestaurantID, {
           $pull: { dishIDs: dishID }, // Remove restaurantID
@@ -180,7 +208,16 @@ const updateDish = async (req, res) => {
 
       restaurantID &&
         restaurantModel.findByIdAndUpdate(restaurantID, {
-          $addToSet: { dishIDs: dishID }, //Update new restaurantID
+          $addToSet: { dishIDs: dishID }, // Update new restaurantID
+        }),
+
+      previousCategoryID &&
+        categoryModel.findByIdAndUpdate(previousCategoryID, {
+          $pull: { dishIDs: dishID }, // Remove dishID from previous category
+        }),
+      categoryID &&
+        categoryModel.findByIdAndUpdate(categoryID, {
+          $addToSet: { dishIDs: dishID }, // Add dishID to new category
         }),
     ])
 
@@ -203,7 +240,7 @@ const getDish = async (req, res) => {
     res.json({ success: true, data: dish })
   } catch (err) {
     console.error(err)
-    res.json({ success: false, message: `Error in retrieving dish: ${err}` })
+    res.json({ success: false, message: `Error in fetching dish: ${err}` })
   }
 }
 

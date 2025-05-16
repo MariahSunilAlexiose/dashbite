@@ -126,7 +126,7 @@ export const keyMapping = {
   name: "Name",
   description: "Description",
   price: "Price",
-  category: "Category",
+  categoryName: "Category",
   rating: "Rating",
   userID: "User ID",
   amount: "Amount",
@@ -148,6 +148,13 @@ export const keyMapping = {
   restaurantName: "Restaurant",
   comment: "Comment",
   username: "User",
+  ingredients: "Ingredients",
+  allergens: "Allergens",
+  servingSize: "Serving Size",
+  calories: "Calories",
+  fat: "Fat",
+  protein: "Protein",
+  carbs: "Carbs",
 }
 
 export const ratings = [
@@ -215,3 +222,31 @@ export const onChangeHandler = (e, setFormData) => {
     address: { ...prevFormData.address, [e.target.name]: e.target.value },
   }))
 }
+
+export const allergenList = [
+  "Dairy",
+  "Gluten",
+  "Eggs",
+  "Fish",
+  "Shellfish",
+  "Tree nuts",
+  "Peanuts",
+  "Soybeans",
+]
+
+export const ingredientList = [
+  "Flour",
+  "Rice",
+  "Bread",
+  "Potatoes",
+  "Chicken",
+  "Beef",
+  "Pork",
+  "Fish",
+  "Milk",
+  "Cheese",
+  "Butter",
+  "Herbs",
+  "Eggs",
+  "Tomatoes",
+]
