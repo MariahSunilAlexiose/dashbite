@@ -6,6 +6,7 @@ import InputDropDownWithAdd from "./InputDropDownWithAdd"
 import Label from "./Label"
 import MultiSelectDropDown from "./MultiSelectDropdown"
 import Pagination from "./Pagination"
+import Separator from "./Separator"
 import Sidebar from "./Sidebar"
 import Table from "./Table"
 import TextArea from "./TextArea"
@@ -14,6 +15,7 @@ import Toast from "./Toast"
 import Toasts from "./Toasts"
 
 export {
+  Separator,
   InputDropDownWithAdd,
   MultiSelectDropDown,
   InputDropDown,

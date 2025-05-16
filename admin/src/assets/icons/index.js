@@ -20,7 +20,6 @@ import ExclamationTriangleIcon from "./exclamation-triangle.svg"
 import ImageIcon from "./image.svg"
 import InformationCircleIcon from "./information-circle.svg"
 import Logo from "./logo.png"
-import MapPinIcon from "./map-pin.svg"
 import MoonIcon from "./moon.svg"
 import PencilIcon from "./pencil.svg"
 import PlusIcon from "./plus.svg"
@@ -38,7 +37,6 @@ import UtensilsCrossedIcon from "./utensils-crossed.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
-  MapPinIcon,
   Rating5Icon,
   Rating4Icon,
   Rating3Icon,
