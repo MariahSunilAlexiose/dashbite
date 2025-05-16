@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 import { ChevronUpDownIcon } from "@icons"
 import PropTypes from "prop-types"
@@ -10,6 +10,7 @@ const InputDropDown = ({
   defaultValue,
   disabled,
 }) => {
+  const dropdownRef = useRef(null)
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
 
@@ -17,19 +18,31 @@ const InputDropDown = ({
     if (defaultValue) setSearchTerm(defaultValue)
   }, [defaultValue])
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
   return (
     <div
-      className={`bg-popover text-popover-foreground rounded-md border p-0 shadow-md outline-none ${className}`}
+      ref={dropdownRef}
+      className={`rounded-md border p-0 shadow-md outline-none ${className}`}
     >
-      <div className="bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md">
-        <div className="flex items-center border-b px-3">
+      <div className="flex h-full w-full flex-col overflow-hidden rounded-md">
+        <div className="flex h-9 items-center border-b px-3">
           <input
             onClick={(e) => {
               e.stopPropagation()
               setOpen(true)
             }}
             value={searchTerm}
-            className="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            className="placeholder:text-muted flex h-5 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Search option..."
             onChange={(e) => setSearchTerm(e.target.value)}
             disabled={disabled}
@@ -54,7 +67,7 @@ const InputDropDown = ({
                 .map((option, index) => (
                   <div
                     key={index}
-                    className="hover:bg-accent/40 relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none disabled:pointer-events-none disabled:opacity-50"
+                    className="hover:bg-accent relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none disabled:pointer-events-none disabled:opacity-50"
                     onClick={() => {
                       setSearchTerm(option.name)
                       setOpen(false)
@@ -69,7 +82,9 @@ const InputDropDown = ({
                   option.name &&
                   option.name.toLowerCase().includes(searchTerm.toLowerCase())
               ).length === 0 && (
-                <div className="py-6 text-center text-sm">No option found.</div>
+                <div className="text-muted py-6 text-center text-sm">
+                  No options found.
+                </div>
               )}
             </div>
           )}
