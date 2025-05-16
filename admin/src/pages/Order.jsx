@@ -3,10 +3,9 @@ import { useNavigate, useParams } from "react-router-dom"
 
 import { PencilIcon, UserIcon } from "@icons"
 import { useToast } from "@providers"
-import axios from "axios"
 
 import { Button, Table } from "@/components"
-import { backendImgURL, backendURL, formatDate } from "@/constants"
+import { backendImgURL, fetchEndpoint, formatDate } from "@/constants"
 
 const Order = () => {
   const navigate = useNavigate()
@@ -20,41 +19,40 @@ const Order = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${backendURL}/order/${orderID}`, {
-          headers: {
-            token: import.meta.env.VITE_ADMIN_TOKEN,
-          },
+        // get order
+        const orderData = await fetchEndpoint(`order/${orderID}`, {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
         })
-        setOrder(res.data.data)
-        setShippingAddress(res.data.data.address)
+        setOrder(orderData)
+        setShippingAddress(orderData.address)
 
-        const userRes = await axios.get(
-          `${backendURL}/user/${res.data.data.userID}`,
-          {
-            headers: {
-              token: import.meta.env.VITE_ADMIN_TOKEN,
-            },
-          }
-        )
-        setUser(userRes.data.user)
+        // get user
+        const userData = await fetchEndpoint(`user/${orderData.userID}`, {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        })
+        setUser(userData)
 
+        // get order items
         const updatedItems = await Promise.all(
-          res.data.data.items.map(async (item) => {
-            const itemRes = await axios.get(`${backendURL}/dish/${item._id}`)
+          orderData.items.map(async (item) => {
+            const dishData = await fetchEndpoint(`dish/${item._id}`)
             const { __v, description, category, rating, ...filteredItem } = item // eslint-disable-line no-unused-vars
-
             return {
-              image: itemRes.data.data.image,
-              name: itemRes.data.data.name,
-              price: itemRes.data.data.price,
+              image: dishData.image,
+              name: dishData.name,
+              price: dishData.price,
+              restaurantName: (
+                await fetchEndpoint(`restaurant/${dishData.restaurantID}`)
+              ).name,
               ...filteredItem,
-              subtotal: itemRes.data.data.price * item.quantity,
+              subtotal: dishData.price * item.quantity,
             }
           })
         )
         setItems(updatedItems)
       } catch (err) {
-        addToast("error", "Error", `Error in adding dish: ${err}`)
+        console.error("Error fetching order:", err)
+        addToast("error", "Error", "Failed to fetch order!")
       }
     }
 
@@ -74,7 +72,7 @@ const Order = () => {
                 dataToBeUpdated: {
                   _id: order._id,
                   userID: order.userID,
-                  date: order.date,
+                  date: order.createdAt,
                   payment: order.payment,
                   status: order.status,
                   address: order.address,
@@ -133,7 +131,9 @@ const Order = () => {
         <h4 className="mb-2">Order Details</h4>
         <div className="flex justify-between">
           <p>Order ID: {orderID}</p>
-          {order.date && <p className="m-0">Date: {formatDate(order.date)}</p>}
+          {order.createdAt && (
+            <p className="m-0">Date: {formatDate(order.createdAt)}</p>
+          )}
           <p className="m-0">Status: {order.status}</p>
         </div>
       </div>

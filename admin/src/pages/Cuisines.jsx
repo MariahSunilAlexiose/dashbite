@@ -4,9 +4,8 @@ import { useNavigate } from "react-router-dom"
 import { Button, Table } from "@cmp"
 import { PlusIcon } from "@icons"
 import { useToast } from "@providers"
-import axios from "axios"
 
-import { backendURL } from "@/constants"
+import { fetchEndpoint } from "@/constants"
 
 const Cuisines = () => {
   const navigate = useNavigate()
@@ -15,10 +14,10 @@ const Cuisines = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(`${backendURL}/cuisine/`)
+      const cuisinesData = await fetchEndpoint("cuisine")
       const cleanedCuisinesData = await Promise.all(
-        res.data.data.map(async (item) => {
-          const { __v, createdAt, updatedAt, dishIDs, image, ...rest } = item // eslint-disable-line no-unused-vars
+        cuisinesData.map(async (item) => {
+          const { dishIDs, restaurantIDs, image, ...rest } = item // eslint-disable-line no-unused-vars
           return {
             image,
             ...rest,
@@ -27,8 +26,8 @@ const Cuisines = () => {
       )
       setCuisines(cleanedCuisinesData)
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in listing cuisines: ${err}`)
+      console.error("Error fetching cuisines:", err)
+      addToast("error", "Error", "Failed to fetch cuisines!")
     }
   }
 

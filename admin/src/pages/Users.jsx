@@ -2,65 +2,59 @@ import React, { useEffect, useState } from "react"
 
 import { Table } from "@cmp"
 import { useToast } from "@providers"
-import axios from "axios"
 
-import { backendURL } from "@/constants"
+import { fetchEndpoint } from "@/constants"
 
 const Users = () => {
-  const [list, setList] = useState([])
+  const [users, setUsers] = useState([])
   const { addToast } = useToast()
 
-  const fetchList = async () => {
+  const fetchData = async () => {
     try {
-      const res = await axios.get(`${backendURL}/user/all`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
+      const usersData = await fetchEndpoint("user", {
+        token: import.meta.env.VITE_ADMIN_TOKEN,
       })
-      const cleanedUsersData = res.data.data.map((item) => {
+      const cleanedUsersData = usersData.map((item) => {
         const {
-          __v, // eslint-disable-line no-unused-vars
+          /* eslint-disable no-unused-vars */
+          password,
+          cartData,
+          /* eslint-enable no-unused-vars */
           shippingAddress,
           billingAddress,
-          password, // eslint-disable-line no-unused-vars
-          cartData, // eslint-disable-line no-unused-vars
           profilePic,
           ...rest
         } = item
-        const newShippingAddress = `${shippingAddress.name}, ${shippingAddress.phone}, ${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.zip}, ${shippingAddress.country}`
-        const newBillingAddress = `${billingAddress.name}, ${billingAddress.phone}, ${billingAddress.street}, ${billingAddress.city}, ${billingAddress.state}, ${billingAddress.zip}, ${billingAddress.country}`
         return {
           profilePic,
           ...rest,
           shippingAddress:
             Object.keys(shippingAddress).length > 0 &&
             Object.values(shippingAddress).every((value) => value != "")
-              ? newShippingAddress
+              ? `${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.zip}, ${shippingAddress.country}`
               : "",
           billingAddress:
             Object.keys(billingAddress).length > 0 &&
             Object.values(billingAddress).every((value) => value != "")
-              ? newBillingAddress
+              ? `${billingAddress.street}, ${billingAddress.city}, ${billingAddress.state}, ${billingAddress.zip}, ${billingAddress.country}`
               : "",
         }
       })
-      setList(cleanedUsersData)
+      setUsers(cleanedUsersData)
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in listing user: ${err}`)
+      console.error("Error fetching users:", err)
+      addToast("error", "Error", "Failed to load users!")
     }
   }
 
   useEffect(() => {
-    fetchList()
+    fetchData()
   })
 
   return (
-    <div className="py-10">
+    <div className="flex flex-col gap-5">
       <h2>Users</h2>
-      <div className="pt-7">
-        <Table data={list} tableName="user" />
-      </div>
+      <Table data={users} tableName="user" />
     </div>
   )
 }

@@ -3,9 +3,8 @@ import { useParams } from "react-router-dom"
 
 import { Table } from "@cmp"
 import { useToast } from "@providers"
-import axios from "axios"
 
-import { backendURL } from "@/constants"
+import { fetchEndpoint } from "@/constants"
 
 const Category = () => {
   const { categoryID } = useParams()
@@ -13,46 +12,40 @@ const Category = () => {
   const [dishes, setDishes] = useState([])
   const { addToast } = useToast()
 
-  const fetchList = async () => {
+  const fetchData = async () => {
     try {
-      const catRes = await axios.get(`${backendURL}/category/${categoryID}`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
-      })
-      setCategory(catRes.data.data.name)
-      const res = await axios.get(
-        `${backendURL}/category/${categoryID}/dishes/`,
-        {
-          headers: {
-            token: import.meta.env.VITE_ADMIN_TOKEN,
-          },
-        }
-      )
-      if (res.data.success) {
-        const filteredDishes = res.data.data.map((item) => {
-          const { __v, image, createdAt, updatedAt, cuisineIDs, ...rest } = item // eslint-disable-line no-unused-vars
+      // get category
+      const categoryData = await fetchEndpoint(`category/${categoryID}`)
+      setCategory(categoryData)
 
-          return {
-            image,
-            ...rest,
-          }
-        })
-        setDishes(filteredDishes)
+      // get category dishes
+      const dishesData = await fetchEndpoint(`category/${categoryID}/dishes`)
+      if (dishesData.length > 0) {
+        setDishes(
+          dishesData.map((item) => {
+            // eslint-disable-next-line no-unused-vars
+            const { categoryID, cuisineIDs, restaurantID, image, ...rest } =
+              item
+            return {
+              image,
+              ...rest,
+            }
+          })
+        )
       }
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in retrieiving dishes: ${err}`)
+      console.error("Error fetching category:", err)
+      addToast("error", "Error", "Failed to fetch category!")
     }
   }
 
   useEffect(() => {
-    fetchList()
+    fetchData()
   })
 
   return (
     <div className="py-10">
-      <h2>{category} Category Dishes</h2>
+      <h2>{category.name} Category Dishes</h2>
       <div className="pt-7">
         <Table data={dishes} tableName="dish" />
       </div>

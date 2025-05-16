@@ -4,56 +4,64 @@ import { useNavigate } from "react-router-dom"
 import { Button, Table } from "@cmp"
 import { PlusIcon } from "@icons"
 import { useToast } from "@providers"
-import axios from "axios"
 
-import { backendURL } from "@/constants"
+import { fetchEndpoint } from "@/constants"
 
 const Orders = () => {
   const navigate = useNavigate()
-  const [list, setList] = useState([])
+  const [orders, setOrders] = useState([])
+  const [users, setUsers] = useState([])
+  const [dishes, setDishes] = useState([])
   const { addToast } = useToast()
 
-  const fetchList = async () => {
+  const fetchData = async () => {
     try {
-      const ordersRes = await axios.get(`${backendURL}/order`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
+      // get orders
+      const ordersData = await fetchEndpoint("order", {
+        token: import.meta.env.VITE_ADMIN_TOKEN,
       })
       const cleanedOrdersData = await Promise.all(
-        ordersRes.data.data.map(async (order) => {
-          const userRes = await axios.get(
-            `${backendURL}/user/${order.userID}`,
-            {
-              headers: {
+        ordersData.map(async (order) => {
+          const { address, items, userID, ...rest } = order // eslint-disable-line no-unused-vars
+          return {
+            name:
+              (await fetchEndpoint(`user/${order.userID}`, {
                 token: import.meta.env.VITE_ADMIN_TOKEN,
-              },
-            }
-          )
-          const name = userRes.data.user.name || "Unknown User"
-          const updatedItems = await Promise.all(
-            order.items.map(async (item) => {
-              const itemRes = await axios.get(`${backendURL}/dish/${item._id}`)
-              return {
-                ...item,
-                image: itemRes.data.data.image,
-                name: itemRes.data.data.name,
-              }
-            })
-          )
-          const { __v, address, items, userID, ...rest } = order // eslint-disable-line no-unused-vars
-          return { name, items: updatedItems, ...rest }
+              }).name) || "Unknown User",
+            items: await Promise.all(
+              order.items.map(async (item) => {
+                const dish = await fetchEndpoint(`dish/${item._id}`)
+                return {
+                  ...item,
+                  image: dish.image || "",
+                  name: dish.name || "Unknown",
+                }
+              })
+            ),
+            ...rest,
+          }
         })
       )
-      setList(cleanedOrdersData)
+      setOrders(cleanedOrdersData)
+
+      // get users
+      const usersData = await fetchEndpoint("user", {
+        token: import.meta.env.VITE_ADMIN_TOKEN,
+      })
+      setUsers(usersData)
+
+      // get dishes
+      const dishes = await fetchEndpoint("dish")
+      setDishes(dishes)
     } catch (err) {
       console.error(err)
-      addToast("error", "Error", `Error in listing orders: ${err}`)
+      console.error("Error fetching orders:", err)
+      addToast("error", "Error", "Failed to fetch orders!")
     }
   }
 
   useEffect(() => {
-    fetchList()
+    fetchData()
   }, [])
 
   return (
@@ -68,13 +76,17 @@ const Orders = () => {
               state: {
                 tableName: "order",
                 toBeAddedKeys: [
-                  "userID",
-                  "items",
+                  "user",
                   "address",
+                  "items",
                   "status",
                   "payment",
                   "deliveryType",
                 ],
+                data: {
+                  users: users,
+                  dishes: dishes,
+                },
               },
             })
           }
@@ -83,7 +95,7 @@ const Orders = () => {
         </Button>
       </div>
       <div className="pt-7">
-        <Table data={list} tableName="order" />
+        <Table data={orders} tableName="order" />
       </div>
     </div>
   )

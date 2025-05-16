@@ -20,6 +20,7 @@ import {
   UtensilsCrossedIcon,
   UtensilsCrossedWhiteIcon,
 } from "@icons"
+import axios from "axios"
 
 export const backendURL = "http://localhost:4000/api"
 
@@ -250,3 +251,56 @@ export const ingredientList = [
   "Eggs",
   "Tomatoes",
 ]
+
+export const getRatingImage = (dishRating) => {
+  const rating = ratings.find((r) => r.number === Math.round(dishRating))
+  return rating ? rating.image : null
+}
+
+export const fetchBackendData = async (endpoint, headers = {}) => {
+  try {
+    const res = await axios.get(`${backendURL}/${endpoint}`, {
+      headers: headers,
+    })
+    if (!res.data.success) {
+      console.error(res.data.message)
+      return { success: false, message: res.data.message }
+    }
+
+    return { success: true, data: res.data.data }
+  } catch (err) {
+    console.error(err.message || err)
+    return { success: false, message: err.message || err }
+  }
+}
+
+export const fetchEndpoint = async (endpoint, headers = {}) => {
+  const res = await fetchBackendData(endpoint, headers)
+
+  if (!res.success) {
+    console.error(res.message)
+    return []
+  }
+
+  return res.data
+}
+
+export const fetchCuisines = async (dishes) => {
+  const cuisines = await Promise.all(
+    dishes.cuisineIDs.map(async (cuisineID) => {
+      const cuisineRes = await fetchEndpoint(`cuisine/${cuisineID}`)
+      return { name: cuisineRes.name, _id: cuisineID }
+    })
+  )
+  return cuisines
+}
+
+export const fetchRestaurantDishes = async (restaurant) => {
+  const dishes = await Promise.all(
+    restaurant.dishIDs.map(async (dishID) => {
+      const dish = await fetchEndpoint(`dish/${dishID}`)
+      return dish
+    })
+  )
+  return dishes
+}

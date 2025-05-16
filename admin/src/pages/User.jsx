@@ -3,10 +3,9 @@ import { useParams } from "react-router-dom"
 
 import { UserIcon } from "@icons"
 import { useToast } from "@providers"
-import axios from "axios"
 
 import { Table } from "@/components"
-import { backendImgURL, backendURL } from "@/constants"
+import { backendImgURL, fetchEndpoint } from "@/constants"
 
 const User = () => {
   const { userID } = useParams()
@@ -19,55 +18,48 @@ const User = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${backendURL}/user/${userID}`, {
-          headers: {
-            token: import.meta.env.VITE_ADMIN_TOKEN,
-          },
+        // get user
+        const userData = await fetchEndpoint(`user/${userID}`, {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
         })
-        setUser(res.data.user)
-        setShippingAddress(res.data.user.shippingAddress)
-        setBillingAddress(res.data.user.billingAddress)
-        const ordersRes = await axios.get(
-          `${backendURL}/order/user/${userID}`,
-          {
-            headers: {
-              token: import.meta.env.VITE_ADMIN_TOKEN,
-            },
-          }
-        )
+        setUser(userData)
+        setShippingAddress(userData.shippingAddress)
+        setBillingAddress(userData.billingAddress)
+
+        // get user orders
+        const ordersData = await fetchEndpoint(`order/user/${userID}`, {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        })
         const cleanedOrdersData = await Promise.all(
-          ordersRes.data.data.map(async (order) => {
+          ordersData.map(async (order) => {
             const updatedItems = await Promise.all(
               order.items.map(async (item) => {
-                const itemRes = await axios.get(
-                  `${backendURL}/dish/${item._id}`
-                )
+                const dishData = await fetchEndpoint(`dish/${item._id}`)
                 return {
                   ...item,
-                  image: itemRes.data.data.image,
-                  name: itemRes.data.data.name,
+                  image: dishData.image,
+                  name: dishData.name,
                 }
               })
             )
             const {
               /* eslint-disable no-unused-vars */
-              __v,
               address,
               items,
               name,
               userID,
               /* eslint-enable no-unused-vars */
-              date,
               amount,
               deliveryType,
               ...rest
             } = order
-            return { date, items: updatedItems, amount, deliveryType, ...rest }
+            return { items: updatedItems, amount, deliveryType, ...rest }
           })
         )
         setOrders(cleanedOrdersData)
       } catch (err) {
-        addToast("error", "Error", `Error in retrieving: ${err}`)
+        console.error("Error fetching user:", err)
+        addToast("error", "Error", "Failed to fetch user!")
       }
     }
 

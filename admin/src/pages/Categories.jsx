@@ -4,41 +4,35 @@ import { useNavigate } from "react-router-dom"
 import { Button, Table } from "@cmp"
 import { PlusIcon } from "@icons"
 import { useToast } from "@providers"
-import axios from "axios"
 
-import { backendURL } from "@/constants"
+import { fetchEndpoint } from "@/constants"
 
 const Categories = () => {
   const navigate = useNavigate()
-  const [categories, setCategories] = useState([])
   const { addToast } = useToast()
+  const [categories, setCategories] = useState([])
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(`${backendURL}/category/`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
-      })
-
-      const filteredData = res.data.data.map((item) => {
-        const { __v, image, createdAt, updatedAt, ...rest } = item // eslint-disable-line no-unused-vars
-        return {
-          image,
-          ...rest,
-        }
-      })
-
-      setCategories(filteredData)
+      const categoryData = await fetchEndpoint("category")
+      setCategories(
+        categoryData.map((item) => {
+          const { image, ...rest } = item
+          return {
+            image,
+            ...rest,
+          }
+        })
+      )
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in listing category: ${err}`)
+      console.error("Error fetching categories:", err)
+      addToast("error", "Error", "Failed to fetch categories!")
     }
   }
 
   useEffect(() => {
     fetchData()
-  })
+  }, [])
 
   return (
     <div className="py-10">

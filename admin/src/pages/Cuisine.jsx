@@ -1,74 +1,117 @@
 import React, { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 
-import { Button, Table } from "@cmp"
-import { PlusIcon } from "@icons"
+import { Table } from "@cmp"
 import { useToast } from "@providers"
-import axios from "axios"
 
-import { backendURL } from "@/constants"
+import { backendImgURL, fetchEndpoint } from "@/constants"
 
 const Cuisine = () => {
-  const navigate = useNavigate()
   const { cuisineID } = useParams()
-  const [cuisine, setCuisine] = useState("")
+  const [cuisine, setCuisine] = useState({})
   const [dishes, setDishes] = useState([])
+  const [restaurants, setRestaurants] = useState([])
   const { addToast } = useToast()
 
-  const fetchList = async () => {
+  const fetchData = async () => {
     try {
-      const catRes = await axios.get(`${backendURL}/cuisine/${cuisineID}`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
-      })
-      setCuisine(catRes.data.data.name)
-      const res = await axios.get(`${backendURL}/cuisine/${cuisineID}/dishes/`)
-      if (res.data.success) {
-        const filteredDishes = res.data.data.map((item) => {
-          // eslint-disable-next-line no-unused-vars
-          const { __v, image, createdAt, updatedAt, restaurantID, ...rest } =
-            item
+      // get cuisine
+      const cuisineData = await fetchEndpoint(`cuisine/${cuisineID}`)
+      setCuisine(cuisineData)
 
-          return {
-            image,
-            ...rest,
-          }
-        })
-        setDishes(filteredDishes)
+      // get cuisine dishes
+      const dishesData = await fetchEndpoint(`cuisine/${cuisineID}/dishes`)
+      if (dishesData) {
+        const cleanedDishesData = await Promise.all(
+          dishesData.map(async (item) => {
+            // eslint-disable-next-line no-unused-vars
+            const { image, categoryID, cuisineIDs, restaurantID, ...rest } =
+              item
+            return {
+              image,
+              ...rest,
+            }
+          })
+        )
+        setDishes(cleanedDishesData)
+      }
+
+      // get cuisine restaurants
+      const restaurantsData = await fetchEndpoint(
+        `cuisine/${cuisineID}/restaurants`
+      )
+      if (restaurantsData) {
+        const cleanedRestaurantsData = await Promise.all(
+          restaurantsData.map(async (item) => {
+            const {
+              /* eslint-disable no-unused-vars */
+              email,
+              cuisineIDs,
+              website,
+              openingHours,
+              dishIDs,
+              phone,
+              /* eslint-enable no-unused-vars */
+              images,
+              address,
+              ...rest
+            } = item
+            const addressValues = [
+              address?.street,
+              address?.city,
+              address?.state,
+              address?.zipcode,
+              address?.country,
+            ].filter((value) => value && value.trim() !== "")
+
+            return {
+              image: images[0],
+              ...rest,
+              address: addressValues.length > 0 ? addressValues.join(", ") : "", // Join only non-empty values
+            }
+          })
+        )
+        setRestaurants(cleanedRestaurantsData)
       }
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in retrieiving dishes: ${err}`)
+      console.error("Error fetching cuisines:", err)
+      addToast("error", "Error", "Failed to fetch cuisines!")
     }
   }
 
   useEffect(() => {
-    fetchList()
-  })
+    fetchData()
+  }, [])
 
   return (
-    <div className="py-10">
-      <div className="flex items-center justify-between">
-        <h2>{cuisine} Cuisine Dishes</h2>
-        <Button
-          size="sm"
-          variant="success"
-          onClick={() =>
-            navigate("/add_form", {
-              state: {
-                tableName: "cuisineDish",
-                pageID: cuisineID,
-                toBeAddedKeys: ["dishName"],
-              },
-            })
-          }
-        >
-          <img alt="Plus Icon" src={PlusIcon} width={20} height={20} />
-        </Button>
+    <div className="flex flex-col gap-7">
+      <img
+        src={`${backendImgURL}/${cuisine.image}`}
+        alt="Cuisine Image"
+        className="h-40 w-full rounded-lg object-cover"
+      />
+      <h2 className="text-center">{cuisine.name} Cuisine </h2>
+
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <h2>Restaurants</h2>
+        </div>
+        {restaurants && restaurants.length > 0 ? (
+          <Table data={restaurants} tableName="restaurant" />
+        ) : (
+          "No Restaurants added yet!"
+        )}
       </div>
-      <div className="pt-7">
-        <Table data={dishes} tableName="cuisineDish" pageID={cuisineID} />
+
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <h2>Dishes</h2>
+        </div>
+        {dishes && dishes.length > 0 ? (
+          <Table data={dishes} tableName="dish" />
+        ) : (
+          "No Dishes added yet!"
+        )}
       </div>
     </div>
   )

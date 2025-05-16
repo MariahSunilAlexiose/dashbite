@@ -4,9 +4,13 @@ import { useNavigate, useParams } from "react-router-dom"
 import { Button, Table } from "@cmp"
 import { PencilIcon } from "@icons"
 import { useToast } from "@providers"
-import axios from "axios"
 
-import { backendImgURL, backendURL } from "@/constants"
+import {
+  backendImgURL,
+  fetchCuisines,
+  fetchEndpoint,
+  fetchRestaurantDishes,
+} from "@/constants"
 
 const Restaurant = () => {
   const navigate = useNavigate()
@@ -16,79 +20,65 @@ const Restaurant = () => {
 
   const [reviews, setReviews] = useState([])
   const [toBeUpdatedRestaurant, setToBeUpdatedRestaurant] = useState({})
-  const [address, setAddress] = useState({})
   const { addToast } = useToast()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${backendURL}/restaurant/${restaurantID}`)
-
-        setRestaurant(res.data.data)
-        const { __v, createdAt, updatedAt, address, ...rest } = res.data.data // eslint-disable-line no-unused-vars
-        setToBeUpdatedRestaurant({
-          streetAddress: address,
+        // get restaurant
+        const restaurantData = await fetchEndpoint(`restaurant/${restaurantID}`)
+        const cuisineData = await fetchCuisines(restaurantData)
+        const { cuisineIDs, ...rest } = restaurantData // eslint-disable-line no-unused-vars
+        setRestaurant({
           ...rest,
+          cuisines: cuisineData || {},
         })
 
-        setAddress(res.data.data.address)
+        // restaurant details to be updated
+        const { address, ...toBeUpdatedRest } = restaurantData
+        setToBeUpdatedRestaurant({
+          ...toBeUpdatedRest,
+          streetAddress: address,
+        })
 
-        if (res.data.success) {
-          const dishResponses = await Promise.all(
-            res.data.data.dishIDs.map((itemID) =>
-              axios.get(`${backendURL}/dish/${itemID}`)
-            )
-          )
-
-          const filteredDishes = dishResponses.map(({ data }) => {
-            const {
-              /* eslint-disable no-unused-vars */
-              __v,
-              createdAt,
-              updatedAt,
-              cuisineIDs,
-              restaurantID,
-              /* eslint-enable no-unused-vars */
-              image,
-              ...rest
-            } = data.data
-
+        // get restaurant dishes
+        const dishesData = await fetchRestaurantDishes(restaurantData)
+        setDishes(
+          dishesData.map((dish) => {
+            // eslint-disable-next-line no-unused-vars
+            const { cuisineIDs, categoryID, restaurantID, image, ...rest } =
+              dish
             return {
               image,
               ...rest,
             }
           })
+        )
 
-          setDishes(filteredDishes)
-
-          const revRes = await axios.get(
-            `${backendURL}/review/restaurant/${restaurantID}`
-          )
-
-          if (revRes.data.length > 0) {
-            const reviewsWithUsernames = await Promise.all(
-              revRes.data.map(
-                // eslint-disable-next-line no-unused-vars
-                async ({ __v, createdAt, updatedAt, ...rest }) => {
-                  const userRes = await axios.get(
-                    `${backendURL}/user/${rest.userID}`,
-                    {
-                      headers: {
-                        token: import.meta.env.VITE_ADMIN_TOKEN,
-                      },
-                    }
-                  )
-                  return { username: userRes.data.user.name, ...rest }
+        // get restaurant reviews
+        const reviewsData = await fetchEndpoint(
+          `review/restaurant/${restaurantID}`
+        )
+        if (reviewsData.length > 0) {
+          const reviewsWithUsernames = await Promise.all(
+            reviewsData.map(
+              // eslint-disable-next-line no-unused-vars
+              async ({ __v, createdAt, updatedAt, ...rest }) => {
+                return {
+                  username:
+                    (await fetchEndpoint(`user/${rest.userID}`, {
+                      token: import.meta.env.VITE_ADMIN_TOKEN,
+                    }).name) || "Unknown",
+                  ...rest,
                 }
-              )
+              }
             )
-
-            setReviews(reviewsWithUsernames)
-          }
+          )
+          setReviews(reviewsWithUsernames)
         }
       } catch (err) {
-        console.error(err)
-        addToast("error", "Error", `Error in retrieving: ${err}`)
+        console.error("Error fetching restaurant:", err)
+        addToast("error", "Error", "Failed to fetch restaurant!")
       }
     }
 
@@ -97,15 +87,41 @@ const Restaurant = () => {
 
   return (
     <div className="flex flex-col gap-7">
-      {restaurant.image && (
-        <img
-          src={`${backendImgURL}/${restaurant.image}`}
-          alt="Restaurant Profile"
-          className="h-40 w-full object-cover"
-        />
+      {restaurant.images && (
+        <div>
+          <img
+            src={`${backendImgURL}/${restaurant.images[0]}`}
+            alt="Restaurant Profile"
+            className="h-40 w-full rounded-lg object-cover"
+          />
+          <div className="mt-2 flex gap-2">
+            {restaurant.images.slice(1).map((image, index) => (
+              <img
+                key={index}
+                src={`${backendImgURL}/${image}`}
+                alt="Restaurant Image"
+                className="h-20 w-20 flex-1 rounded-lg object-cover"
+              />
+            ))}
+          </div>
+        </div>
       )}
       <div className="flex items-center justify-between">
-        <h2>{restaurant.name} Restaurant</h2>
+        <div>
+          <h2>{restaurant.name} Restaurant</h2>
+          <div className="flex gap-4">
+            {restaurant.cuisines &&
+              restaurant.cuisines.map((cuisine) => (
+                <div
+                  key={cuisine._id}
+                  onClick={() => navigate(`/cuisines/${cuisine._id}`)}
+                  className="bg-accent text-primary border-primary w-fit cursor-pointer rounded-full border px-2 text-sm"
+                >
+                  {cuisine.name}
+                </div>
+              ))}
+          </div>
+        </div>
         <Button
           size="sm"
           onClick={() =>
@@ -135,16 +151,17 @@ const Restaurant = () => {
         <div className="flex justify-between">
           <div className="pr-35 flex flex-col">
             <h4>Address</h4>
-            {address &&
-            Object.values(address).some(
+            {restaurant.address &&
+            Object.values(restaurant.address).some(
               (value) => value !== "" && value !== undefined
             ) ? (
               <>
                 <p className="m-0">
-                  {address.street}, {address.city},
+                  {restaurant.address.street}, {restaurant.address.city},
                 </p>
                 <p className="m-0">
-                  {address.state}, {address.zipcode}, {address.country}
+                  {restaurant.address.state}, {restaurant.address.zipcode},{" "}
+                  {restaurant.address.country}
                 </p>
               </>
             ) : (
@@ -153,14 +170,16 @@ const Restaurant = () => {
           </div>
         </div>
       </div>
+
       <div>
         <h4 className="mb-2">Dishes</h4>
         {dishes.length > 0 ? (
-          <Table data={dishes} tableName="dish" />
+          <Table data={dishes} tableName="restaurantDish" />
         ) : (
           <>No dishes added yet!</>
         )}
       </div>
+
       <div>
         <h4 className="mb-2">Reviews</h4>
         {reviews.length > 0 ? (

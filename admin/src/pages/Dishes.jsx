@@ -4,70 +4,60 @@ import { useNavigate } from "react-router-dom"
 import { Button, Table } from "@cmp"
 import { PlusIcon } from "@icons"
 import { useToast } from "@providers"
-import axios from "axios"
 
-import { backendURL } from "@/constants"
+import { fetchEndpoint } from "@/constants"
 
 const Dishes = () => {
   const navigate = useNavigate()
-  const [list, setList] = useState([])
+  const [dishes, setDishes] = useState([])
+  const [categories, setCategories] = useState([])
+  const [restaurants, setRestaurants] = useState([])
+  const [cuisines, setCuisines] = useState([])
   const { addToast } = useToast()
 
-  const fetchList = async () => {
+  const fetchData = async () => {
     try {
-      const res = await axios.get(`${backendURL}/dish/`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
+      // get dishes
+      const dishesData = await fetchEndpoint("dish")
+      const [categoriesData, restaurantsData] = await Promise.all([
+        fetchEndpoint("category"),
+        fetchEndpoint("restaurant"),
+      ])
+      setCategories(categoriesData)
+      setRestaurants(restaurantsData)
+      const cleanedDishesData = dishesData.map((item) => {
+        const { image, categoryID, cuisineIDs, restaurantID, ...rest } = item // eslint-disable-line no-unused-vars
+        return {
+          image,
+          ...rest,
+          categoryName:
+            Object.fromEntries(
+              categoriesData.map((cat) => [cat._id, cat.name])
+            )[categoryID] || "Unknown",
+          restaurantName:
+            Object.fromEntries(
+              restaurantsData.map((res) => [res._id, res.name])
+            )[restaurantID] || "-",
+        }
       })
-      const cleanedDishesData = await Promise.all(
-        res.data.data.map(async (item) => {
-          const itemRes = await axios.get(
-            `${backendURL}/category/${item.categoryID}`
-          )
 
-          const cuisineNames = item.cuisineIDs.length
-            ? (
-                await Promise.all(
-                  item.cuisineIDs.map(async (citem) => {
-                    const cuisineRes = await axios.get(
-                      `${backendURL}/cuisine/${citem}`
-                    )
-                    return cuisineRes.data.data.name
-                  })
-                )
-              ).join(", ")
-            : "-"
+      setDishes(cleanedDishesData)
 
-          const restaurantName = item.restaurantID
-            ? (await axios.get(`${backendURL}/restaurant/${item.restaurantID}`))
-                .data.data.name
-            : "-"
-
-          const { __v, image, ...rest } = item // eslint-disable-line no-unused-vars
-
-          return {
-            image,
-            ...rest,
-            category: itemRes.data.data.name || "Unknown",
-            cuisineNames: cuisineNames,
-            restaurantName: restaurantName,
-          }
-        })
-      )
-      setList(cleanedDishesData)
+      // get cuisines
+      const cuisinesData = await fetchEndpoint("cuisine")
+      setCuisines(cuisinesData)
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in listing dish: ${err}`)
+      console.error("Error fetching dishes:", err)
+      addToast("error", "Error", "Failed to fetch dishes!")
     }
   }
 
   useEffect(() => {
-    fetchList()
+    fetchData()
   })
 
   return (
-    <div className="py-10">
+    <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
         <h2>Dishes</h2>
         <Button
@@ -79,14 +69,26 @@ const Dishes = () => {
                 tableName: "dish",
                 toBeAddedKeys: [
                   "image",
-                  "category",
                   "name",
-                  "description",
                   "price",
                   "rating",
-                  "cuisines",
                   "restaurant",
+                  "category",
+                  "cuisines",
+                  "description",
+                  "servingSize",
+                  "ingredients",
+                  "calories",
+                  "fat",
+                  "protein",
+                  "carbs",
+                  "allergens",
                 ],
+                data: {
+                  restaurants: restaurants,
+                  categories: categories,
+                  cuisines: cuisines,
+                },
               },
             })
           }
@@ -94,9 +96,7 @@ const Dishes = () => {
           <img alt="Plus Icon" src={PlusIcon} width={20} height={20} />
         </Button>
       </div>
-      <div className="pt-7">
-        <Table data={list} tableName="dish" />
-      </div>
+      <Table data={dishes} tableName="dish" />
     </div>
   )
 }
