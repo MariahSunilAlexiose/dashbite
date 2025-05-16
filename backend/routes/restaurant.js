@@ -27,13 +27,13 @@ const upload = multer({ storage })
 restaurantRouter.post(
   "/",
   adminAuthMiddleware,
-  upload.fields([{ name: "images", maxCount: 9000 }]),
+  upload.fields([{ name: "images[]", maxCount: 10 }]),
   addRestaurant
 )
 restaurantRouter.put(
   "/:restaurantID",
   adminAuthMiddleware,
-  upload.fields([{ name: "images", maxCount: 9000 }]),
+  upload.fields([{ name: "images[]", maxCount: 10 }]),
   updateRestaurant
 )
 restaurantRouter.delete("/:restaurantID", adminAuthMiddleware, deleteRestaurant)

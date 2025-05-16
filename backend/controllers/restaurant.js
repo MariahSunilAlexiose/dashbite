@@ -15,11 +15,11 @@ const addRestaurant = async (req, res) => {
     website,
     openingHours,
     rating,
-    dishIDs,
   } = req.body
-  const filenames = Array.isArray(req.files)
-    ? req.files.map((file) => file.filename)
-    : [] // Extract multiple filenames
+
+  const filenames = req.files["images[]"]
+    ? req.files["images[]"].map((file) => file.filename)
+    : []
 
   let missingFieldsResponse = checkMissingFields("restaurant", req.body, [
     "name",
@@ -27,12 +27,19 @@ const addRestaurant = async (req, res) => {
     "email",
     "openingHours",
   ])
+
   if (filenames.length === 0) {
     missingFieldsResponse = missingFieldsResponse || {
       success: false,
       message: "Missing required field: images",
     }
+  } else if (filenames.length > 10) {
+    missingFieldsResponse = missingFieldsResponse || {
+      success: false,
+      message: "Exceeded the allowed limit of 10 images!",
+    }
   }
+
   if (missingFieldsResponse) return res.json(missingFieldsResponse)
 
   try {
@@ -45,31 +52,37 @@ const addRestaurant = async (req, res) => {
       website,
       openingHours,
       rating,
-      dishIDs,
       images: filenames,
     })
 
-    await restaurant.save()
+    const savedRestaurant = await restaurant.save()
 
-    await Promise.all([
-      ...cuisineIDs.map((cuisineID) =>
-        cuisineModel.findByIdAndUpdate(cuisineID, {
-          $addToSet: { restaurantIDs: restaurant._id },
+    if (!savedRestaurant._id)
+      return res.json({ success: false, message: "Restaurant ID is missing!" })
+
+    if (cuisineIDs && cuisineIDs.length > 0) {
+      await Promise.all(
+        cuisineIDs.map(async (cuisineID) => {
+          const cuisine = await cuisineModel.findById(cuisineID)
+          if (cuisine && !cuisine.restaurantIDs.includes(savedRestaurant._id)) {
+            await cuisineModel.findByIdAndUpdate(
+              cuisineID,
+              {
+                $addToSet: { restaurantIDs: savedRestaurant._id },
+              },
+              { new: true }
+            )
+          }
         })
-      ),
-      ...dishIDs.map((dishID) =>
-        dishModel.findByIdAndUpdate(dishID, {
-          $addToSet: { restaurantIDs: restaurant._id },
-        })
-      ),
-    ])
+      )
+    }
 
     res.json({
       success: true,
       message: "Restaurant added and cuisines updated!",
     })
   } catch (err) {
-    console.error(err)
+    console.error("Error in adding restaurant:", err)
     res.json({ success: false, message: `Error in adding restaurant: ${err}` })
   }
 }
@@ -115,46 +128,68 @@ const updateRestaurant = async (req, res) => {
         fs.unlink(`uploads/${image}`, () => {})
       )
 
-    const newRestaurant = await restaurantModel.findByIdAndUpdate(
+    const updatedRestaurant = await restaurantModel.findByIdAndUpdate(
       restaurantID,
       updatedData,
       { new: true }
     )
-    if (!newRestaurant)
+    if (!updatedRestaurant)
       return res.json({
         success: false,
         message: "Error in updating restaurant!",
       })
 
-    await Promise.all([
-      ...previousCuisineIDs.map((cuisineID) =>
-        cuisineModel.findByIdAndUpdate(cuisineID, {
-          $pull: { restaurantIDs: restaurantID },
-        })
-      ),
-      ...cuisineIDs.map((cuisineID) =>
-        cuisineModel.findByIdAndUpdate(cuisineID, {
-          $addToSet: { restaurantIDs: restaurantID },
-        })
-      ),
-      ...previousDishIDs.map((dishID) =>
-        dishModel.findByIdAndUpdate(dishID, {
-          $pull: { restaurantIDs: restaurantID },
-        })
-      ),
-      ...dishIDs.map((dishID) =>
-        dishModel.findByIdAndUpdate(dishID, {
-          $addToSet: { restaurantIDs: restaurantID },
-        })
-      ),
-    ])
+    if (cuisineIDs && cuisineIDs.length > 0) {
+      await Promise.all([
+        ...previousCuisineIDs.map((cuisineID) =>
+          cuisineModel.findByIdAndUpdate(
+            cuisineID,
+            { $pull: { restaurantIDs: restaurantID } },
+            { new: true }
+          )
+        ),
+        ...cuisineIDs.map((cuisineID) => {
+          return cuisineModel.findByIdAndUpdate(
+            cuisineID,
+            {
+              $addToSet: { restaurantIDs: restaurantID },
+            },
+            { new: true }
+          )
+        }),
+      ])
+    }
 
-    res.json({ success: true, message: "Restaurant and cuisines updated!" })
+    if (dishIDs && dishIDs.length > 0) {
+      await Promise.all([
+        ...previousDishIDs.map((dishID) =>
+          dishModel.findByIdAndUpdate(
+            dishID,
+            { $pull: { restaurantIDs: restaurantID } },
+            { new: true }
+          )
+        ),
+        ...dishIDs.map((dishID) => {
+          return dishModel.findByIdAndUpdate(
+            dishID,
+            {
+              $addToSet: { restaurantIDs: restaurantID },
+            },
+            { new: true }
+          )
+        }),
+      ])
+    }
+
+    res.json({
+      success: true,
+      message: "Restaurant, cuisines, and dishes updated!",
+    })
   } catch (err) {
-    console.error(err)
+    console.error("Error updating restaurant:", err)
     res.json({
       success: false,
-      message: `Error in updating restaurant: ${err}`,
+      message: `Error in updating restaurant: ${err.message}`,
     })
   }
 }
@@ -216,7 +251,7 @@ const getRestaurant = async (req, res) => {
     console.error(err)
     res.json({
       success: false,
-      message: `Error in retrieving restaurant: ${err}`,
+      message: `Error in fetching restaurant: ${err}`,
     })
   }
 }
@@ -229,7 +264,7 @@ const getRestaurants = async (req, res) => {
     console.error(err)
     res.json({
       success: false,
-      message: `Error in retrieving restaurants: ${err.message}`,
+      message: `Error in fetching restaurants: ${err.message}`,
     })
   }
 }
