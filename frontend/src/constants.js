@@ -605,12 +605,16 @@ export const logout = ({ setToken, navigate }) => {
 
 export const fetchUser = async ({ url, token, addToast }) => {
   try {
-    const userRes = await axios.get(`${url}/api/user`, {
+    const res = await axios.get(`${url}/api/user`, {
       headers: { token },
     })
-    return userRes.data.user
+    if (!res.data.success) {
+      console.error(res.data.message)
+      return addToast("error", "Error", res.data.message)
+    }
+    return res.data.user
   } catch (err) {
-    console.error(err)
-    return addToast("error", "Error", `Error in retrieving user: ${err}`)
+    console.error("Error fetching user:", err)
+    addToast("error", "Error", "Failed to fetch user!")
   }
 }

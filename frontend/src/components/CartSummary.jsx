@@ -46,11 +46,14 @@ const CartSummary = ({ deliveryValue, deliveryInfo }) => {
       let res = await axios.post(url + "/api/order/place", orderData, {
         headers: { token },
       })
-      if (!res.data.success)
-        return addToast("error", "Error", `Error: ${res.data.message}`)
+      if (!res.data.success) {
+        console.error(res.data.message)
+        return addToast("error", "Error", res.data.message)
+      }
       window.location.replace(res.data.session_url)
     } catch (err) {
-      addToast("error", "Error", `Error in placing order: ${err}`)
+      console.error("Error placing order:", err)
+      addToast("error", "Error", "Failed to place order!")
     }
   }
 

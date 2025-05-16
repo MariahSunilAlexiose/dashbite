@@ -26,9 +26,10 @@ const Verify = () => {
         setTimeout(() => {
           window.location.reload()
         }, 100)
-      } else return addToast("error", "Error", `Error: ${res.data.message}`)
+      } else return addToast("error", "Error", res.data.message)
     } catch (err) {
-      addToast("error", "Error", `Error in retrieving order: ${err}`)
+      console.error("Error verifying payment:", err)
+      addToast("error", "Error", "Failed to verify payment!")
     }
   }
 

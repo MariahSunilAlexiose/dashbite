@@ -36,7 +36,7 @@ const AddressForm = ({
         )
       )}
       <div className="flex gap-5">
-        <Button onClick={() => handleSave(addressType)}>Save</Button>
+        <Button onClick={() => handleSave()}>Save</Button>
         <Button variant="destructive" onClick={() => handleDelete(addressType)}>
           Delete
         </Button>

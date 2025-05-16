@@ -13,19 +13,15 @@ const Address = () => {
   const [toBeUpdatedBilling, setToBeUpdatedBilling] = useState(false)
   const [toBeUpdatedShipping, setToBeUpdatedShipping] = useState(false)
   const { addToast } = useToast()
-  const [user, setUser] = useState({}) // eslint-disable-line no-unused-vars
-  const { url, token, userID } = useContext(StoreContext)
+  const { url, token } = useContext(StoreContext)
   const [formData, setFormData] = useState({
     billingAddress: {},
     shippingAddress: {},
   })
-  const handleSave = async (type) => {
+  const handleSave = async () => {
     try {
       const method =
-        (type === "billing" && toBeUpdatedBilling) ||
-        (type !== "billing" && toBeUpdatedShipping)
-          ? axios.put
-          : axios.post
+        toBeUpdatedBilling || toBeUpdatedShipping ? axios.put : axios.post
 
       await method(`${url}/api/user/address`, formData, {
         headers: { token },
@@ -33,7 +29,8 @@ const Address = () => {
       window.location.reload()
       addToast("success", "Success", "Updated address successfully!")
     } catch (err) {
-      addToast("error", "Error", `Error in saving addresses: ${err}`)
+      console.error("Error in saving addresses:", err)
+      addToast("error", "Error", "Failed to save addresses!")
     }
   }
   const handleDelete = async (type) => {
@@ -41,32 +38,35 @@ const Address = () => {
     if (type === "shippingAddress") {
       updatedFormData = {
         ...formData,
-        shippingAddress: {}, // Empty the shippingAddress
+        shippingAddress: {},
       }
-      setFormData(updatedFormData) // Update the state
+      setFormData(updatedFormData)
     } else {
       updatedFormData = {
         ...formData,
-        billingAddress: {}, // Empty the billingAddress
+        billingAddress: {},
       }
-      setFormData(updatedFormData) // Update the state
+      setFormData(updatedFormData)
     }
     try {
-      // Use the updatedFormData directly instead of formData
-      await axios.put(`${url}/api/user/address`, updatedFormData, {
+      const res = await axios.put(`${url}/api/user/address`, updatedFormData, {
         headers: { token },
       })
+      if (!res.data.success) {
+        console.error(res.data.message)
+        return addToast("error", "Error", res.data.message)
+      }
       window.location.reload()
       addToast("success", "Success", "Deleted address successfully!")
     } catch (err) {
-      addToast("error", "Error", `Error in saving addresses: ${err}`)
+      console.error("Error deleting addresses:", err)
+      addToast("error", "Error", "Failed to delete addresses!")
     }
   }
   useEffect(() => {
     const fetchUserData = async () => {
       const fetchedUser = await fetchUser({ url, token, addToast })
       if (fetchedUser) {
-        setUser(fetchedUser)
         setFormData({
           billingAddress: fetchedUser.billingAddress || {},
           shippingAddress: fetchedUser.shippingAddress || {},
@@ -76,7 +76,7 @@ const Address = () => {
       }
     }
     fetchUserData()
-  }, [token, userID])
+  }, [token])
   return (
     <div>
       <h2 className="text-center">My Account</h2>

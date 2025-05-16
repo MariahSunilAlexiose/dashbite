@@ -14,8 +14,10 @@ const MyOrders = () => {
     const res = await axios.get(`${url}/api/order/myorders`, {
       headers: { token },
     })
-    if (!res.data.success)
-      return addToast("error", "Error", `Error: ${res.data.message}`)
+    if (!res.data.success) {
+      console.error(res.data.message)
+      return addToast("error", "Error", res.data.message)
+    }
     setOrders(res.data.data)
   }
   useEffect(() => {

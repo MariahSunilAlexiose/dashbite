@@ -16,14 +16,23 @@ const Cuisine = () => {
   const fetchCuisine = async () => {
     try {
       const res = await axios.get(`${url}/api/cuisine/${cuisineID}`)
+      if (!res.data.success) {
+        console.error(res.data.message)
+        return addToast("error", "Error", res.data.message)
+      }
       setCuisine(res.data.data)
-      const dishres = await axios.get(`${url}/api/cuisine/${cuisineID}/dishes/`)
-      if (dishres.data.success) {
-        setDishes(dishres.data.data)
+
+      const dishRes = await axios.get(`${url}/api/cuisine/${cuisineID}/dishes/`)
+      if (!dishRes.data.success) {
+        console.error(dishRes.data.message)
+        return addToast("error", "Error", dishRes.data.message)
+      }
+      if (dishRes.data.success) {
+        setDishes(dishRes.data.data)
       }
     } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error in listing cuisines: ${err}`)
+      console.error("Error fetching cuisine:", err)
+      addToast("error", "Error", "Failed to fetch cuisine!")
     }
   }
 

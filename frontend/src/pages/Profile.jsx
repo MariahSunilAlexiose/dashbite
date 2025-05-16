@@ -23,11 +23,14 @@ const Profile = () => {
       const res = await axios.put(`${url}/api/user/`, updatedUser, {
         headers: { token },
       })
+      if (!res.data.success) {
+        console.error(res.data.message)
+        return addToast("error", "Error", res.data.message)
+      }
       addToast("success", "Success", "Updated user successfully!")
-      if (!res.data.success)
-        return addToast("error", "Error", `Error: ${res.data.message}`)
     } catch (err) {
-      addToast("error", "Error", `Error in updating user: ${err}`)
+      console.error("Error updating user:", err)
+      addToast("error", "Error", "Failed to update user!")
     }
   }
 

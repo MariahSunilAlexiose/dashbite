@@ -24,8 +24,10 @@ const Login = () => {
     e.preventDefault()
     try {
       const res = await axios.post(`${url}/api/user/login`, data)
-      if (!res.data.success)
-        return addToast("error", "Error", `Error: ${res.data.message}`)
+      if (!res.data.success) {
+        console.error(res.data.message)
+        return addToast("error", "Error", res.data.message)
+      }
       setToken(res.data.token)
       localStorage.setItem("token", res.data.token)
       navigate("/")
@@ -33,7 +35,8 @@ const Login = () => {
         window.location.reload()
       }, 100)
     } catch (err) {
-      addToast("error", "Error", `Error in logging in user: ${err}`)
+      console.error("Error in logging in:", err)
+      addToast("error", "Error", "Failed to login!")
     }
   }
   return (
