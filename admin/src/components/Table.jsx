@@ -11,31 +11,23 @@ import { backendImgURL, backendURL, formatDate, keyMapping } from "@/constants"
 
 import { Pagination } from "."
 
-const handleDelete = async ({ addToast, ID, tableName, tableID }) => {
+const handleDelete = async ({ addToast, ID, tableName }) => {
   try {
     let res
-    if (tableName === "cuisineDish")
-      res = await axios.delete(
-        `${backendURL}/cuisine/${tableID}/dishes/${ID}`,
-        {
-          headers: {
-            token: import.meta.env.VITE_ADMIN_TOKEN,
-          },
-        }
-      )
-    else
-      res = await axios.delete(`${backendURL}/${tableName}/${ID}`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
-      })
-    if (res.data.success === false)
+    res = await axios.delete(`${backendURL}/${tableName}/${ID}`, {
+      headers: {
+        token: import.meta.env.VITE_ADMIN_TOKEN,
+      },
+    })
+    if (!res.data.success) {
+      console.error(res.data.message)
       return addToast("error", "Error", res.data.message)
+    }
     addToast("success", "Success", "Removed Item!")
     window.location.reload()
   } catch (err) {
-    console.error(err)
-    addToast("error", "Error", `Error in deleting item: ${err}`)
+    console.error("Error deleting:", err)
+    addToast("error", "Error", "Error in deleting!")
   }
 }
 
@@ -59,10 +51,23 @@ const Table = ({ tableName, data, pageID, extraData }) => {
     dataMap.set(index, item)
   })
 
-  let updatedTableName = tableName
-  if (tableName === "cuisineDish") {
-    updatedTableName = "dish" // Reset the tableName if it matches these conditions
-  }
+  const filteredKeys =
+    data?.[0] && typeof data[0] === "object"
+      ? Object.keys(data[0]).filter(
+          (key) =>
+            key !== "_id" &&
+            key !== "__v" &&
+            key !== "updatedAt" &&
+            key !== "createdAt" &&
+            key !== "servingSize" &&
+            key !== "ingredients" &&
+            key !== "calories" &&
+            key !== "fat" &&
+            key !== "protein" &&
+            key !== "carbs" &&
+            key !== "allergens"
+        )
+      : []
 
   if (!data || data.length === 0) return <div>No data available</div>
 
@@ -71,15 +76,7 @@ const Table = ({ tableName, data, pageID, extraData }) => {
       <table className="w-full items-center justify-center text-sm">
         <thead className="[&_tr]:border-b">
           <tr className="border-b transition-colors">
-            {Object.keys(data[0])
-              .filter(
-                (key) =>
-                  key !== "_id" &&
-                  key !== "categoryID" &&
-                  key !== "cuisineIDs" &&
-                  key !== "restaurantID" &&
-                  key !== "userID"
-              )
+            {filteredKeys
               .map((key) => keyMapping[key] || key)
               .map((header) => (
                 <th
@@ -95,112 +92,103 @@ const Table = ({ tableName, data, pageID, extraData }) => {
           {currentItems.map((row, index) => (
             <tr
               key={index}
-              className="cursor-pointer border-b transition-colors hover:bg-[#f1f5f9]"
+              className="hover:bg-accent cursor-pointer border-b transition-colors"
             >
-              {Object.keys(data[0])
-                .filter(
-                  (key) =>
-                    key !== "_id" &&
-                    key !== "categoryID" &&
-                    key !== "cuisineIDs" &&
-                    key !== "restaurantID" &&
-                    key !== "userID"
-                )
-                .map((header) => (
-                  <td
-                    key={header}
-                    className="w-1/6 p-2 align-middle"
-                    onClick={() => {
-                      if (tableName === "category")
-                        navigate(`/categories/${row["_id"]}`)
-                      else if (tableName === "dish")
-                        navigate(`/dishes/${row["_id"]}`)
-                      else if (
-                        tableName !== "orderitem" &&
-                        tableName !== "cuisineDish" &&
-                        tableName !== "review"
-                      )
-                        navigate(`/${tableName}s/${row["_id"]}`)
-                    }}
-                  >
-                    {header === "unitPrice" ||
-                    header === "price" ||
-                    header === "amount" ||
-                    header === "salary" ||
-                    header === "subtotal" ? (
-                      `$${row[header]}`
-                    ) : header === "date" ? (
-                      formatDate(row[header])
-                    ) : header === "image" ? (
-                      <div className="flex items-center justify-center">
-                        <img
-                          src={`${backendImgURL}/${row[header]}`}
-                          alt={row.name || "Image"}
-                          className="h-16 w-16 object-cover"
-                        />
-                      </div>
-                    ) : header === "profilePic" ? (
-                      <div className="flex items-center justify-center">
-                        <img
-                          src={
-                            row[header].startsWith(
-                              "https://ui-avatars.com/api/?name="
-                            )
-                              ? row[header]
-                              : `${backendImgURL}/${row[header] || UserIcon}`
-                          }
-                          alt="User Profile"
-                          className="h-15 w-15 aspect-square rounded-full object-cover"
-                        />
-                      </div>
-                    ) : header === "payment" ? (
-                      row[header] ? (
-                        "Paid"
-                      ) : (
-                        "Not Paid"
-                      )
-                    ) : header === "deliveryType" ? (
-                      row[header] === "Free Shipping" ? (
-                        "Free Shipping"
-                      ) : row[header] === "Express Shipping" ? (
-                        "Express Shipping"
-                      ) : (
-                        "Pick Up"
-                      )
-                    ) : header === "items" ? (
-                      <div className="flex items-center justify-center gap-2">
-                        {row.items.map((item, key) => (
-                          <div key={key} className="relative h-12 w-12">
-                            <img
-                              src={`${backendImgURL}/${item.image}`}
-                              alt={item.name}
-                              className="h-full w-full rounded"
-                            />
-                            <div className="bg-foreground text-background absolute -right-2 -top-2 rounded-full px-2.5 py-1 text-xs font-bold shadow-md">
-                              {item.quantity}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : row[header] ? (
-                      row[header]
+              {filteredKeys.map((header) => (
+                <td
+                  key={header}
+                  className="w-1/6 p-2 align-middle"
+                  onClick={() => {
+                    if (tableName === "category")
+                      navigate(`/categories/${row["_id"]}`)
+                    else if (tableName === "dish")
+                      navigate(`/dishes/${row["_id"]}`)
+                    else if (
+                      tableName !== "orderitem" &&
+                      tableName !== "review"
+                    )
+                      navigate(`/${tableName}s/${row["_id"]}`)
+                  }}
+                >
+                  {header === "unitPrice" ||
+                  header === "price" ||
+                  header === "amount" ||
+                  header === "salary" ||
+                  header === "subtotal" ? (
+                    `$${row[header]}`
+                  ) : header === "date" ? (
+                    formatDate(row[header])
+                  ) : header === "image" ? (
+                    <div className="flex items-center justify-center">
+                      <img
+                        src={`${backendImgURL}/${row[header]}`}
+                        alt={row.name || "Image"}
+                        className="h-16 w-16 object-cover"
+                      />
+                    </div>
+                  ) : header === "profilePic" ? (
+                    <div className="flex items-center justify-center">
+                      <img
+                        src={
+                          row[header].startsWith(
+                            "https://ui-avatars.com/api/?name="
+                          )
+                            ? row[header]
+                            : `${backendImgURL}/${row[header] || UserIcon}`
+                        }
+                        alt="User Profile"
+                        className="h-15 w-15 aspect-square rounded-full object-cover"
+                      />
+                    </div>
+                  ) : header === "payment" ? (
+                    row[header] ? (
+                      "Paid"
                     ) : (
-                      "-"
-                    )}
-                  </td>
-                ))}
+                      "Not Paid"
+                    )
+                  ) : header === "deliveryType" ? (
+                    row[header] === "Free Shipping" ? (
+                      "Free Shipping"
+                    ) : row[header] === "Express Shipping" ? (
+                      "Express Shipping"
+                    ) : (
+                      "Pick Up"
+                    )
+                  ) : header === "items" ? (
+                    <div className="flex items-center justify-center gap-2">
+                      {row.items.map((item, key) => (
+                        <div key={key} className="relative h-12 w-12">
+                          <img
+                            src={`${backendImgURL}/${item.image}`}
+                            alt={item.name}
+                            className="h-full w-full rounded"
+                          />
+                          <div className="bg-foreground text-background absolute -right-2 -top-2 rounded-full px-2.5 py-1 text-xs font-bold shadow-md">
+                            {item.quantity}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : row[header] ? (
+                    row[header]
+                  ) : (
+                    "-"
+                  )}
+                </td>
+              ))}
               {tableName !== "orderitem" && tableName !== "review" && (
                 <td className="flex items-center justify-center gap-3 py-8 align-middle">
                   {tableName !== "order" &&
                     tableName !== "user" &&
-                    tableName !== "restaurant" && (
+                    tableName !== "restaurant" &&
+                    tableName !== "dish" && (
                       <Button
                         size="icon"
                         onClick={(e) => {
                           e.stopPropagation()
                           navigate(`/update_form`, {
                             state: {
-                              tableName: updatedTableName || tableName,
+                              tableName,
                               pageID: pageID || row._id,
                               dataToBeUpdated: data.find(
                                 (d) => d._id === row._id
@@ -221,14 +209,7 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                     size="icon"
                     onClick={(e) => {
                       e.stopPropagation()
-                      if (tableName === "cuisineDish")
-                        handleDelete({
-                          addToast,
-                          tableID: pageID,
-                          ID: row._id,
-                          tableName,
-                        })
-                      else handleDelete({ addToast, ID: row._id, tableName })
+                      handleDelete({ addToast, ID: row._id, tableName })
                     }}
                   >
                     <img src={TrashIcon} alt="Trash Icon" className="h-4 w-4" />
