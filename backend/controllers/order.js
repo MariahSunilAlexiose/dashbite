@@ -109,7 +109,7 @@ const userOrders = async (req, res) => {
   } catch (err) {
     res.json({
       success: false,
-      message: `Error in retrieving user's orders: ${err}`,
+      message: `Error in fetching user's orders: ${err}`,
     })
   }
 }
@@ -133,7 +133,7 @@ const getOrderByID = async (req, res) => {
 
     res.json({ success: true, data: order })
   } catch (err) {
-    res.json({ success: false, message: `Error in retrieving order: ${err}` })
+    res.json({ success: false, message: `Error in fetching order: ${err}` })
   }
 }
 
@@ -144,7 +144,7 @@ const getOrders = async (req, res) => {
       return res.json({ success: false, message: "Orders not found!" })
     res.json({ success: true, data: orders })
   } catch (err) {
-    res.json({ success: false, message: `Error: ${err}` })
+    res.json({ success: false, message: err })
   }
 }
 
@@ -155,7 +155,7 @@ const getOrder = async (req, res) => {
     if (!order) return res.json({ success: false, message: "Order not found!" })
     res.json({ success: true, data: order })
   } catch (err) {
-    res.json({ success: false, message: `Error! ${err}` })
+    res.json({ success: false, message: err })
   }
 }
 
