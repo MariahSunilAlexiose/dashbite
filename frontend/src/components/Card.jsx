@@ -2,24 +2,27 @@ import React, { useContext } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { StoreContext } from "@context"
-import { MinusIcon, PlusDarkIcon, PlusIcon, StarIcon } from "@icons"
+import { MinusIcon, PlusDarkIcon, PlusIcon } from "@icons"
 import PropTypes from "prop-types"
 
-const Card = ({ id, title, image, description, rating, price }) => {
+import { getRatingImage } from "@/constants"
+
+const Card = ({ id, title, image, rating, price }) => {
   const navigate = useNavigate()
   const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
   const cartItemCount =
     cartItems && cartItems[id] !== undefined ? cartItems[id] : 0
+  console.log(cartItemCount)
   return (
-    <div className="bg-border text-foreground flex cursor-pointer flex-col rounded-xl border shadow">
-      <div className="relative">
+    <div className="text-foreground flex cursor-pointer flex-col">
+      <div className="relative overflow-hidden rounded-2xl">
         <img
-          src={url + "/images/" + image}
+          src={`${url}/images/${image}`}
           alt={title}
-          className="h-[330px] w-[500px] rounded-t-xl object-cover"
+          className="h-[330px] w-[500px] object-cover"
         />
         {cartItemCount == 0 ? (
-          <div className="dark:bg-blue-30 absolute bottom-6 right-5 cursor-pointer rounded-full bg-white p-1 shadow-md">
+          <div className="dark:bg-blue-30 absolute right-5 top-6 cursor-pointer rounded-full bg-white p-1 shadow-md">
             <img
               src={PlusIcon}
               alt="Plus Icon"
@@ -28,7 +31,7 @@ const Card = ({ id, title, image, description, rating, price }) => {
             />
           </div>
         ) : (
-          <div className="absolute bottom-4 right-4">
+          <div className="absolute right-4 top-4">
             <div className="dark:bg-blue-30 flex items-center justify-center gap-2 rounded-full bg-white p-2">
               <div className="bg-red-10 cursor-pointer rounded-full p-1">
                 <img
@@ -50,20 +53,27 @@ const Card = ({ id, title, image, description, rating, price }) => {
             </div>
           </div>
         )}
-      </div>
-      <div
-        className="flex flex-col justify-between gap-2 px-3 py-5"
-        onClick={() => navigate(`/dish/${id}`)}
-      >
-        <div className="flex justify-between gap-2">
-          <h3 className="font-semibold leading-none tracking-tight">{title}</h3>
-          <div className="flex items-center gap-1">
-            <img src={StarIcon} alt="Star Icon" className="h-5 w-5" />
-            <p className="text-primary m-0 font-black">{rating}</p>
+        <div
+          className="backdrop-blur-xs absolute bottom-0 left-0 w-full rounded-2xl p-4 text-white"
+          onClick={() => navigate(`/dish/${id}`)}
+        >
+          <div className="flex items-end justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-1">
+                <img
+                  src={getRatingImage(rating)}
+                  alt="Rating Icon"
+                  className="h-4 w-20"
+                />
+              </div>
+              <h3 className="font-semibold tracking-tight">{title}</h3>
+            </div>
+            <div className="flex">
+              <p className="mt-5 text-sm">$</p>
+              <p className="text-2xl">{price}</p>
+            </div>
           </div>
         </div>
-        <p className="m-0 text-sm">{description}</p>
-        <p className="mt-1">${price}</p>
       </div>
     </div>
   )
@@ -73,7 +83,6 @@ Card.propTypes = {
   id: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
   rating: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
 }

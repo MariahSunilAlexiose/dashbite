@@ -32,7 +32,7 @@ const Menu = () => {
       </div>
       <div>
         <h2>Top Dishes</h2>
-        <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
           {dishes
             .filter((dish) =>
               selectedAvatar ? dish.categoryID === selectedAvatar : true
@@ -44,7 +44,6 @@ const Menu = () => {
                 image={dish.image}
                 title={dish.name}
                 rating={dish.rating}
-                description={dish.description}
                 price={dish.price}
               />
             ))}

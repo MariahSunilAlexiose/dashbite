@@ -133,6 +133,11 @@ export const ratings = [
   },
 ]
 
+export const getRatingImage = (dishRating) => {
+  const rating = ratings.find((r) => r.number === Math.round(dishRating))
+  return rating ? rating.image : null
+}
+
 export const ToastVariants = {
   success: {
     styles: "bg-green-300 text-green-800",
