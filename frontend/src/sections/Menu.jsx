@@ -4,8 +4,10 @@ import { Avatar, Card } from "@cmp"
 import { StoreContext } from "@context"
 
 const Menu = () => {
-  const [selectedAvatar, setSelectedAvatar] = useState(null)
   const { categories, dishes } = useContext(StoreContext)
+  const [selectedAvatar, setSelectedAvatar] = useState(
+    categories[0]?._id || null
+  )
 
   return (
     <div className="flex flex-col gap-6">
