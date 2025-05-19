@@ -52,7 +52,7 @@ const Cuisine = () => {
         <h2 className="text-center text-2xl font-bold">Dishes</h2>
         {dishes.length > 0 ? (
           <div className="mt-6">
-            <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
               {dishes.map((dish) => (
                 <Card
                   key={dish._id}
@@ -60,7 +60,6 @@ const Cuisine = () => {
                   image={dish.image}
                   title={dish.name}
                   rating={dish.rating}
-                  description={dish.description}
                   price={dish.price}
                 />
               ))}
