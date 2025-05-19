@@ -11,14 +11,21 @@ import { backendImgURL, backendURL, formatDate, keyMapping } from "@/constants"
 
 import { Pagination } from "."
 
-const handleDelete = async ({ addToast, ID, tableName }) => {
+const handleDelete = async ({ addToast, ID, ID2, tableName }) => {
   try {
     let res
-    res = await axios.delete(`${backendURL}/${tableName}/${ID}`, {
-      headers: {
-        token: import.meta.env.VITE_ADMIN_TOKEN,
-      },
-    })
+    if (tableName === "restaurantDish")
+      res = await axios.delete(`${backendURL}/restaurant/${ID}/dish/${ID2}`, {
+        headers: {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        },
+      })
+    else
+      res = await axios.delete(`${backendURL}/${tableName}/${ID}`, {
+        headers: {
+          token: import.meta.env.VITE_ADMIN_TOKEN,
+        },
+      })
     if (!res.data.success) {
       console.error(res.data.message)
       return addToast("error", "Error", res.data.message)
@@ -101,7 +108,10 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                   onClick={() => {
                     if (tableName === "category")
                       navigate(`/categories/${row["_id"]}`)
-                    else if (tableName === "dish")
+                    else if (
+                      tableName === "dish" ||
+                      tableName === "restaurantDish"
+                    )
                       navigate(`/dishes/${row["_id"]}`)
                     else if (
                       tableName !== "orderitem" &&
@@ -209,7 +219,14 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                     size="icon"
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleDelete({ addToast, ID: row._id, tableName })
+                      if (tableName === "restaurantDish")
+                        handleDelete({
+                          addToast,
+                          ID: pageID,
+                          tableName,
+                          ID2: row._id,
+                        })
+                      else handleDelete({ addToast, ID: row._id, tableName })
                     }}
                   >
                     <img src={TrashIcon} alt="Trash Icon" className="h-4 w-4" />

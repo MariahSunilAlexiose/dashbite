@@ -20,6 +20,7 @@ import {
   allergenList,
   backendURL,
   deliveryType,
+  fetchTableData,
   ingredientList,
   keyMapping,
   onChangeHandler,
@@ -30,12 +31,15 @@ import {
 const AddForm = () => {
   const location = useLocation()
   const { toBeAddedKeys, tableName } = location.state || {}
-  const { cuisines, users, categories, restaurants, dishes } =
-    location.state?.data || {}
   const [formData, setFormData] = useState({})
   const { addToast } = useToast()
   const navigate = useNavigate()
   const [selectedItems, setSelectedItems] = useState([])
+  const [users, setUsers] = useState([])
+  const [dishes, setDishes] = useState([])
+  const [cuisines, setCuisines] = useState([])
+  const [categories, setCategories] = useState([])
+  const [restaurants, setRestaurants] = useState([])
   const [image, setImage] = useState(false)
   const [images, setImages] = useState([])
   const [ingredients, setIngredients] = useState(ingredientList)
@@ -70,6 +74,32 @@ const AddForm = () => {
     }
   }
 
+  const fetches = {
+    dish: [
+      {
+        name: "user",
+        setter: setUsers,
+        options: { token: import.meta.env.VITE_ADMIN_TOKEN },
+      },
+      { name: "category", setter: setCategories },
+      { name: "cuisine", setter: setCuisines },
+      { name: "restaurant", setter: setRestaurants },
+    ],
+    restaurant: [{ name: "cuisine", setter: setCuisines }],
+    order: [
+      { name: "dish", setter: setDishes },
+      {
+        name: "user",
+        setter: setUsers,
+        options: { token: import.meta.env.VITE_ADMIN_TOKEN },
+      },
+    ],
+  }
+
+  useEffect(() => {
+    fetchTableData(fetches, tableName)
+  }, [])
+
   const filteredKeys = toBeAddedKeys.filter((key) => !["_id"].includes(key))
   const singleLineKeys = filteredKeys.filter((key) =>
     [
@@ -103,7 +133,7 @@ const AddForm = () => {
   const keyComponents = {
     user: (
       <div key="user">
-        <Label>User</Label>
+        <Label htmlFor="user">User</Label>
         <InputDropDown
           label="users"
           options={users}
@@ -118,7 +148,7 @@ const AddForm = () => {
     ),
     payment: (
       <div key="payment">
-        <Label>Payment Status</Label>
+        <Label htmlFor="payment">Payment Status</Label>
         <DropDown
           options={payment}
           defaultValue={payment[0].label}
@@ -133,7 +163,7 @@ const AddForm = () => {
     ),
     status: (
       <div key="status">
-        <Label>Order Status</Label>
+        <Label htmlFor="status">Order Status</Label>
         <DropDown
           options={orderStatus}
           defaultValue={orderStatus[0].label}
@@ -148,7 +178,7 @@ const AddForm = () => {
     ),
     category: (
       <div key="category">
-        <Label>Category</Label>
+        <Label htmlFor="category">Category</Label>
         <DropDown
           options={categories}
           onChange={(status) => {
@@ -162,7 +192,7 @@ const AddForm = () => {
     ),
     cuisines: (
       <div key="cuisine">
-        <Label>Cuisines</Label>
+        <Label htmlFor="cuisine">Cuisines</Label>
         <MultiSelectDropDown
           options={cuisines}
           onChange={(selectedIDs) => {
@@ -174,9 +204,9 @@ const AddForm = () => {
         />
       </div>
     ),
-    dish: (
+    dishes: (
       <div key="dish">
-        <Label>Dish</Label>
+        <Label htmlFor="dish">Dish</Label>
         <MultiSelectDropDown
           options={dishes}
           onChange={(selectedIDs) => {
@@ -190,7 +220,7 @@ const AddForm = () => {
     ),
     restaurant: (
       <div key="restaurant">
-        <Label>Restaurant</Label>
+        <Label htmlFor="restaurant">Restaurant</Label>
         <DropDown
           options={restaurants}
           onChange={(id) => {
@@ -208,7 +238,7 @@ const AddForm = () => {
     keyComponents[key] ||
     (["price", "rating"].includes(key) ? (
       <div key={key}>
-        <Label>{keyMapping[key] || key}</Label>
+        <Label htmlFor={key}>{keyMapping[key] || key}</Label>
         <Input
           name={key}
           type="number"
@@ -227,7 +257,7 @@ const AddForm = () => {
       </div>
     ) : (
       <div key={key}>
-        <Label>{keyMapping[key] || key}</Label>
+        <Label htmlFor={key}>{keyMapping[key] || key}</Label>
         <Input
           name={key}
           type="text"
@@ -384,7 +414,7 @@ const AddForm = () => {
             .map((key) =>
               key === "address" ? (
                 <div key="address">
-                  <Label>Address</Label>
+                  <Label htmlFor="address">Address</Label>
                   <div className="flex flex-col gap-4">
                     <div className="flex gap-4">
                       <Input
@@ -459,7 +489,7 @@ const AddForm = () => {
                 </div>
               ) : key === "streetAddress" ? (
                 <div key="streetAddress">
-                  <Label>Address</Label>
+                  <Label htmlFor="address">Address</Label>
                   <div className="flex flex-col gap-4">
                     <Input
                       type="text"
@@ -505,7 +535,7 @@ const AddForm = () => {
               ) : key === "items" ? (
                 <div key="items">
                   <div className="flex justify-between">
-                    <Label>Menu Items</Label>
+                    <Label htmlFor="item">Menu Items</Label>
                     <Button
                       variant="success"
                       size="sm"
@@ -535,7 +565,7 @@ const AddForm = () => {
                       return (
                         <div key={index} className="flex gap-3 py-3">
                           <div className="w-full">
-                            <Label>Menu Item</Label>
+                            <Label htmlFor="item">Menu Item</Label>
                             <InputDropDown
                               label="menuitem"
                               options={dishes.filter(
@@ -558,7 +588,7 @@ const AddForm = () => {
                             />
                           </div>
                           <div className="w-full">
-                            <Label>Quantity</Label>
+                            <Label htmlFor="quantity">Quantity</Label>
                             <Input
                               name={`quantity-${index}`}
                               type="number"
@@ -587,7 +617,7 @@ const AddForm = () => {
                           {selectedDish?.price > 0 && (
                             <div className="flex flex-col items-center justify-center">
                               {/* SubTotal */}
-                              <Label>Subtotal</Label>
+                              <Label htmlFor="subtotal">Subtotal</Label>
                               <p className="mt-1">${subtotal}</p>
                             </div>
                           )}
@@ -597,7 +627,7 @@ const AddForm = () => {
                 </div>
               ) : key === "deliveryType" ? (
                 <div key="deliveryType">
-                  <Label>Delivery Type</Label>
+                  <Label htmlFor="deliveryType">Delivery Type</Label>
                   <DropDown
                     options={deliveryType}
                     defaultValue={deliveryType[0].label}
@@ -612,7 +642,7 @@ const AddForm = () => {
               ) : (
                 key === "description" && (
                   <div key="description">
-                    <Label>Description</Label>
+                    <Label htmlFor="description">Description</Label>
                     <TextArea
                       placeholder=""
                       onChange={(e) => {
@@ -636,7 +666,7 @@ const AddForm = () => {
               .map((key) =>
                 key === "ingredients" ? (
                   <div key="ingredients" className="flex-1">
-                    <Label>Main Ingredients</Label>
+                    <Label htmlFor="ingredients">Main Ingredients</Label>
                     <InputDropDownWithAdd
                       options={ingredients}
                       setOptions={setIngredients}
@@ -650,7 +680,7 @@ const AddForm = () => {
                   </div>
                 ) : (
                   <div key="allergens" className="flex-1">
-                    <Label>Allergens</Label>
+                    <Label htmlFor="allergens">Allergens</Label>
                     <InputDropDownWithAdd
                       options={allergens}
                       setOptions={setAllergens}
@@ -688,7 +718,9 @@ const AddForm = () => {
                       renderField(nutrient)
                     ) : (
                       <div>
-                        <Label>{keyMapping[nutrient] || nutrient}</Label>
+                        <Label htmlFor={nutrient}>
+                          {keyMapping[nutrient] || nutrient}
+                        </Label>
                         <Input
                           name={nutrient}
                           type="number"

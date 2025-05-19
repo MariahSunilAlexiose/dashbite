@@ -23,16 +23,20 @@ const Cuisine = () => {
     try {
       // get dish
       const dishData = await fetchEndpoint(`dish/${dishID}`)
-      const restaurantData = await fetchEndpoint(
-        `restaurant/${dishData.restaurantID}`
-      )
+      let restaurantData
+      if (dishData.restaurantID)
+        restaurantData = await fetchEndpoint(
+          `restaurant/${dishData.restaurantID}`
+        )
       const categoryData = await fetchEndpoint(
         `category/${dishData.categoryID}`
       )
       const cuisineData = await fetchCuisines(dishData)
+      const { restaurantID, ...restOfDishData } = dishData
       setDish({
-        ...dishData,
+        ...restOfDishData,
         restaurant: restaurantData || {},
+        restaurantID: restaurantID || "",
         category: categoryData || {},
         cuisines: cuisineData || [],
       })
@@ -63,7 +67,7 @@ const Cuisine = () => {
 
   useEffect(() => {
     fetchData()
-  })
+  }, [])
 
   return (
     <div className="flex flex-col gap-3 py-10">

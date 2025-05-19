@@ -22,7 +22,6 @@ const dishSchema = new mongoose.Schema(
     restaurantID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "restaurant",
-      required: true,
     },
     servingSize: { type: String, default: "1" },
     ingredients: [{ type: String, required: true }],

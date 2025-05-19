@@ -15,6 +15,7 @@ const addRestaurant = async (req, res) => {
     website,
     openingHours,
     rating,
+    dishIDs,
   } = req.body
 
   const filenames = req.files["images[]"]
@@ -52,6 +53,7 @@ const addRestaurant = async (req, res) => {
       website,
       openingHours,
       rating,
+      dishIDs,
       images: filenames,
     })
 
@@ -70,6 +72,21 @@ const addRestaurant = async (req, res) => {
               {
                 $addToSet: { restaurantIDs: savedRestaurant._id },
               },
+              { new: true }
+            )
+          }
+        })
+      )
+    }
+
+    if (dishIDs && dishIDs.length > 0) {
+      await Promise.all(
+        dishIDs.map(async (dishID) => {
+          const dish = await dishModel.findById(dishID)
+          if (dish && !dish.restaurantID.includes(savedRestaurant._id)) {
+            await dishModel.findByIdAndUpdate(
+              dishID,
+              { restaurantID: savedRestaurant._id },
               { new: true }
             )
           }
@@ -269,10 +286,46 @@ const getRestaurants = async (req, res) => {
   }
 }
 
+const removeRestaurantDish = async (req, res) => {
+  const { restaurantID, dishID } = req.params
+
+  try {
+    const restaurant = await restaurantModel.findById(restaurantID)
+    if (!restaurant)
+      return res.json({ success: false, message: "Restaurant not found!" })
+
+    const dish = await dishModel.findById(dishID)
+    if (!dish) return res.json({ success: false, message: "Dish not found!" })
+
+    // Remove dish from restaurant
+    await restaurantModel.findByIdAndUpdate(
+      restaurantID,
+      { $pull: { dishIDs: dishID } },
+      { new: true }
+    )
+
+    // Remove restaurant from dish
+    await dishModel.findByIdAndUpdate(
+      dishID,
+      { $unset: { restaurantID: "" } },
+      { new: true }
+    )
+
+    res.json({ success: true, message: "Dish Removed!" })
+  } catch (err) {
+    console.error(err)
+    res.json({
+      success: false,
+      message: `Error in removing dish from restaurant: ${err.message}`,
+    })
+  }
+}
+
 export {
   addRestaurant,
   updateRestaurant,
   deleteRestaurant,
   getRestaurant,
   getRestaurants,
+  removeRestaurantDish,
 }

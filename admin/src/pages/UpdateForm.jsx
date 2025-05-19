@@ -6,6 +6,7 @@ import {
   DropDown,
   Input,
   InputDropDown,
+  InputDropDownWithAdd,
   Label,
   MultiSelectDropDown,
   TextArea,
@@ -16,10 +17,15 @@ import { useToast } from "@providers"
 import axios from "axios"
 
 import {
+  allergenList,
   backendImgURL,
   backendURL,
   deliveryType,
+  fetchData,
+  getNameByID,
+  ingredientList,
   keyMapping,
+  onChangeHandler,
   orderStatus,
   payment,
 } from "@/constants"
@@ -30,11 +36,6 @@ const formFormatDate = (dateStr) => {
   const month = String(dateObj.getMonth() + 1).padStart(2, "0")
   const day = String(dateObj.getDate()).padStart(2, "0")
   return `${year}-${month}-${day}`
-}
-
-const getNameByID = (id, list) => {
-  const item = list.find((i) => i["_id"] === id)
-  return item ? item.name : ""
 }
 
 const UpdateForm = () => {
@@ -53,13 +54,9 @@ const UpdateForm = () => {
   const [totalSum, setTotalSum] = useState(0)
   const [deliveryCost, setDeliveryCost] = useState(0)
   const [image, setImage] = useState(false)
-
-  const onChangeHandler = (e) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      address: { ...prevFormData.address, [e.target.name]: e.target.value },
-    }))
-  }
+  const [images, setImages] = useState(dataToBeUpdated.images)
+  const [ingredients, setIngredients] = useState(ingredientList)
+  const [allergens, setAllergens] = useState(allergenList)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -77,8 +74,10 @@ const UpdateForm = () => {
           },
         }
       )
-      if (res.data.success === false)
+      if (!res.data.success) {
+        console.error(res.data.message)
         return addToast("error", "Error", res.data.message)
+      }
       addToast("success", "Success", "Updated!")
       setFormData({})
       navigate(-1)
@@ -88,84 +87,15 @@ const UpdateForm = () => {
     }
   }
 
-  const fetchUserData = async () => {
-    try {
-      const res = await axios.get(`${backendURL}/user/all`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
-      })
-      setUsers(res.data.data)
-    } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error fetching user data: ${err}`)
-    }
-  }
-
-  const fetchItemData = async () => {
-    try {
-      const response = await axios.get(`${backendURL}/dish`)
-      const updatedData = response.data.data.map((item) => ({
-        ...item,
-        quantity: 0,
-      }))
-      setDishes(updatedData)
-    } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error fetching item data: ${err}`)
-    }
-  }
-
-  const fetchCategoryData = async () => {
-    try {
-      const res = await axios.get(`${backendURL}/category/`, {
-        headers: {
-          token: import.meta.env.VITE_ADMIN_TOKEN,
-        },
-      })
-      setCategories(res.data.data)
-    } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error fetching user data: ${err}`)
-    }
-  }
-
-  const fetchCuisineData = async () => {
-    try {
-      const response = await axios.get(`${backendURL}/cuisine`)
-      setCuisines(response.data.data)
-    } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error fetching item data: ${err}`)
-    }
-  }
-
-  const fetchRestaurantData = async () => {
-    try {
-      const response = await axios.get(`${backendURL}/restaurant`)
-      setRestaurants(response.data.data)
-    } catch (err) {
-      console.error(err)
-      addToast("error", "Error", `Error fetching item data: ${err}`)
-    }
-  }
-
-  const fetchData = async () => {
-    if (Object.keys(formData)?.includes("userID")) await fetchUserData()
-    if (
-      Object.keys(formData)?.includes("items") ||
-      Object.keys(formData)?.includes("dishIDs")
-    )
-      await fetchItemData()
-    if (Object.keys(formData)?.includes("category")) await fetchCategoryData()
-    if (Object.keys(formData)?.includes("cuisineIDs")) await fetchCuisineData()
-    if (Object.keys(formData)?.includes("restaurantID"))
-      await fetchRestaurantData()
-  }
-
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData(formData, {
+      setUsers,
+      setDishes,
+      setCategories,
+      setCuisines,
+      setRestaurants,
+    })
+  }, [formData])
 
   useEffect(() => {
     if (formData.items) {
@@ -196,11 +126,24 @@ const UpdateForm = () => {
       ![
         "_id",
         "__v",
+        "createdAt",
+        "updatedAt",
+        "restaurant",
+        "cuisines",
+        "category",
         "amount",
-        "categoryID",
-        "cuisineNames",
-        "restaurantName",
       ].includes(key)
+  )
+  const singleLineKeys = filteredKeys.filter((key) =>
+    [
+      "servingSize",
+      "calories",
+      "fat",
+      "protein",
+      "carbs",
+      "ingredients",
+      "allergens",
+    ].includes(key)
   )
   const fullWidthKeys = filteredKeys.filter((key) =>
     [
@@ -214,7 +157,7 @@ const UpdateForm = () => {
     ].includes(key)
   )
   const remainingKeys = filteredKeys.filter(
-    (key) => !fullWidthKeys.includes(key)
+    (key) => !fullWidthKeys.includes(key) && !singleLineKeys.includes(key)
   )
   const halfLength = Math.ceil(remainingKeys.length / 2)
   const firstColumnKeys = remainingKeys.slice(0, halfLength)
@@ -222,8 +165,8 @@ const UpdateForm = () => {
 
   const keyComponents = {
     userID: (
-      <div key="userID" className="pt-3">
-        <Label>User</Label>
+      <div key="user">
+        <Label htmlFor="user">User</Label>
         <InputDropDown
           label="users"
           options={users}
@@ -233,14 +176,14 @@ const UpdateForm = () => {
               userID: id,
             }))
           }}
-          defaultValue={getNameByID(formData.userID, users, "user")}
+          defaultValue={formData.userID}
           disabled={true}
         />
       </div>
     ),
     payment: (
-      <div key="payment" className="pt-3">
-        <Label>Payment Status</Label>
+      <div key="payment">
+        <Label htmlFor="payment">Payment Status</Label>
         <DropDown
           options={payment}
           defaultValue={formData.payment === true ? "Paid" : "Not Paid"}
@@ -253,9 +196,9 @@ const UpdateForm = () => {
         />
       </div>
     ),
-    category: (
+    categoryID: (
       <div key="category">
-        <Label>Category</Label>
+        <Label htmlFor="category">Category</Label>
         <DropDown
           label="category"
           options={categories}
@@ -271,7 +214,12 @@ const UpdateForm = () => {
     ),
     date: (
       <div key="date" className="pt-3">
-        <Label className="block text-sm font-medium text-gray-700">Date</Label>
+        <Label
+          htmlFor="date"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Date
+        </Label>
         <Input
           type="date"
           id="date"
@@ -289,10 +237,8 @@ const UpdateForm = () => {
       </div>
     ),
     status: (
-      <div className="pt-3" key="status">
-        <Label className="block text-sm font-medium text-gray-700">
-          Order Status
-        </Label>
+      <div key="status">
+        <Label htmlFor="status">Order Status</Label>
         <DropDown
           options={orderStatus}
           defaultValue={formData.status}
@@ -306,16 +252,11 @@ const UpdateForm = () => {
       </div>
     ),
     cuisineIDs: (
-      <div key="cuisineIDs">
-        <label
-          htmlFor="cuisines"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Cuisines
-        </label>
+      <div key="cuisine">
+        <Label htmlFor="cuisine">Cuisines</Label>
         <MultiSelectDropDown
           options={cuisines}
-          defaultValue={formData.cuisineIDs}
+          defaultValue={dataToBeUpdated.cuisineIDs}
           onChange={(selectedIDs) => {
             setFormData((prevFormData) => ({
               ...prevFormData,
@@ -326,16 +267,11 @@ const UpdateForm = () => {
       </div>
     ),
     dishIDs: (
-      <div key="dishIDs">
-        <label
-          htmlFor="dish"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Dishes
-        </label>
+      <div key="dish">
+        <Label htmlFor="dish">Dishes</Label>
         <MultiSelectDropDown
           options={dishes}
-          defaultValue={formData.dishIDs}
+          defaultValue={dataToBeUpdated.dishIDs}
           onChange={(selectedIDs) => {
             setFormData((prevFormData) => ({
               ...prevFormData,
@@ -346,16 +282,11 @@ const UpdateForm = () => {
       </div>
     ),
     restaurantID: (
-      <div key="restaurantID">
-        <label
-          htmlFor="restaurant"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Restaurant
-        </label>
+      <div key="restaurant">
+        <Label htmlFor="restaurant">Restaurant</Label>
         <DropDown
           options={restaurants}
-          defaultValue={formData.restaurantName}
+          defaultValue={formData.restaurant && formData.restaurant.name}
           onChange={(id) => {
             setFormData((prevFormData) => ({
               ...prevFormData,
@@ -368,9 +299,31 @@ const UpdateForm = () => {
   }
 
   const renderField = (key) =>
-    keyComponents[key] || (
+    keyComponents[key] ||
+    (["price", "rating"].includes(key) ? (
       <div key={key}>
-        <Label>{keyMapping[key] || key}</Label>
+        <Label htmlFor={key}>
+          {key.charAt(0).toUpperCase() + key.slice(1)}
+        </Label>
+        <Input
+          name={key}
+          type="number"
+          value={formData[key] ?? 0} // Failsafe: Default to 0
+          onChange={(e) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              [e.target.name]: parseFloat(e.target.value) || 0, // Ensure valid number
+            }))
+          }}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          min="0"
+          step="1"
+          required
+        />
+      </div>
+    ) : (
+      <div key={key}>
+        <Label htmlFor={key}>{keyMapping[key] || key}</Label>
         <Input
           name={key}
           type="text"
@@ -383,7 +336,7 @@ const UpdateForm = () => {
           }}
         />
       </div>
-    )
+    ))
 
   return (
     <div className="pt-10">
@@ -392,13 +345,15 @@ const UpdateForm = () => {
         {tableName &&
           tableName.charAt(0).toUpperCase() + tableName.slice(1).toLowerCase()}
       </h2>
-      <div>
-        <div className="pt-3">
+
+      <div className="flex flex-col gap-4">
+        {/* images */}
+        <div className="flex flex-col gap-4">
           {fullWidthKeys.map((key) => {
-            if (key === "image")
+            if (key === "image") {
               return (
                 <div key="image">
-                  <Label>Upload Image</Label>
+                  <Label htmlFor="image">Upload Image</Label>
                   <div className="flex items-center gap-3">
                     <label htmlFor="image">
                       <div className="flex items-center justify-center">
@@ -443,31 +398,111 @@ const UpdateForm = () => {
                       setImage(e.target.files[0])
                       setFormData((prevFormData) => ({
                         ...prevFormData,
-                        image: e.target.files[0],
+                        image: e.target.files[0]
+                          ? e.target.files[0]
+                          : prevFormData.image,
                       }))
                     }}
                   />
                 </div>
               )
+            }
+            if (key === "images") {
+              return (
+                <div key="images">
+                  <Label htmlFor="images">Upload Images</Label>
+
+                  <label
+                    htmlFor="images"
+                    className="flex cursor-pointer flex-wrap items-center gap-3"
+                  >
+                    {images.length > 0 ? (
+                      images.map((img, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={
+                              img instanceof File
+                                ? URL.createObjectURL(img)
+                                : `${backendImgURL}/${img}`
+                            }
+                            alt={`Uploaded Image ${index + 1}`}
+                            className="h-32 w-32"
+                          />
+
+                          <Button
+                            variant="destructive"
+                            size="icon"
+                            onClick={() =>
+                              setImages(images.filter((_, i) => i !== index))
+                            }
+                          >
+                            <img
+                              src={TrashIcon}
+                              alt="Trash Icon"
+                              className="h-4 w-4"
+                            />
+                          </Button>
+                        </div>
+                      ))
+                    ) : (
+                      <img
+                        src={UploadAreaImg}
+                        alt="Upload Area Placeholder"
+                        className="w-32"
+                      />
+                    )}
+                  </label>
+
+                  <input
+                    type="file"
+                    name="images"
+                    id="images"
+                    hidden
+                    multiple
+                    required
+                    onChange={(e) => {
+                      setImages((prevImages) => {
+                        const updatedImages = [...prevImages, ...e.target.files]
+
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          images: updatedImages, // ✅ Now using updatedImages instead of prevImages
+                        }))
+
+                        return updatedImages // ✅ Properly return updated state
+                      })
+                    }}
+                  />
+                </div>
+              )
+            }
+
             return null
           })}
         </div>
-        <div className="flex gap-5 pt-3">
-          <div className="flex flex-1 flex-col gap-3">
+
+        {/* rest of the keys */}
+        <div className="flex gap-4">
+          <div className="flex flex-1 flex-col gap-4">
             {firstColumnKeys.map((key) => renderField(key))}
           </div>
 
-          <div className="flex flex-1 flex-col gap-3">
+          <div className="flex flex-1 flex-col gap-4">
             {secondColumnKeys.map((key) => renderField(key))}
           </div>
         </div>
+
+        {/* addresses + items (with quantity) + deliveryType + description */}
         <div className="pt-3">
           {fullWidthKeys
             .filter((key) => key !== "image")
             .map((key) =>
               key === "address" ? (
                 <div key="address" className="pt-3">
-                  <Label className="block text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="address"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Address
                   </Label>
                   <div className="flex flex-col gap-4 pt-4">
@@ -553,7 +588,10 @@ const UpdateForm = () => {
                 </div>
               ) : key === "streetAddress" ? (
                 <div key="streetAddress" className="pt-3">
-                  <Label className="block text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="address"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Address
                   </Label>
                   <div className="flex flex-col gap-4 pt-4">
@@ -606,7 +644,10 @@ const UpdateForm = () => {
               ) : key === "items" ? (
                 <div key="items" className="pt-3">
                   <div className="flex justify-between">
-                    <Label className="block text-sm font-medium text-gray-700">
+                    <Label
+                      htmlFor="items"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Menu Items
                     </Label>
                     <Button
@@ -634,11 +675,14 @@ const UpdateForm = () => {
                       )
                       const subtotal =
                         item.quantity * (selectedDish?.price || 0)
-
+                      getNameByID(item._id, dishes)
                       return (
                         <div key={index} className="flex gap-3">
                           <div className="w-full">
-                            <Label className="block text-sm font-medium text-gray-700">
+                            <Label
+                              htmlFor="item"
+                              className="block text-sm font-medium text-gray-700"
+                            >
                               Menu Item
                             </Label>
                             <InputDropDown
@@ -660,15 +704,14 @@ const UpdateForm = () => {
                                   newOrderItemID,
                                 ])
                               }}
-                              defaultValue={getNameByID(
-                                item._id,
-                                dishes,
-                                "dish"
-                              )}
+                              defaultValue={item._id}
                             />
                           </div>
                           <div className="w-full">
-                            <Label className="block text-sm font-medium text-gray-700">
+                            <Label
+                              htmlFor="quantity"
+                              className="block text-sm font-medium text-gray-700"
+                            >
                               Quantity
                             </Label>
                             <Input
@@ -702,7 +745,10 @@ const UpdateForm = () => {
                                 className={`flex flex-col items-center gap-1.5 ${index === 0 ? "p-0" : "px-4"}`}
                               >
                                 {index === 0 && (
-                                  <Label className="block text-sm font-medium text-gray-700">
+                                  <Label
+                                    htmlFor="subtotal"
+                                    className="block text-sm font-medium text-gray-700"
+                                  >
                                     Subtotal
                                   </Label>
                                 )}
@@ -750,7 +796,10 @@ const UpdateForm = () => {
               ) : key === "deliveryType" ? (
                 <div key="deliveryType" className="flex justify-between gap-5">
                   <div className="w-full">
-                    <Label className="block text-sm font-medium text-gray-700">
+                    <Label
+                      htmlFor="deliveryType"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Delivery Type
                     </Label>
                     <DropDown
@@ -773,7 +822,7 @@ const UpdateForm = () => {
               ) : (
                 key === "description" && (
                   <div key="description">
-                    <Label>Description</Label>
+                    <Label htmlFor="description">Description</Label>
                     <TextArea
                       placeholder=""
                       value={formData.description || ""}
@@ -789,12 +838,102 @@ const UpdateForm = () => {
               )
             )}
         </div>
+
+        {/* ingredients + allergens */}
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-3">
+            {singleLineKeys
+              .filter((key) => key === "ingredients" || key === "allergens")
+              .map((key) =>
+                key === "ingredients" ? (
+                  <div key="ingredients" className="flex-1">
+                    <Label htmlFor="ingredients">Main Ingredients</Label>
+                    <InputDropDownWithAdd
+                      options={ingredients}
+                      setOptions={setIngredients}
+                      defaultValue={formData.ingredients}
+                      onChange={(selectedIngredients) => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          ingredients: selectedIngredients,
+                        }))
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div key="allergens" className="flex-1">
+                    <Label htmlFor="allergens">Allergens</Label>
+                    <InputDropDownWithAdd
+                      options={allergens}
+                      setOptions={setAllergens}
+                      defaultValue={formData.allergens}
+                      onChange={(selectedAllergens) => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          allergens: selectedAllergens,
+                        }))
+                      }}
+                    />
+                  </div>
+                )
+              )}
+          </div>
+        </div>
+
+        {/* nutrition */}
+        {singleLineKeys && singleLineKeys.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <h4>Nutrition Facts</h4>
+            <div className="flex gap-3">
+              {singleLineKeys
+                .filter((key) =>
+                  [
+                    "servingSize",
+                    "calories",
+                    "fat",
+                    "protein",
+                    "carbs",
+                  ].includes(key)
+                )
+                .map((nutrient) => (
+                  <div key={nutrient} className="flex-1">
+                    {nutrient === "servingSize" ? (
+                      renderField(nutrient)
+                    ) : (
+                      <div>
+                        <Label htmlFor={nutrient}>
+                          {keyMapping[nutrient] || nutrient}
+                        </Label>
+                        <Input
+                          name={nutrient}
+                          type="number"
+                          value={formData[nutrient] || ""}
+                          onChange={(e) => {
+                            const { name, value } = e.target
+                            setFormData((prevFormData) => ({
+                              ...prevFormData,
+                              [name]: parseFloat(value),
+                            }))
+                          }}
+                          step="1"
+                          min="0"
+                          required
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
         {formData.amount && (
           <div className="mr-13 flex justify-end gap-3 pt-3 text-right">
             <p className="font-black">Total:</p>
             <p className="mt-0 font-black">${formData.amount}</p>
           </div>
         )}
+
         <div className="flex justify-end pt-3">
           <Button onClick={(e) => handleSubmit(e)}>Update</Button>
         </div>

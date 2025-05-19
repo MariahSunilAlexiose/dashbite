@@ -6,7 +6,9 @@ import PropTypes from "prop-types"
 const MultiSelectDropDown = ({ options, onChange, defaultValue = [] }) => {
   const dropdownRef = useRef(null)
   const [open, setOpen] = useState(false)
-  const [selectedOptions, setSelectedOptions] = useState([])
+  const [selectedOptions, setSelectedOptions] = useState(() => {
+    return options.filter((option) => defaultValue.includes(option._id)) || []
+  })
 
   useEffect(() => {
     if (defaultValue.length && options.length) {

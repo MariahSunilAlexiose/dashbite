@@ -6,6 +6,7 @@ import {
   deleteRestaurant,
   getRestaurant,
   getRestaurants,
+  removeRestaurantDish,
   updateRestaurant,
 } from "../controllers/restaurant.js"
 import adminAuthMiddleware from "../middleware/adminauth.js"
@@ -39,5 +40,10 @@ restaurantRouter.put(
 restaurantRouter.delete("/:restaurantID", adminAuthMiddleware, deleteRestaurant)
 restaurantRouter.get("/:restaurantID", getRestaurant)
 restaurantRouter.get("/", getRestaurants)
+restaurantRouter.delete(
+  "/:restaurantID/dish/:dishID",
+  adminAuthMiddleware,
+  removeRestaurantDish
+)
 
 export default restaurantRouter

@@ -10,7 +10,6 @@ import { fetchEndpoint } from "@/constants"
 const Restaurants = () => {
   const navigate = useNavigate()
   const [restaurants, setRestaurants] = useState([])
-  const [cuisines, setCuisines] = useState([])
   const { addToast } = useToast()
 
   const fetchData = async () => {
@@ -47,10 +46,6 @@ const Restaurants = () => {
         })
       )
       setRestaurants(cleanedRestaurantsData)
-
-      // get cuisines
-      const cuisinesData = await fetchEndpoint("cuisine")
-      setCuisines(cuisinesData)
     } catch (err) {
       console.error("Error fetching restaurants:", err)
       addToast("error", "Error", "Failed to fetch restaurants!")
@@ -83,9 +78,6 @@ const Restaurants = () => {
                   "cuisines",
                   "streetAddress",
                 ],
-                data: {
-                  cuisines: cuisines,
-                },
               },
             })
           }

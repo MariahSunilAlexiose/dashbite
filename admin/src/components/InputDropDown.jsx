@@ -15,8 +15,13 @@ const InputDropDown = ({
   const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
-    if (defaultValue) setSearchTerm(defaultValue)
-  }, [defaultValue])
+    if (defaultValue && options.length) {
+      const selectedOption = options.find(
+        (option) => option._id === defaultValue
+      )
+      setSearchTerm(selectedOption ? selectedOption.name : "")
+    }
+  }, [defaultValue, options])
 
   useEffect(() => {
     const handleClickOutside = (event) => {

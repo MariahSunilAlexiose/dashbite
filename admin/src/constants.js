@@ -304,3 +304,46 @@ export const fetchRestaurantDishes = async (restaurant) => {
   )
   return dishes
 }
+
+export const fetchAndSet = async (name, setter, options) => {
+  const data = await fetchEndpoint(name, options)
+  setter(data)
+}
+
+export const fetchTableData = async (fetches, tableName) => {
+  await Promise.all(
+    fetches[tableName]?.map(({ name, setter, options }) =>
+      fetchAndSet(name, setter, options)
+    ) || []
+  )
+}
+
+export const fetchData = async (formData, setters) => {
+  const { setUsers, setDishes, setCategories, setCuisines } = setters
+  const fetchConfig = [
+    {
+      key: "userID",
+      name: "user",
+      setter: setUsers,
+      options: { token: import.meta.env.VITE_ADMIN_TOKEN },
+    },
+    { key: "items", name: "dish", setter: setDishes },
+    { key: "dishIDs", name: "dish", setter: setDishes },
+    { key: "category", name: "category", setter: setCategories },
+    { key: "cuisineIDs", name: "cuisine", setter: setCuisines },
+    {
+      key: "restaurantID",
+      name: "restaurant",
+      setter: setters?.setRestaurants,
+    },
+  ]
+
+  await Promise.all(
+    fetchConfig
+      .filter(({ key }) => formData?.[key]) // fetch if the key exists in formData
+      .map(
+        ({ name, setter, options }) =>
+          setter && fetchAndSet(name, setter, options)
+      ) // fetch if setter exists
+  )
+}

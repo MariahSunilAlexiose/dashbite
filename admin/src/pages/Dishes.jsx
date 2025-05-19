@@ -10,9 +10,6 @@ import { fetchEndpoint } from "@/constants"
 const Dishes = () => {
   const navigate = useNavigate()
   const [dishes, setDishes] = useState([])
-  const [categories, setCategories] = useState([])
-  const [restaurants, setRestaurants] = useState([])
-  const [cuisines, setCuisines] = useState([])
   const { addToast } = useToast()
 
   const fetchData = async () => {
@@ -23,8 +20,6 @@ const Dishes = () => {
         fetchEndpoint("category"),
         fetchEndpoint("restaurant"),
       ])
-      setCategories(categoriesData)
-      setRestaurants(restaurantsData)
       const cleanedDishesData = dishesData.map((item) => {
         const { image, categoryID, cuisineIDs, restaurantID, ...rest } = item // eslint-disable-line no-unused-vars
         return {
@@ -42,10 +37,6 @@ const Dishes = () => {
       })
 
       setDishes(cleanedDishesData)
-
-      // get cuisines
-      const cuisinesData = await fetchEndpoint("cuisine")
-      setCuisines(cuisinesData)
     } catch (err) {
       console.error("Error fetching dishes:", err)
       addToast("error", "Error", "Failed to fetch dishes!")
@@ -84,11 +75,6 @@ const Dishes = () => {
                   "carbs",
                   "allergens",
                 ],
-                data: {
-                  restaurants: restaurants,
-                  categories: categories,
-                  cuisines: cuisines,
-                },
               },
             })
           }

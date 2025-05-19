@@ -17,7 +17,6 @@ const addDish = async (req, res) => {
     "categoryID",
     "rating",
     "cuisineIDs",
-    "restaurantID",
     "servingSize",
     "ingredients",
     "calories",

@@ -10,8 +10,6 @@ import { fetchEndpoint } from "@/constants"
 const Orders = () => {
   const navigate = useNavigate()
   const [orders, setOrders] = useState([])
-  const [users, setUsers] = useState([])
-  const [dishes, setDishes] = useState([])
   const { addToast } = useToast()
 
   const fetchData = async () => {
@@ -43,16 +41,6 @@ const Orders = () => {
         })
       )
       setOrders(cleanedOrdersData)
-
-      // get users
-      const usersData = await fetchEndpoint("user", {
-        token: import.meta.env.VITE_ADMIN_TOKEN,
-      })
-      setUsers(usersData)
-
-      // get dishes
-      const dishes = await fetchEndpoint("dish")
-      setDishes(dishes)
     } catch (err) {
       console.error(err)
       console.error("Error fetching orders:", err)
@@ -83,10 +71,6 @@ const Orders = () => {
                   "payment",
                   "deliveryType",
                 ],
-                data: {
-                  users: users,
-                  dishes: dishes,
-                },
               },
             })
           }

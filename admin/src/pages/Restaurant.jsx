@@ -17,7 +17,6 @@ const Restaurant = () => {
   const { restaurantID } = useParams()
   const [dishes, setDishes] = useState({})
   const [restaurant, setRestaurant] = useState({})
-
   const [reviews, setReviews] = useState([])
   const [toBeUpdatedRestaurant, setToBeUpdatedRestaurant] = useState({})
   const { addToast } = useToast()
@@ -173,8 +172,13 @@ const Restaurant = () => {
 
       <div>
         <h4 className="mb-2">Dishes</h4>
+
         {dishes.length > 0 ? (
-          <Table data={dishes} tableName="restaurantDish" />
+          <Table
+            data={dishes}
+            tableName="restaurantDish"
+            pageID={restaurantID}
+          />
         ) : (
           <>No dishes added yet!</>
         )}
