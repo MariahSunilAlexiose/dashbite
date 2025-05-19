@@ -22,7 +22,7 @@ const Restaurants = () => {
       </div>
       <div className="group/list flex justify-center gap-1">
         <div className="peer order-last flex w-max items-center justify-center gap-2">
-          {restaurants.map((restaurant, index) => (
+          {restaurants.slice(0, 10).map((restaurant, index) => (
             <div
               key={index}
               onMouseEnter={() => setActiveIndex(index)}
@@ -36,7 +36,8 @@ const Restaurants = () => {
                 alt={restaurant.name}
               />
               <div className="absolute bottom-0 left-0 w-full p-3 text-white transition-opacity duration-500">
-                {restaurant.cuisines &&
+                {activeIndex === index &&
+                  restaurant.cuisines &&
                   restaurant.cuisines.map((cuisine) => (
                     <div
                       key={cuisine._id}
