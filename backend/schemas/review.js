@@ -28,10 +28,11 @@ const reviewSchema = new mongoose.Schema(
       required: true,
       maxlength: 500,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
+    title: {
+      type: String,
+      required: true,
     },
+    images: [{ type: String }],
   },
   { timestamps: true, collection: "review" }
 )
