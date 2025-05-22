@@ -5,11 +5,11 @@ import { StoreContext } from "@context"
 import { useToast } from "@providers"
 import axios from "axios"
 
-import { fetchUser } from "@/constants"
+import { fetchEndpoint } from "@/constants"
 
 const Profile = () => {
   const { addToast } = useToast()
-  const { url, token, userID } = useContext(StoreContext)
+  const { url, token } = useContext(StoreContext)
   const [user, setUser] = useState({})
 
   const setUpdates = async (updatedUser) => {
@@ -42,13 +42,18 @@ const Profile = () => {
     setUser(updatedUser)
   }
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const fetchedUser = await fetchUser({ url, token, addToast })
-      if (fetchedUser) setUser(fetchedUser)
+  const fetchUser = async () => {
+    try {
+      const userData = await fetchEndpoint(url, "user", { token })
+      setUser(userData)
+    } catch (err) {
+      console.error("Error fetching user:", err)
     }
-    fetchUserData()
-  }, [token, userID])
+  }
+
+  useEffect(() => {
+    fetchUser()
+  }, [token])
 
   return (
     <div>

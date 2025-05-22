@@ -6,12 +6,12 @@ import { CameraIcon, UserIcon } from "@icons"
 import { useToast } from "@providers"
 import axios from "axios"
 
-import { fetchUser, logout } from "@/constants"
+import { fetchEndpoint, logout } from "@/constants"
 
 const AccountCard = () => {
   const { addToast } = useToast()
   const navigate = useNavigate()
-  const { setToken, url, userID, token } = useContext(StoreContext)
+  const { setToken, url, token } = useContext(StoreContext)
   const isActive = (path) => location.pathname === path
   const [user, setUser] = useState({})
 
@@ -40,13 +40,18 @@ const AccountCard = () => {
     }
   }
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const fetchedUser = await fetchUser({ url, token, addToast })
-      if (fetchedUser) setUser(fetchedUser)
+  const fetchUser = async () => {
+    try {
+      const userData = await fetchEndpoint(url, "user", { token })
+      setUser(userData)
+    } catch (err) {
+      console.error("Error fetching user:", err)
     }
-    fetchUserData()
-  }, [token, userID])
+  }
+
+  useEffect(() => {
+    fetchUser()
+  }, [token])
   return (
     <div className="bg-accent p-5">
       <div className="relative flex flex-col items-center gap-1">

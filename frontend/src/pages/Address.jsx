@@ -5,19 +5,20 @@ import { StoreContext } from "@context"
 import { useToast } from "@providers"
 import axios from "axios"
 
-import { fetchUser } from "@/constants"
+import { fetchEndpoint } from "@/constants"
 
 const Address = () => {
+  const { addToast } = useToast()
+  const { url, token } = useContext(StoreContext)
   const [billingModalOpen, setBillingModalOpen] = useState(false)
   const [shippingModalOpen, setShippingModalOpen] = useState(false)
   const [toBeUpdatedBilling, setToBeUpdatedBilling] = useState(false)
   const [toBeUpdatedShipping, setToBeUpdatedShipping] = useState(false)
-  const { addToast } = useToast()
-  const { url, token } = useContext(StoreContext)
   const [formData, setFormData] = useState({
     billingAddress: {},
     shippingAddress: {},
   })
+
   const handleSave = async () => {
     try {
       const method =
@@ -33,6 +34,7 @@ const Address = () => {
       addToast("error", "Error", "Failed to save addresses!")
     }
   }
+
   const handleDelete = async (type) => {
     let updatedFormData
     if (type === "shippingAddress") {
@@ -63,20 +65,25 @@ const Address = () => {
       addToast("error", "Error", "Failed to delete addresses!")
     }
   }
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const fetchedUser = await fetchUser({ url, token, addToast })
-      if (fetchedUser) {
-        setFormData({
-          billingAddress: fetchedUser.billingAddress || {},
-          shippingAddress: fetchedUser.shippingAddress || {},
-        })
-        setToBeUpdatedBilling(!!fetchedUser.billingAddress)
-        setToBeUpdatedShipping(!!fetchedUser.shippingAddress)
-      }
+
+  const fetchUser = async () => {
+    try {
+      const userData = await fetchEndpoint(url, "user", { token })
+      setFormData({
+        billingAddress: userData.billingAddress || {},
+        shippingAddress: userData.shippingAddress || {},
+      })
+      setToBeUpdatedBilling(!!userData.billingAddress)
+      setToBeUpdatedShipping(!!userData.shippingAddress)
+    } catch (err) {
+      console.error("Error fetching user:", err)
     }
-    fetchUserData()
+  }
+
+  useEffect(() => {
+    fetchUser()
   }, [token])
+
   return (
     <div>
       <h2 className="text-center">My Account</h2>

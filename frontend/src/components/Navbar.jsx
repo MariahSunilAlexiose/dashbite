@@ -16,10 +16,10 @@ import {
   XMarkWhiteIcon,
 } from "@icons"
 import { LogoBlue, LogoWhite } from "@img"
-import { useTheme, useToast } from "@providers"
+import { useTheme } from "@providers"
 import PropTypes from "prop-types"
 
-import { fetchUser, logout, navbarLinks, popoverItems } from "@/constants"
+import { fetchEndpoint, logout, navbarLinks, popoverItems } from "@/constants"
 
 const MobileNavBar = ({
   setMobileMenu,
@@ -31,16 +31,22 @@ const MobileNavBar = ({
   token,
   setToken,
 }) => {
-  const { addToast } = useToast()
   const [user, setUser] = useState({})
-  const { url, userID } = useContext(StoreContext)
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const fetchedUser = await fetchUser({ url, token, addToast })
-      if (fetchedUser) setUser(fetchedUser)
+  const { url } = useContext(StoreContext)
+
+  const fetchUser = async () => {
+    try {
+      const userData = await fetchEndpoint(url, "user", { token })
+      setUser(userData)
+    } catch (err) {
+      console.error("Error fetching user:", err)
     }
-    fetchUserData()
-  }, [token, userID])
+  }
+
+  useEffect(() => {
+    fetchUser()
+  }, [token])
+
   return (
     <div className="lg:hidden">
       <div className="fixed inset-0 z-10" />
@@ -62,9 +68,9 @@ const MobileNavBar = ({
         </div>
         <div className="mt-6 flow-root">
           <div className="space-y-2">
-            {navbarLinks.map((link, index) => (
+            {navbarLinks.map((link) => (
               <a
-                key={index}
+                key={link.label}
                 href={link.href}
                 className="text-foreground hover:bg-accent -mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
               >
@@ -194,22 +200,28 @@ MobileNavBar.propTypes = {
 
 const Navbar = () => {
   const navigate = useNavigate()
+  const { url, cartItems, token, setToken } = useContext(StoreContext)
   const { theme, toggleTheme } = useTheme()
+
   const [mobileMenu, setMobileMenu] = useState(false)
   const [activeLink, setActiveLink] = useState("")
   const [popover, setPopover] = useState(false)
-  const { cartItems, token, setToken } = useContext(StoreContext)
   const [mobilePopover, setMobilePopover] = useState(false)
   const [user, setUser] = useState({})
-  const { url, userID } = useContext(StoreContext)
-  const { addToast } = useToast()
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const fetchedUser = await fetchUser({ url, token, addToast })
-      if (fetchedUser) setUser(fetchedUser)
+
+  const fetchUser = async () => {
+    try {
+      const userData = await fetchEndpoint(url, "user", { token })
+      setUser(userData)
+    } catch (err) {
+      console.error("Error fetching user:", err)
     }
-    fetchUserData()
-  }, [token, userID])
+  }
+
+  useEffect(() => {
+    fetchUser()
+  }, [token])
+
   return (
     <header>
       <nav
@@ -244,9 +256,9 @@ const Navbar = () => {
           </button>
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
-          {navbarLinks.map((link, index) => (
+          {navbarLinks.map((link) => (
             <a
-              key={index}
+              key={link.label}
               href={link.href}
               className="text-foreground relative text-sm font-semibold leading-6"
               onClick={() => setActiveLink(link.label)}

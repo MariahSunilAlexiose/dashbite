@@ -12,7 +12,6 @@ const Card = ({ id, title, image, rating, price }) => {
   const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
   const cartItemCount =
     cartItems && cartItems[id] !== undefined ? cartItems[id] : 0
-  console.log(cartItemCount)
   return (
     <div className="text-foreground flex cursor-pointer flex-col">
       <div className="relative overflow-hidden rounded-2xl">

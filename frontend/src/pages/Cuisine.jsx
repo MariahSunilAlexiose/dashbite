@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom"
 import { Card } from "@cmp"
 import { StoreContext } from "@context"
 import { useToast } from "@providers"
-import axios from "axios"
+
+import { fetchEndpoint } from "@/constants"
 
 const Cuisine = () => {
   const { cuisineID } = useParams()
@@ -15,21 +16,16 @@ const Cuisine = () => {
 
   const fetchCuisine = async () => {
     try {
-      const res = await axios.get(`${url}/api/cuisine/${cuisineID}`)
-      if (!res.data.success) {
-        console.error(res.data.message)
-        return addToast("error", "Error", res.data.message)
-      }
-      setCuisine(res.data.data)
+      // get cuisine
+      const cuisineData = await fetchEndpoint(url, `cuisine/${cuisineID}`)
+      setCuisine(cuisineData)
 
-      const dishRes = await axios.get(`${url}/api/cuisine/${cuisineID}/dishes/`)
-      if (!dishRes.data.success) {
-        console.error(dishRes.data.message)
-        return addToast("error", "Error", dishRes.data.message)
-      }
-      if (dishRes.data.success) {
-        setDishes(dishRes.data.data)
-      }
+      // get cuisine dishes
+      const dishesData = await fetchEndpoint(
+        url,
+        `cuisine/${cuisineID}/dishes/`
+      )
+      setDishes(dishesData)
     } catch (err) {
       console.error("Error fetching cuisine:", err)
       addToast("error", "Error", "Failed to fetch cuisine!")

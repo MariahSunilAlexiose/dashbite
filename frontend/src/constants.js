@@ -594,6 +594,7 @@ export const shippingOptions = [
 ]
 
 export const formatDate = (dateString) => {
+  if (!dateString) return ""
   const options = { day: "numeric", month: "short", year: "numeric" }
   const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
     new Date(dateString)
@@ -608,18 +609,29 @@ export const logout = ({ setToken, navigate }) => {
   navigate("/")
 }
 
-export const fetchUser = async ({ url, token, addToast }) => {
+export const fetchBackendData = async (url, endpoint, headers = {}) => {
   try {
-    const res = await axios.get(`${url}/api/user`, {
-      headers: { token },
+    const res = await axios.get(`${url}/api/${endpoint}`, {
+      headers: headers,
     })
     if (!res.data.success) {
       console.error(res.data.message)
-      return addToast("error", "Error", res.data.message)
+      return { success: false, message: res.data.message }
     }
-    return res.data.user
+
+    return { success: true, data: res.data.data }
   } catch (err) {
-    console.error("Error fetching user:", err)
-    addToast("error", "Error", "Failed to fetch user!")
+    console.error(err.message || err)
+    return { success: false, message: err.message || err }
   }
+}
+
+export const fetchEndpoint = async (url, endpoint, headers = {}) => {
+  const res = await fetchBackendData(url, endpoint, headers)
+
+  if (!res.success) {
+    return []
+  }
+
+  return res.data
 }
