@@ -319,7 +319,8 @@ export const fetchTableData = async (fetches, tableName) => {
 }
 
 export const fetchData = async (formData, setters) => {
-  const { setUsers, setDishes, setCategories, setCuisines } = setters
+  const { setUsers, setDishes, setCategories, setCuisines, setRestaurants } =
+    setters
   const fetchConfig = [
     {
       key: "userID",
@@ -334,7 +335,7 @@ export const fetchData = async (formData, setters) => {
     {
       key: "restaurantID",
       name: "restaurant",
-      setter: setters?.setRestaurants,
+      setter: setRestaurants,
     },
   ]
 

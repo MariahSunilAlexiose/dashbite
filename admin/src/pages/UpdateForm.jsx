@@ -315,7 +315,6 @@ const UpdateForm = () => {
               [e.target.name]: parseFloat(e.target.value) || 0, // Ensure valid number
             }))
           }}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           min="0"
           step="1"
           required
@@ -476,7 +475,6 @@ const UpdateForm = () => {
                 </div>
               )
             }
-
             return null
           })}
         </div>
@@ -499,12 +497,7 @@ const UpdateForm = () => {
             .map((key) =>
               key === "address" ? (
                 <div key="address" className="pt-3">
-                  <Label
-                    htmlFor="address"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Address
-                  </Label>
+                  <Label htmlFor="address">Address</Label>
                   <div className="flex flex-col gap-4 pt-4">
                     <div className="flex gap-4">
                       <Input
@@ -588,12 +581,7 @@ const UpdateForm = () => {
                 </div>
               ) : key === "streetAddress" ? (
                 <div key="streetAddress" className="pt-3">
-                  <Label
-                    htmlFor="address"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Address
-                  </Label>
+                  <Label htmlFor="address">Address</Label>
                   <div className="flex flex-col gap-4 pt-4">
                     <Input
                       type="text"
@@ -644,12 +632,7 @@ const UpdateForm = () => {
               ) : key === "items" ? (
                 <div key="items" className="pt-3">
                   <div className="flex justify-between">
-                    <Label
-                      htmlFor="items"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Menu Items
-                    </Label>
+                    <Label htmlFor="items">Menu Items</Label>
                     <Button
                       variant="success"
                       size="sm"
@@ -679,12 +662,7 @@ const UpdateForm = () => {
                       return (
                         <div key={index} className="flex gap-3">
                           <div className="w-full">
-                            <Label
-                              htmlFor="item"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Menu Item
-                            </Label>
+                            <Label htmlFor="item">Menu Item</Label>
                             <InputDropDown
                               label="menuitem"
                               options={dishes.filter(
@@ -708,12 +686,7 @@ const UpdateForm = () => {
                             />
                           </div>
                           <div className="w-full">
-                            <Label
-                              htmlFor="quantity"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Quantity
-                            </Label>
+                            <Label htmlFor="quantity">Quantity</Label>
                             <Input
                               name={`quantity-${index}`}
                               type="number"
@@ -734,7 +707,6 @@ const UpdateForm = () => {
                                   ),
                                 }))
                               }}
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                               min={1}
                               required
                             />
@@ -745,12 +717,7 @@ const UpdateForm = () => {
                                 className={`flex flex-col items-center gap-1.5 ${index === 0 ? "p-0" : "px-4"}`}
                               >
                                 {index === 0 && (
-                                  <Label
-                                    htmlFor="subtotal"
-                                    className="block text-sm font-medium text-gray-700"
-                                  >
-                                    Subtotal
-                                  </Label>
+                                  <Label htmlFor="subtotal">Subtotal</Label>
                                 )}
                                 <p
                                   className={`${index === 0 ? "mt-1" : "mt-6"}`}
@@ -796,12 +763,7 @@ const UpdateForm = () => {
               ) : key === "deliveryType" ? (
                 <div key="deliveryType" className="flex justify-between gap-5">
                   <div className="w-full">
-                    <Label
-                      htmlFor="deliveryType"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Delivery Type
-                    </Label>
+                    <Label htmlFor="deliveryType">Delivery Type</Label>
                     <DropDown
                       defaultValue={formData.deliveryType}
                       options={deliveryType}
