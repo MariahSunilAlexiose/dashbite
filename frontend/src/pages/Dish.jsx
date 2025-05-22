@@ -11,19 +11,18 @@ import {
   PlusIcon,
   StarIcon,
   TagIcon,
-  UserIcon,
 } from "@icons"
 import { useTheme, useToast } from "@providers"
-import axios from "axios"
+import { Reviews } from "@sections"
 
-import { formatDate } from "@/constants"
+import { fetchEndpoint } from "@/constants"
 
 const Dish = () => {
   const { dishID } = useParams()
+  const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
   const navigate = useNavigate()
   const { theme } = useTheme()
   const { addToast } = useToast()
-  const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
   const [dish, setDish] = useState({})
   const [reviews, setReviews] = useState([])
   const cartItemCount =
@@ -31,63 +30,38 @@ const Dish = () => {
 
   const fetchDish = async () => {
     try {
-      const res = await axios.get(`${url}/api/dish/${dishID}`)
-      if (!res.data.success) {
-        console.error(res.data.message)
-        return addToast("error", "Error", res.data.message)
-      }
-
-      const filteredData = res.data.data || {}
-
-      const restRes = await axios.get(
-        `${url}/api/restaurant/${res.data.data.restaurantID}`
+      const dishData = await fetchEndpoint(url, `dish/${dishID}`)
+      const restaurantData = await fetchEndpoint(
+        url,
+        `restaurant/${dishData.restaurantID}`
       )
-      if (!restRes.data.success) {
-        console.error(restRes.data.message)
-        return addToast("error", "Error", restRes.data.message)
-      }
-      filteredData.restaurantName = restRes.data.data.name
-
-      const cuisineArray = await Promise.all(
-        res.data.data.cuisineIDs.map(async (cuisineID) => {
-          const cuisineRes = await axios.get(`${url}/api/cuisine/${cuisineID}`)
-          if (!cuisineRes.data.success) {
-            console.error(cuisineRes.data.message)
-            return addToast("error", "Error", cuisineRes.data.message)
-          }
-          return { id: cuisineID, name: cuisineRes.data.data.name }
+      const cuisinesData = await Promise.all(
+        dishData.cuisineIDs.map(async (cuisineID) => {
+          const cuisineData = await fetchEndpoint(url, `cuisine/${cuisineID}`)
+          return { id: cuisineID, name: cuisineData.name }
         })
       )
-      filteredData.cuisines = cuisineArray
-
-      const catRes = await axios.get(
-        `${url}/api/category/${res.data.data.categoryID}`
+      const categoryData = await fetchEndpoint(
+        url,
+        `category/${dishData.categoryID}`
       )
-      if (!catRes.data.success) {
-        console.error(catRes.data.message)
-        return addToast("error", "Error", catRes.data.message)
-      }
-      filteredData.categoryName = catRes.data.data.name
+      setDish({
+        ...dishData,
+        restaurant: restaurantData,
+        cuisines: cuisinesData,
+        category: categoryData,
+      })
 
-      setDish(filteredData)
+      // get reviews
+      const reviewsData = await fetchEndpoint(url, `review/dish/${dishID}`)
 
-      const revRes = await axios.get(`${url}/api/review/dish/${dishID}`)
-      if (!revRes.data.success) {
-        console.error(revRes.data.message)
-        return addToast("error", "Error", revRes.data.message)
-      }
-
+      // get user for each review
       const updatedReviews = await Promise.all(
-        revRes.data.map(async (item) => {
-          const itemRes = await axios.get(`${url}/api/user/${item.userID}`)
-          if (!itemRes.data.success) {
-            console.error(itemRes.data.message)
-            return addToast("error", "Error", itemRes.data.message)
-          }
+        reviewsData.map(async (review) => {
+          const userData = await fetchEndpoint(url, `user/${review.userID}`)
           return {
-            ...item,
-            username: itemRes.data.user.name,
-            profilePic: itemRes.data.user.profilePic,
+            ...review,
+            user: userData,
           }
         })
       )
@@ -97,16 +71,18 @@ const Dish = () => {
       addToast("error", "Error", "Failed to fetch dish!")
     }
   }
+
   useEffect(() => {
     fetchDish()
   }, [])
+
   return (
     <div className="flex flex-col gap-4">
       <div
         className="mt-3 flex cursor-pointer items-center"
-        onClick={() => navigate(`/restaurants/${dish.restaurantID}`)}
+        onClick={() => navigate(`/restaurant/${dish.restaurantID}`)}
       >
-        <p>{dish.restaurantName}</p>
+        <p>{dish.restaurant?.name}</p>
         <img
           src={theme === dark ? ChevronRightWhiteIcon : ChevronRightIcon}
           alt="Chevron Right Icon"
@@ -126,7 +102,7 @@ const Dish = () => {
             <div>
               <div className="flex items-center gap-1">
                 <img src={TagIcon} alt="Tag Icon" className="h-4 w-4" />
-                <p className="m-0 text-sm">{dish.categoryName}</p>
+                <p className="m-0 text-sm">{dish.category?.name}</p>
               </div>
               <div className="flex gap-10">
                 <h2>{dish.name}</h2>
@@ -135,21 +111,20 @@ const Dish = () => {
                   {dish.rating}
                 </div>
               </div>
-              {dish.cuisines &&
-                dish.cuisines.map((cuisine) => (
-                  <div
-                    key={cuisine._id}
-                    onClick={() => navigate(`/cuisine/${cuisine.id}`)}
-                    className="bg-accent text-primary border-primary w-fit cursor-pointer rounded-full border px-2 text-sm"
-                  >
-                    {cuisine.name}
-                  </div>
-                ))}
+              {dish.cuisines?.map((cuisine) => (
+                <div
+                  key={cuisine._id}
+                  onClick={() => navigate(`/cuisine/${cuisine.id}`)}
+                  className="bg-accent text-primary border-primary w-fit cursor-pointer rounded-full border px-2 text-sm"
+                >
+                  {cuisine.name}
+                </div>
+              ))}
             </div>
             <div className="flex flex-col gap-3 text-center">
               <h3>${dish.price}</h3>
               {cartItemCount == 0 ? (
-                <div className="dark:bg-blue-30 cursor-pointer rounded-full bg-white p-1 shadow-md">
+                <div className="dark:bg-blue-30 flex cursor-pointer justify-center rounded-full bg-white p-1 shadow-md">
                   <img
                     src={PlusIcon}
                     alt="Plus Icon"
@@ -185,19 +160,19 @@ const Dish = () => {
           {/* Description */}
           <p className="m-0">{dish.description}</p>
           {/* Calorie Card */}
-          <div className="h-30 bg-accent flex items-center justify-between rounded-2xl p-5">
-            <div className="flex h-full w-full flex-col items-center justify-center">
+          <div className="h-30 bg-accent flex items-center justify-between rounded-2xl p-3">
+            <div className="flex h-full w-full flex-col items-center justify-center p-2">
               <p className="text-gray-20 font-semibold">Serving Size</p>
               <div className="flex items-end gap-1">
-                <p className="text-xl">{dish.servingSize}</p>
+                <p>{dish.servingSize}</p>
               </div>
             </div>
             <Separator orientation="vertical" />
             <div className="flex h-full w-full flex-col items-center justify-center">
               <p className="text-gray-20 font-semibold">Calories</p>
               <div className="flex items-end gap-1">
-                <p className="text-xl">320</p>
                 <p className="text-xl">{dish.calories}</p>
+                <p className="text-gray-20 m-0 text-xs">cal</p>
               </div>
             </div>
             <Separator orientation="vertical" />
@@ -226,81 +201,38 @@ const Dish = () => {
             </div>
           </div>
           {/* Allergens */}
-          <div>
-            <h4 className="mb-3">Allergens</h4>
-            {dish.allergens &&
-              dish.allergens.map((allergen) => (
-                <div
-                  key={allergen}
-                  onClick={() => navigate(`/cuisine/${allergen}`)}
-                  className="bg-accent text-gray-20 w-fit cursor-pointer border px-2 text-sm"
-                >
-                  {allergen}
-                </div>
-              ))}
-          </div>
-          {/* Reviews */}
-          <div>
-            <h4 className="mb-3">Reviews</h4>
-            <div className="mt-6 flex gap-1.5 overflow-x-scroll">
-              {reviews &&
-                reviews.map((review) => (
+          {dish.allergens?.length > 0 && (
+            <div>
+              <h4 className="mb-3">Allergens</h4>
+              <div className="flex gap-3">
+                {dish.allergens.map((allergen) => (
                   <div
-                    key={review._id}
-                    className="min-w-[350px] rounded-2xl bg-white p-5 dark:bg-black"
+                    key={allergen}
+                    onClick={() => navigate(`/cuisine/${allergen}`)}
+                    className="bg-accent text-gray-20 w-fit cursor-pointer border px-2 text-sm"
                   >
-                    <div className="mb-5 flex gap-2">
-                      <div className="h-15 w-15 relative flex shrink-0 items-center justify-center overflow-hidden rounded-full">
-                        <img
-                          src={
-                            review.profilePic &&
-                            review.profilePic.startsWith(
-                              "https://ui-avatars.com/api/?name="
-                            )
-                              ? review.profilePic
-                              : `${url}/images/${review.profilePic || UserIcon}`
-                          }
-                          alt="User Profile"
-                          className="aspect-square h-full w-full object-cover"
-                        />
-                      </div>
-                      <div className="w-full">
-                        <div className="flex justify-between">
-                          <p className="m-0">{review.username}</p>
-                          <p className="text-gray-20 m-0 text-xs">
-                            {formatDate(review.updatedAt)}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <img
-                            src={StarIcon}
-                            alt="Star Icon"
-                            className="h-4 w-4"
-                          />
-                          {dish.rating}
-                        </div>
-                      </div>
-                    </div>
-                    {review.comment}
+                    {allergen}
                   </div>
                 ))}
+              </div>
             </div>
-          </div>
+          )}
+          {/* Reviews */}
+          <Reviews reviews={reviews} page="dish" pageID={dishID} />
         </div>
         {/* Ingredients */}
         <div className="w-1/4 p-3">
           <h4 className="mt-2 text-center">Main Ingredients</h4>
           <div className="mt-3">
             <ul className="space-y-2">
-              <li className="before:bg-border relative pl-6 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-full">
-                Mango
-              </li>
-              <li className="before:bg-border relative pl-6 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-full">
-                Mango
-              </li>
-              <li className="before:bg-border relative pl-6 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-full">
-                Mango
-              </li>
+              {dish.ingredients?.map((ingredient, index) => (
+                <li
+                  key={`${ingredient}-${index}`}
+                  className="before:bg-border relative pl-6 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-full"
+                >
+                  {ingredient}
+                </li>
+              ))}
             </ul>
           </div>
         </div>

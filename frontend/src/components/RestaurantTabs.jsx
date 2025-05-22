@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 import { PhotoGallery } from "@cmp"
-import { RestaurantOverview } from "@sections"
+import { RestaurantOverview, Reviews } from "@sections"
 import PropTypes from "prop-types"
 
 const TabTrigger = ({ label, activeTab, setActiveTab }) => (
@@ -60,7 +60,11 @@ const RestaurantTabs = ({ restaurant }) => {
           />
         </div>
       ) : (
-        <p>Reviews</p>
+        <Reviews
+          reviews={restaurant.reviews}
+          page="restaurant"
+          pageID={restaurant._id}
+        />
       )}
     </div>
   )

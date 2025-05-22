@@ -5,8 +5,10 @@ import Header from "./Header"
 import Menu from "./Menu"
 import RestaurantOverview from "./RestaurantOverview"
 import Restaurants from "./Restaurants"
+import Reviews from "./Reviews"
 
 export {
+  Reviews,
   RestaurantOverview,
   Restaurants,
   Cuisines,
