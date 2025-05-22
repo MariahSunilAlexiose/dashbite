@@ -7,7 +7,7 @@ import { Button } from "."
 
 const Modal = ({ title, children, onClose }) => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="z-1 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative w-96 rounded-lg bg-white p-6">
         <div className="flex justify-between">
           <h2 className="mb-4 text-lg font-bold">{title}</h2>

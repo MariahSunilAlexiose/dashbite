@@ -7,8 +7,8 @@ import Card from "./Card"
 import CartSummary from "./CartSummary"
 import CartTable from "./CartTable"
 import Checkbox from "./Checkbox"
-import DropDown from "./DropDown"
 import Input from "./Input"
+import InputDropDown from "./InputDropDown"
 import Label from "./Label"
 import MenuCategoryTabs from "./MenuCategoryTabs"
 import Modal from "./Modal"
@@ -26,7 +26,7 @@ import Toast from "./Toast"
 import Toasts from "./Toasts"
 
 export {
-  DropDown,
+  InputDropDown,
   ReviewsTable,
   TextArea,
   ProgressBar,

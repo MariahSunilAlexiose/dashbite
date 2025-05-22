@@ -2,9 +2,11 @@ import React from "react"
 
 import PropTypes from "prop-types"
 
-const TableRow = ({ children, className }) => {
+const TableRow = ({ children, className, onClick }) => {
   return (
-    <tr className={`${className} border-b transition-colors`}>{children}</tr>
+    <tr className={`${className} border-b transition-colors`} onClick={onClick}>
+      {children}
+    </tr>
   )
 }
 

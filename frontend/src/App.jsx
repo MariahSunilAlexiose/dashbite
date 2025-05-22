@@ -10,6 +10,7 @@ import {
   Home,
   Login,
   MyOrders,
+  MyReviews,
   PlaceOrder,
   Profile,
   Restaurant,
@@ -61,6 +62,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Verify />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/myreviews"
+            element={
+              <ProtectedRoute>
+                <MyReviews />
               </ProtectedRoute>
             }
           />

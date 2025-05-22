@@ -40,7 +40,7 @@ const AccountCard = () => {
     }
   }
 
-  const fetchUser = async () => {
+  const fetchData = async () => {
     try {
       const userData = await fetchEndpoint(url, "user", { token })
       setUser(userData)
@@ -50,7 +50,7 @@ const AccountCard = () => {
   }
 
   useEffect(() => {
-    fetchUser()
+    fetchData()
   }, [token])
   return (
     <div className="bg-accent p-5">
@@ -99,6 +99,12 @@ const AccountCard = () => {
         onClick={() => navigate("/address")}
       >
         Address
+      </p>
+      <p
+        className={`mt-3 cursor-pointer ${isActive("/reviews") ? "text-primary underline-offset-5 underline" : "hover:text-primary"}`}
+        onClick={() => navigate("/myreviews")}
+      >
+        My Reviews
       </p>
       <p
         className={`mt-3 cursor-pointer ${isActive("/myorders") ? "text-primary underline-offset-5 underline" : "hover:text-primary"}`}

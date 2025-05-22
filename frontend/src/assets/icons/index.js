@@ -5,6 +5,7 @@ import CameraIcon from "./camera.svg"
 import CheckCircleIcon from "./check-circle.svg"
 import ChevronDownIcon from "./chevron-down.svg"
 import ChevronRightIcon from "./chevron-right.svg"
+import ChevronUpDownIcon from "./chevron-up-down.svg"
 import CopyrightIcon from "./copyright-sign.svg"
 import Bars3WhiteIcon from "./dark_mode/bars-3.svg"
 import ChevronLeftWhiteIcon from "./dark_mode/chevron-left.svg"
@@ -43,6 +44,7 @@ import UserIcon from "./user.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  ChevronUpDownIcon,
   TrashWhiteIcon,
   GrayStarIcon,
   MapPinIcon,
