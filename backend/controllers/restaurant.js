@@ -16,6 +16,7 @@ const addRestaurant = async (req, res) => {
     openingHours,
     rating,
     dishIDs,
+    description,
   } = req.body
 
   const filenames = req.files["images[]"]
@@ -27,6 +28,7 @@ const addRestaurant = async (req, res) => {
     "phone",
     "email",
     "openingHours",
+    "description",
   ])
 
   if (filenames.length === 0) {
@@ -54,6 +56,7 @@ const addRestaurant = async (req, res) => {
       openingHours,
       rating,
       dishIDs,
+      description,
       images: filenames,
     })
 
@@ -116,6 +119,7 @@ const updateRestaurant = async (req, res) => {
     openingHours,
     rating,
     dishIDs,
+    description,
   } = req.body
   const filenames = req.files ? req.files.map((file) => file.filename) : []
 
@@ -137,6 +141,7 @@ const updateRestaurant = async (req, res) => {
       openingHours: openingHours || restaurant.openingHours,
       rating: rating || restaurant.rating,
       dishIDs: dishIDs || restaurant.dishIDs,
+      description: description || restaurant.description,
       images: filenames.length > 0 ? filenames : restaurant.images,
     }
 

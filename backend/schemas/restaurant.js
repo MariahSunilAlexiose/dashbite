@@ -18,6 +18,7 @@ const restaurantSchema = new mongoose.Schema(
     rating: { type: Number, default: 0 },
     images: [{ type: String }],
     dishIDs: [{ type: mongoose.Schema.Types.ObjectId, ref: "dish" }],
+    description: { type: String, required: true },
   },
   { timestamps: true, collection: "restaurant" }
 )
