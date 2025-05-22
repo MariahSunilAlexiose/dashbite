@@ -50,11 +50,13 @@ import Soups from "./soups.jpg"
 import SparklingWater from "./sparkling_water.jpg"
 import SpringRolls from "./spring_rolls.jpg"
 import TomatoSoup from "./tomato_soup.jpg"
+import UploadAreaImg from "./upload_area.png"
 import VeggieBurger from "./veggie_burger.jpg"
 import VeggiePizza from "./veggie_pizza.jpg"
 import Waffles from "./waffles.jpg"
 
 export {
+  UploadAreaImg,
   LoginSignup,
   PlayStore,
   AppStore,

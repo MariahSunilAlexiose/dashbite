@@ -10,14 +10,18 @@ import Bars3WhiteIcon from "./dark_mode/bars-3.svg"
 import ChevronLeftWhiteIcon from "./dark_mode/chevron-left.svg"
 import ChevronRightWhiteIcon from "./dark_mode/chevron-right.svg"
 import MagnifyingGlassWhiteIcon from "./dark_mode/magnifying-glass.svg"
+import DarkMapPinIcon from "./dark_mode/map-pin.svg"
 import PlusDarkIcon from "./dark_mode/plus.svg"
 import ShoppingCartWhiteIcon from "./dark_mode/shopping-cart.svg"
+import TrashWhiteIcon from "./dark_mode/trash.svg"
 import XMarkWhiteIcon from "./dark_mode/x-mark.svg"
 import ExclamationTriangleIcon from "./exclamation-triangle.svg"
 import FacebookIcon from "./facebook.png"
+import GrayStarIcon from "./gray-star.svg"
 import InformationCircleIcon from "./information-circle.svg"
 import LinkedinIcon from "./linkedin.png"
 import MagnifyingGlassBlackIcon from "./magnifying-glass.svg"
+import MapPinIcon from "./map-pin.svg"
 import MinusIcon from "./minus.svg"
 import MoonIcon from "./moon.svg"
 import PencilSquareIcon from "./pencil-square.svg"
@@ -39,6 +43,10 @@ import UserIcon from "./user.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  TrashWhiteIcon,
+  GrayStarIcon,
+  MapPinIcon,
+  DarkMapPinIcon,
   ChevronLeftWhiteIcon,
   ChevronRightWhiteIcon,
   StarIcon,

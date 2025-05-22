@@ -7,10 +7,12 @@ import Login from "./Login"
 import MyOrders from "./MyOrders"
 import PlaceOrder from "./PlaceOrder"
 import Profile from "./Profile"
+import Restaurant from "./Restaurant"
 import Signup from "./Signup"
 import Verify from "./Verify"
 
 export {
+  Restaurant,
   Dish,
   Cuisine,
   Address,

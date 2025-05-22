@@ -24,7 +24,7 @@ const Restaurants = () => {
         <div className="peer order-last flex w-max items-center justify-center gap-2">
           {restaurants.slice(0, 10).map((restaurant, index) => (
             <div
-              key={index}
+              key={restaurant._id}
               onMouseEnter={() => setActiveIndex(index)}
               className={`group relative h-96 overflow-hidden transition-all duration-500 ${
                 activeIndex === index ? "w-96" : "w-20"

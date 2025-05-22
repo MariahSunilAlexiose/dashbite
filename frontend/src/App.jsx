@@ -12,6 +12,7 @@ import {
   MyOrders,
   PlaceOrder,
   Profile,
+  Restaurant,
   Signup,
   Verify,
 } from "@pages"
@@ -65,6 +66,7 @@ function App() {
           />
           <Route path="/cuisine/:cuisineID" element={<Cuisine />} />
           <Route path="/dish/:dishID" element={<Dish />} />
+          <Route path="/restaurant/:restaurantID" element={<Restaurant />} />
         </Routes>
       </div>
       <Footer />
