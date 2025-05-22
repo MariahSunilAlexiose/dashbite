@@ -2,27 +2,38 @@ import React, { useContext, useEffect, useState } from "react"
 
 import { AccountCard, OrderTable } from "@cmp"
 import { StoreContext } from "@context"
-import { useToast } from "@providers"
-import axios from "axios"
+
+import { fetchEndpoint } from "@/constants"
 
 const MyOrders = () => {
-  const { addToast } = useToast()
   const { url, token } = useContext(StoreContext)
 
   const [orders, setOrders] = useState([])
+
   const fetchOrders = async () => {
-    const res = await axios.get(`${url}/api/order/myorders`, {
-      headers: { token },
-    })
-    if (!res.data.success) {
-      console.error(res.data.message)
-      return addToast("error", "Error", res.data.message)
-    }
-    setOrders(res.data.data)
+    // get orders
+    const ordersData = await fetchEndpoint(url, "order/myorders", { token })
+
+    // Map over ordersData first
+    const enrichedOrders = await Promise.all(
+      ordersData.map(async (order) => {
+        const enrichedItems = await Promise.all(
+          order.items.map(async (dish) => {
+            const dishData = await fetchEndpoint(url, `dish/${dish._id}`)
+            return { ...dish, dishData } // Add dish data to each item
+          })
+        )
+        return { ...order, items: enrichedItems } // Attach enriched items to the order
+      })
+    )
+
+    setOrders(enrichedOrders)
   }
+
   useEffect(() => {
-    if (token) fetchOrders()
+    fetchOrders()
   }, [token])
+
   return (
     <div>
       <h2 className="text-center">My Account</h2>
