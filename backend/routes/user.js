@@ -6,6 +6,7 @@ import {
   deleteUser,
   getUser,
   getUserForAdmin,
+  getUserForGeneral,
   getUsers,
   loginUser,
   registerUser,
@@ -52,7 +53,7 @@ userRouter.get(
   (req, res) => {
     if (req.headers.token === process.env.ADMIN_TOKEN)
       return getUserForAdmin(req, res)
-    else return getUser(req, res)
+    else return getUserForGeneral(req, res)
   }
 )
 

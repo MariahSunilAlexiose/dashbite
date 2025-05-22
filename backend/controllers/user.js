@@ -102,13 +102,34 @@ const getUserForAdmin = async (req, res) => {
   }
 }
 
+const getUserForGeneral = async (req, res) => {
+  const userID = req.params.userID || req.userID
+
+  try {
+    const user = await userModel.findById(userID)
+    if (!user) return res.json({ success: false, message: "User not found!" })
+    res.json({
+      success: true,
+      data: {
+        name: user.name,
+        profilePic: user.profilePic,
+      },
+    })
+  } catch (err) {
+    res.json({ success: false, message: `Error in fetching user: ${err}` })
+  }
+}
+
 const getUser = async (req, res) => {
   const userID = req.params.userID || req.userID
 
   try {
     const user = await userModel.findById(userID)
     if (!user) return res.json({ success: false, message: "User not found!" })
-    res.json({ success: true, user })
+    res.json({
+      success: true,
+      data: user,
+    })
   } catch (err) {
     res.json({ success: false, message: `Error in fetching user: ${err}` })
   }
@@ -286,12 +307,13 @@ const deleteUser = async (req, res) => {
 }
 
 export {
+  getUser,
   getUserForAdmin,
   deleteUser,
   getUsers,
   loginUser,
   registerUser,
-  getUser,
+  getUserForGeneral,
   updateUser,
   updateProfilePic,
   addAddresses,
