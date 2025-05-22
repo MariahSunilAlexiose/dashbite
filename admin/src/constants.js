@@ -156,6 +156,7 @@ export const keyMapping = {
   fat: "Fat",
   protein: "Protein",
   carbs: "Carbs",
+  title: "Title",
 }
 
 export const ratings = [

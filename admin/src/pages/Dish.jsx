@@ -12,7 +12,7 @@ import {
   getRatingImage,
 } from "@/constants"
 
-const Cuisine = () => {
+const Dish = () => {
   const navigate = useNavigate()
   const { dishID } = useParams()
   const [dish, setDish] = useState({})
@@ -42,23 +42,24 @@ const Cuisine = () => {
       })
 
       // get dish reviews
-      const reviewData = await fetchEndpoint(`review/dish/${dishID}`)
-      if (reviewData.length > 0) {
-        const reviewsWithUsernames = await Promise.all(
-          reviewData.map(
-            // eslint-disable-next-line no-unused-vars
-            async ({ __v, createdAt, updatedAt, dishID, ...rest }) => {
-              return {
-                username:
-                  (await fetchEndpoint(`user/${rest.userID}`).name) ||
-                  "Unknown",
-                ...rest,
-              }
-            }
-          )
-        )
-        setReviews(reviewsWithUsernames)
-      }
+      const reviewsData = await fetchEndpoint(`review/dish/${dishID}`)
+      const updatedReviewData = await Promise.all(
+        reviewsData.map(async (review) => {
+          const userData = await fetchEndpoint(`user/${review.userID}`, {
+            token: import.meta.env.VITE_ADMIN_TOKEN,
+          })
+
+          const { dishID, title, comment, ...restOfDishData } = review // eslint-disable-line no-unused-vars
+
+          return {
+            username: userData.name,
+            title,
+            comment,
+            ...restOfDishData,
+          }
+        })
+      )
+      setReviews(updatedReviewData)
     } catch (err) {
       console.error("Error fetching dishes:", err)
       addToast("error", "Error", "Failed to fetch dishes!")
@@ -261,6 +262,7 @@ const Cuisine = () => {
           </div>
         )}
       </div>
+
       {/* Reviews */}
       <div>
         <h4 className="mb-2">Reviews</h4>
@@ -274,4 +276,4 @@ const Cuisine = () => {
   )
 }
 
-export default Cuisine
+export default Dish

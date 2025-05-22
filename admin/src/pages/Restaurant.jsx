@@ -58,23 +58,23 @@ const Restaurant = () => {
         const reviewsData = await fetchEndpoint(
           `review/restaurant/${restaurantID}`
         )
-        if (reviewsData.length > 0) {
-          const reviewsWithUsernames = await Promise.all(
-            reviewsData.map(
-              // eslint-disable-next-line no-unused-vars
-              async ({ __v, createdAt, updatedAt, ...rest }) => {
-                return {
-                  username:
-                    (await fetchEndpoint(`user/${rest.userID}`, {
-                      token: import.meta.env.VITE_ADMIN_TOKEN,
-                    }).name) || "Unknown",
-                  ...rest,
-                }
-              }
-            )
-          )
-          setReviews(reviewsWithUsernames)
-        }
+        const updatedReviewsData = await Promise.all(
+          reviewsData.map(async (review) => {
+            const userData = await fetchEndpoint(`user/${review.userID}`, {
+              token: import.meta.env.VITE_ADMIN_TOKEN,
+            })
+
+            const { restaurantID, title, comment, ...restOfReviewData } = review // eslint-disable-line no-unused-vars
+
+            return {
+              username: userData.name,
+              title,
+              comment,
+              ...restOfReviewData,
+            }
+          })
+        )
+        setReviews(updatedReviewsData)
       } catch (err) {
         console.error("Error fetching restaurant:", err)
         addToast("error", "Error", "Failed to fetch restaurant!")

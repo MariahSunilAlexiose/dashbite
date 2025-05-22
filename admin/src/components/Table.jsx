@@ -72,7 +72,8 @@ const Table = ({ tableName, data, pageID, extraData }) => {
             key !== "fat" &&
             key !== "protein" &&
             key !== "carbs" &&
-            key !== "allergens"
+            key !== "allergens" &&
+            key !== "userID"
         )
       : []
 
@@ -90,7 +91,11 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                   key={header}
                   className="h-10 w-[100px] px-4 text-center align-middle font-bold"
                 >
-                  {header === "image" || header === "profilePic" ? "" : header}
+                  {header === "image" ||
+                  header === "images" ||
+                  header === "profilePic"
+                    ? ""
+                    : header}
                 </th>
               ))}
           </tr>
@@ -176,6 +181,18 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                           <div className="bg-foreground text-background absolute -right-2 -top-2 rounded-full px-2.5 py-1 text-xs font-bold shadow-md">
                             {item.quantity}
                           </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : header === "images" ? (
+                    <div className="flex items-center justify-center gap-2">
+                      {row.images.map((image, key) => (
+                        <div key={key} className="relative h-12 w-12">
+                          <img
+                            src={`${backendImgURL}/${image}`}
+                            alt={image}
+                            className="h-full w-full rounded"
+                          />
                         </div>
                       ))}
                     </div>
