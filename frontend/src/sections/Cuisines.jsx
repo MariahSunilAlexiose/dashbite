@@ -100,6 +100,8 @@ const Cuisines = () => {
                 </div>
                 <div className="absolute bottom-0 left-0 flex w-full items-center justify-between p-4">
                   <h1 className="text-2xl font-bold text-white">{link.name}</h1>
+                </div>
+                <div className="absolute right-0 top-0 flex p-4">
                   <Button
                     variant="primary"
                     size="icon"
