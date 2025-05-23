@@ -52,11 +52,7 @@ const MobileNavBar = ({
       <div className="fixed inset-0 z-10" />
       <div className="bg-background sm:ring-border fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1">
         <div className="flex items-center justify-end">
-          <button
-            type="button"
-            className="-m-2.5 cursor-pointer rounded-md p-2.5 text-gray-700"
-            onClick={() => setMobileMenu(false)}
-          >
+          <Button variant="ghost" onClick={() => setMobileMenu(false)}>
             <span className="sr-only">Close menu</span>
             <img
               src={theme === dark ? XMarkWhiteIcon : XMarkIcon}
@@ -64,7 +60,7 @@ const MobileNavBar = ({
               className="h-6 w-6"
               aria-hidden="true"
             />
-          </button>
+          </Button>
         </div>
         <div className="mt-6 flow-root">
           <div className="space-y-2">

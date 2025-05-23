@@ -75,7 +75,8 @@ const CartTable = ({
                   </TableCell>
                   <TableCell>${cartItems[dish._id] * dish.price}</TableCell>
                   <TableCell>
-                    <button
+                    <Button
+                      variant="ghost"
                       onClick={() => deleteFromCart(dish._id)}
                       className="cursor-pointer"
                     >
@@ -84,7 +85,7 @@ const CartTable = ({
                         alt="Trash Icon"
                         className="h-5 w-5"
                       />
-                    </button>
+                    </Button>
                   </TableCell>
                 </TableRow>
               ) : null
