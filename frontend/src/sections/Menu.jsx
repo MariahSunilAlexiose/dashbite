@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 
 import { Avatar, Card } from "@cmp"
 import { StoreContext } from "@context"
@@ -8,6 +8,11 @@ const Menu = () => {
   const [selectedAvatar, setSelectedAvatar] = useState(
     categories[0]?._id || null
   )
+
+  useEffect(() => {
+    if (!selectedAvatar && categories.length > 0)
+      setSelectedAvatar(categories[0]._id)
+  }, [categories, selectedAvatar])
 
   return (
     <div className="flex flex-col gap-6">
