@@ -10,6 +10,7 @@ import {
   fetchCuisines,
   fetchEndpoint,
   fetchRestaurantDishes,
+  getRatingImage,
 } from "@/constants"
 
 const Restaurant = () => {
@@ -107,7 +108,16 @@ const Restaurant = () => {
       )}
       <div className="flex items-center justify-between">
         <div>
-          <h2>{restaurant.name} Restaurant</h2>
+          <div className="flex items-center gap-3">
+            <h2>{restaurant.name} Restaurant</h2>
+            <div className="flex items-center gap-1 pb-2">
+              <img
+                src={getRatingImage(restaurant.rating)}
+                alt="Rating Icon"
+                className="h-4 w-20"
+              />
+            </div>
+          </div>
           <div className="flex gap-4">
             {restaurant.cuisines &&
               restaurant.cuisines.map((cuisine) => (
@@ -144,7 +154,6 @@ const Restaurant = () => {
             <p className="m-0">{restaurant.email}</p>
             <p className="m-0">{restaurant.phone}</p>
             <p className="m-0">Opening Hours: {restaurant.openingHours}</p>
-            <p className="m-0">Rating: {restaurant.rating}</p>
           </div>
         </div>
         <div className="flex justify-between">
