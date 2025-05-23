@@ -7,7 +7,6 @@ import {
   ChevronRightIcon,
   ChevronRightWhiteIcon,
   MinusIcon,
-  PlusDarkIcon,
   PlusIcon,
   StarIcon,
   TagIcon,
@@ -146,7 +145,7 @@ const Dish = () => {
                     <p className="text-blue-90 m-0 p-0">{cartItemCount}</p>
                     <div className="bg-accent cursor-pointer rounded-full p-1">
                       <img
-                        src={PlusDarkIcon}
+                        src={PlusIcon}
                         alt="Plus Icon"
                         className="h-5 w-5 cursor-pointer"
                         onClick={() => addToCart(dish._id)}

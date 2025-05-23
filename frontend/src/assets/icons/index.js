@@ -12,7 +12,6 @@ import ChevronLeftWhiteIcon from "./dark_mode/chevron-left.svg"
 import ChevronRightWhiteIcon from "./dark_mode/chevron-right.svg"
 import MagnifyingGlassWhiteIcon from "./dark_mode/magnifying-glass.svg"
 import DarkMapPinIcon from "./dark_mode/map-pin.svg"
-import PlusDarkIcon from "./dark_mode/plus.svg"
 import ShoppingCartWhiteIcon from "./dark_mode/shopping-cart.svg"
 import TrashWhiteIcon from "./dark_mode/trash.svg"
 import UserWhiteIcon from "./dark_mode/user.svg"
@@ -73,7 +72,6 @@ export {
   FacebookIcon,
   LinkedinIcon,
   CopyrightIcon,
-  PlusDarkIcon,
   PlusIcon,
   Rating5Icon,
   Rating4Icon,

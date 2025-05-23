@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { StoreContext } from "@context"
-import { MinusIcon, PlusDarkIcon, PlusIcon } from "@icons"
+import { MinusIcon, PlusIcon } from "@icons"
 import PropTypes from "prop-types"
 
 import { getRatingImage } from "@/constants"
@@ -21,7 +21,7 @@ const Card = ({ id, title, image, rating, price }) => {
           className="h-[330px] w-[500px] object-cover"
         />
         {cartItemCount == 0 ? (
-          <div className="dark:bg-blue-30 absolute right-5 top-6 cursor-pointer rounded-full bg-white p-1 shadow-md">
+          <div className="bg-background absolute right-5 top-6 cursor-pointer rounded-full p-1 shadow-md">
             <img
               src={PlusIcon}
               alt="Plus Icon"
@@ -31,8 +31,8 @@ const Card = ({ id, title, image, rating, price }) => {
           </div>
         ) : (
           <div className="absolute right-4 top-4">
-            <div className="dark:bg-blue-30 flex items-center justify-center gap-2 rounded-full bg-white p-2">
-              <div className="bg-red-10 cursor-pointer rounded-full p-1">
+            <div className="bg-background flex items-center justify-center gap-2 rounded-full p-2">
+              <div className="bg-red-10 dark:bg-red-90 cursor-pointer rounded-full p-1">
                 <img
                   src={MinusIcon}
                   alt="Minus Icon"
@@ -40,10 +40,10 @@ const Card = ({ id, title, image, rating, price }) => {
                   onClick={() => removeFromCart(id)}
                 />
               </div>
-              <p className="text-blue-90 m-0 p-0">{cartItemCount}</p>
+              <p className="text-foreground m-0 p-0">{cartItemCount}</p>
               <div className="bg-accent cursor-pointer rounded-full p-1">
                 <img
-                  src={PlusDarkIcon}
+                  src={PlusIcon}
                   alt="Plus Icon"
                   className="h-5 w-5 cursor-pointer"
                   onClick={() => addToCart(id)}

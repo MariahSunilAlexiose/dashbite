@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 
 import { Button } from "@cmp"
 import { StoreContext } from "@context"
-import { MinusIcon, PlusDarkIcon, TrashIcon } from "@icons"
+import { MinusIcon, PlusIcon, TrashIcon } from "@icons"
 import PropTypes from "prop-types"
 
 import { TableCell, TableHead, TableRow } from "./Table"
@@ -65,7 +65,7 @@ const CartTable = ({
                           onClick={() => addToCart(dish._id)}
                         >
                           <img
-                            src={PlusDarkIcon}
+                            src={PlusIcon}
                             alt="Plus Icon"
                             className="h-3 w-3"
                           />
