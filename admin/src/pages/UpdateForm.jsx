@@ -22,7 +22,6 @@ import {
   backendURL,
   deliveryType,
   fetchData,
-  getNameByID,
   ingredientList,
   keyMapping,
   onChangeHandler,
@@ -660,7 +659,7 @@ const UpdateForm = () => {
                       )
                       const subtotal =
                         item.quantity * (selectedDish?.price || 0)
-                      getNameByID(item._id, dishes)
+
                       return (
                         <div key={index} className="flex gap-3">
                           <div className="w-full">

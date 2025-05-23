@@ -194,11 +194,6 @@ export const orderStatus = [
   { _id: "Delivered Up", name: "Delivered" },
 ]
 
-export const getNameByID = (id, list) => {
-  const item = list.find((i) => i["_id"] === id)
-  return item ? item.name : ""
-}
-
 export const onChangeHandler = (e, setFormData) => {
   setFormData((prevFormData) => ({
     ...prevFormData,
