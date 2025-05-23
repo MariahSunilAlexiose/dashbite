@@ -84,20 +84,22 @@ const Table = ({ tableName, data, pageID, extraData }) => {
       <table className="w-full items-center justify-center text-sm">
         <thead className="[&_tr]:border-b">
           <tr className="border-b transition-colors">
-            {filteredKeys
-              .map((key) => keyMapping[key] || key)
-              .map((header) => (
+            {filteredKeys.map((key, index) => {
+              const header =
+                keyMapping[key] || key.replace(/\b\w/g, (c) => c.toUpperCase())
+              return (
                 <th
                   key={header}
                   className="h-10 w-[100px] px-4 text-center align-middle font-bold"
                 >
-                  {header === "image" ||
-                  header === "images" ||
-                  header === "profilePic"
+                  {["image", "images", "profilePic"].includes(
+                    filteredKeys[index]
+                  )
                     ? ""
                     : header}
                 </th>
-              ))}
+              )
+            })}
           </tr>
         </thead>
         <tbody className="[&_tr:last-child]:border-0">
