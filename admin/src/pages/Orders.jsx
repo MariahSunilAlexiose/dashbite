@@ -21,18 +21,22 @@ const Orders = () => {
       const cleanedOrdersData = await Promise.all(
         ordersData.map(async (order) => {
           const { address, items, userID, ...rest } = order // eslint-disable-line no-unused-vars
+
+          const user = await fetchEndpoint(`user/${userID}`, {
+            token: import.meta.env.VITE_ADMIN_TOKEN,
+          })
+
+          const username = user?.name || "Unknown User"
+
           return {
-            name:
-              (await fetchEndpoint(`user/${order.userID}`, {
-                token: import.meta.env.VITE_ADMIN_TOKEN,
-              }).name) || "Unknown User",
+            username,
             items: await Promise.all(
-              order.items.map(async (item) => {
+              items.map(async (item) => {
                 const dish = await fetchEndpoint(`dish/${item._id}`)
                 return {
                   ...item,
-                  image: dish.image || "",
-                  name: dish.name || "Unknown",
+                  image: dish?.image || "",
+                  name: dish?.name || "Unknown",
                 }
               })
             ),
