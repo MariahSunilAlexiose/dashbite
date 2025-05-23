@@ -1,5 +1,5 @@
-import React from "react"
-import { Route, Routes } from "react-router-dom"
+import React, { useEffect } from "react"
+import { Route, Routes, useLocation } from "react-router-dom"
 
 import { Navbar, Toasts } from "@cmp"
 import {
@@ -21,9 +21,20 @@ import { Footer } from "@sections"
 
 import ProtectedRoute from "./ProtectedRoute"
 
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }, [pathname])
+
+  return null
+}
+
 function App() {
   return (
     <div>
+      <ScrollToTop />
       <div className="flex flex-col px-6 pb-6 lg:px-20">
         <Navbar />
         <Toasts />
