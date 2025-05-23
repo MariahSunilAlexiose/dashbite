@@ -53,7 +53,7 @@ const Card = ({ id, title, image, rating, price }) => {
           </div>
         )}
         <div
-          className="backdrop-blur-xs absolute bottom-0 left-0 w-full rounded-2xl p-4 text-white"
+          className="backdrop-blur-xs absolute bottom-0 left-0 w-full rounded-2xl bg-white/30 p-4 text-black backdrop-saturate-50"
           onClick={() => navigate(`/dish/${id}`)}
         >
           <div className="flex items-end justify-between gap-2">
