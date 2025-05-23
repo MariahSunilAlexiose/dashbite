@@ -146,6 +146,8 @@ const Restaurant = () => {
         </Button>
       </div>
 
+      <p className="m-0">{restaurant.description}</p>
+
       <div className="flex justify-between">
         <div>
           <h4>About</h4>

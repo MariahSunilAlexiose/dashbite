@@ -74,6 +74,7 @@ const Restaurants = () => {
                   "rating",
                   "email",
                   "website",
+                  "description",
                   "openingHours",
                   "cuisines",
                   "streetAddress",
