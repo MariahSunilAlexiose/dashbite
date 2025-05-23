@@ -322,7 +322,9 @@ const UpdateForm = () => {
       </div>
     ) : (
       <div key={key}>
-        <Label htmlFor={key}>{keyMapping[key] || key}</Label>
+        <Label htmlFor={key}>
+          {keyMapping[key] || key.replace(/\b\w/g, (c) => c.toUpperCase())}
+        </Label>
         <Input
           name={key}
           type="text"

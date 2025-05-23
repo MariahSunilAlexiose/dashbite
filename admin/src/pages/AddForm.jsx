@@ -238,7 +238,9 @@ const AddForm = () => {
     keyComponents[key] ||
     (["price", "rating"].includes(key) ? (
       <div key={key}>
-        <Label htmlFor={key}>{keyMapping[key] || key}</Label>
+        <Label htmlFor={key}>
+          {keyMapping[key] || key.replace(/\b\w/g, (c) => c.toUpperCase())}
+        </Label>
         <Input
           name={key}
           type="number"
@@ -257,7 +259,9 @@ const AddForm = () => {
       </div>
     ) : (
       <div key={key}>
-        <Label htmlFor={key}>{keyMapping[key] || key}</Label>
+        <Label htmlFor={key}>
+          {keyMapping[key] || key.replace(/\b\w/g, (c) => c.toUpperCase())}
+        </Label>
         <Input
           name={key}
           type="text"
