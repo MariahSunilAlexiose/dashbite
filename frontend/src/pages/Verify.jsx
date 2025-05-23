@@ -46,7 +46,7 @@ const Verify = () => {
         details and try again.
       </p>
       <div className="mt-5">
-        <Button size="lg" onClick={() => navigate("/cart")}>
+        <Button variant="primary" size="lg" onClick={() => navigate("/cart")}>
           Try Again
         </Button>
       </div>

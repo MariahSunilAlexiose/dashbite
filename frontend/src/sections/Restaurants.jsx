@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+import { Button } from "@cmp"
 import { StoreContext } from "@context"
 import { StarIcon } from "@icons"
 
@@ -39,13 +40,14 @@ const Restaurants = () => {
                 {activeIndex === index &&
                   restaurant.cuisines &&
                   restaurant.cuisines.map((cuisine) => (
-                    <div
+                    <Button
+                      variant="badge"
+                      size="badge"
                       key={cuisine._id}
                       onClick={() => navigate(`/cuisine/${cuisine.id}`)}
-                      className="bg-accent text-primary w-fit cursor-pointer rounded-full border px-2 text-xs"
                     >
                       {cuisine.name}
-                    </div>
+                    </Button>
                   ))}
                 <div className="flex justify-between">
                   <h2

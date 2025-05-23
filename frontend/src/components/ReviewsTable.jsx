@@ -258,7 +258,9 @@ const ReviewsTable = ({
                   </div>
                 ))}
             <div className="flex gap-5">
-              <Button onClick={() => handleSave()}>Save</Button>
+              <Button variant="primary" onClick={() => handleSave()}>
+                Save
+              </Button>
               <Button
                 variant="destructive"
                 onClick={() => handleDelete(formData)}

@@ -16,7 +16,7 @@ const Header = () => {
           experience, one delicious meal at a time.
         </p>
         <div>
-          <Button>View Menu</Button>
+          <Button variant="primary">View Menu</Button>
         </div>
       </div>
     </div>

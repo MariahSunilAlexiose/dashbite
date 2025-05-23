@@ -39,8 +39,8 @@ const Categories = () => {
       <div className="flex items-center justify-between">
         <h2>Categories</h2>
         <Button
-          size="sm"
           variant="success"
+          size="sm"
           onClick={() =>
             navigate("/add_form", {
               state: {

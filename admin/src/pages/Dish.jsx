@@ -146,6 +146,7 @@ const Dish = () => {
 
         {/* Update Button */}
         <Button
+          variant="primary"
           size="sm"
           onClick={() =>
             navigate("/update_form", {

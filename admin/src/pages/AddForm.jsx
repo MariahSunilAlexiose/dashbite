@@ -746,7 +746,9 @@ const AddForm = () => {
         )}
 
         <div className="flex justify-end">
-          <Button onClick={(e) => handleSubmit(e)}>Add</Button>
+          <Button variant="primary" onClick={(e) => handleSubmit(e)}>
+            Add
+          </Button>
         </div>
       </div>
     </div>

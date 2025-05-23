@@ -175,7 +175,9 @@ const Reviews = ({ reviews, page, pageID }) => {
 
         {/* Add Button */}
         <div className="flex justify-end">
-          <Button onClick={(e) => handleSubmit(e)}>Add Review</Button>
+          <Button variant="badge" onClick={(e) => handleSubmit(e)}>
+            Add Review
+          </Button>
         </div>
       </div>
 

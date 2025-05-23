@@ -167,6 +167,7 @@ const MobileNavBar = ({
             </div>
             {!token && (
               <Button
+                variant="primary"
                 className="rounded-full!"
                 onClick={() => navigate("/login")}
               >
@@ -379,6 +380,7 @@ const Navbar = () => {
           </div>
           {!token && (
             <Button
+              variant="primary"
               onClick={() => navigate("/login")}
               className="rounded-full!"
             >

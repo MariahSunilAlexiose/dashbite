@@ -117,7 +117,9 @@ const Profile = () => {
             </div>
           </div>
           <div className="flex justify-end">
-            <Button onClick={() => setUpdates(user)}>Save Changes</Button>
+            <Button variant="primary" onClick={() => setUpdates(user)}>
+              Save Changes
+            </Button>
           </div>
         </div>
       </div>

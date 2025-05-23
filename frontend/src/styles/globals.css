@@ -39,6 +39,8 @@
   --color-destructive: var(--color-red-20);
 
   --color-border: var(--color-blue-30);
+
+  --color-badge: var(--color-blue-60);
 }
 
 .dark {
@@ -54,6 +56,8 @@
   --color-destructive: var(--color-red-90);
 
   --color-border: var(--color-blue-80);
+
+  --color-badge: var(--color-blue-40);
 }
 
 @layer base {

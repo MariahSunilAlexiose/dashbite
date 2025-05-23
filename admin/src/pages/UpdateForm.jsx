@@ -898,7 +898,9 @@ const UpdateForm = () => {
         )}
 
         <div className="flex justify-end pt-3">
-          <Button onClick={(e) => handleSubmit(e)}>Update</Button>
+          <Button variant="primary" onClick={(e) => handleSubmit(e)}>
+            Update
+          </Button>
         </div>
       </div>
     </div>

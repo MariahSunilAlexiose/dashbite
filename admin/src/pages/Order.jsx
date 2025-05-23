@@ -66,6 +66,7 @@ const Order = () => {
       <div className="flex items-center justify-between">
         <h2>Order</h2>
         <Button
+          variant="primary"
           size="sm"
           onClick={() =>
             navigate("/update_form", {

@@ -101,6 +101,7 @@ const Cuisines = () => {
                 <div className="absolute bottom-0 left-0 flex w-full items-center justify-between p-4">
                   <h1 className="text-2xl font-bold text-white">{link.name}</h1>
                   <Button
+                    variant="primary"
                     size="icon"
                     className="rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                     onClick={() => navigate(`/cuisine/${link._id}`)}

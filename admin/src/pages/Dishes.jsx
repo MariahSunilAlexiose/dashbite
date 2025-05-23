@@ -52,8 +52,8 @@ const Dishes = () => {
       <div className="flex items-center justify-between">
         <h2>Dishes</h2>
         <Button
-          size="sm"
           variant="success"
+          size="sm"
           onClick={() =>
             navigate("/add_form", {
               state: {

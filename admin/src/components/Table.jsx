@@ -218,6 +218,7 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                     tableName !== "restaurant" &&
                     tableName !== "dish" && (
                       <Button
+                        variant="primary"
                         size="icon"
                         onClick={(e) => {
                           e.stopPropagation()

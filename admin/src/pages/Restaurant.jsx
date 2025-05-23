@@ -132,6 +132,7 @@ const Restaurant = () => {
           </div>
         </div>
         <Button
+          variant="primary"
           size="sm"
           onClick={() =>
             navigate("/update_form", {
