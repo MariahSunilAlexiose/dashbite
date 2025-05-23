@@ -2,21 +2,29 @@ import React, { useContext, useState } from "react"
 
 import { Button, Input, Label, TextArea } from "@cmp"
 import { StoreContext } from "@context"
-import { GrayStarIcon, StarIcon, TrashWhiteIcon, UserIcon } from "@icons"
+import {
+  GrayStarIcon,
+  StarIcon,
+  TrashWhiteIcon,
+  UserIcon,
+  UserWhiteIcon,
+} from "@icons"
 import { UploadAreaImg } from "@img"
-import { useToast } from "@providers"
+import { useTheme, useToast } from "@providers"
 import axios from "axios"
 import PropTypes from "prop-types"
 
 import { formatDate, getRatingImage } from "@/constants"
 
 const Reviews = ({ reviews, page, pageID }) => {
+  const { theme } = useTheme()
+  const { addToast } = useToast()
   const { url, token } = useContext(StoreContext)
+
   const [images, setImages] = useState([])
   const [formData, setFormData] = useState({
     [`${page}ID`]: pageID,
   })
-  const { addToast } = useToast()
   const [rating, setRating] = useState(null)
 
   const handleSubmit = async (e) => {
@@ -182,12 +190,14 @@ const Reviews = ({ reviews, page, pageID }) => {
               <div className="relative flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full">
                 <img
                   src={
-                    review.user?.profilePic.startsWith(
-                      "https://ui-avatars.com/api/?name="
-                    )
-                      ? review.user.profilePic
-                      : review.user?.profilePic
-                        ? `${url}/api/${review.user.profilePic}`
+                    review.user?.profilePic
+                      ? review.user.profilePic.startsWith(
+                          "https://ui-avatars.com/api/?name="
+                        )
+                        ? review.user.profilePic
+                        : `${url}/api/${review.user.profilePic}`
+                      : theme === "dark"
+                        ? UserWhiteIcon
                         : UserIcon
                   }
                   alt="User Profile"

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
-import { PencilIcon, UserIcon } from "@icons"
-import { useToast } from "@providers"
+import { PencilIcon, UserIcon, UserWhiteIcon } from "@icons"
+import { useTheme, useToast } from "@providers"
 
 import { Button, Table } from "@/components"
 import { backendImgURL, fetchEndpoint, formatDate } from "@/constants"
@@ -10,6 +10,8 @@ import { backendImgURL, fetchEndpoint, formatDate } from "@/constants"
 const Order = () => {
   const navigate = useNavigate()
   const { orderID } = useParams()
+  const { theme } = useTheme()
+
   const [order, setOrder] = useState({})
   const [user, setUser] = useState({})
   const [shippingAddress, setShippingAddress] = useState({})
@@ -92,10 +94,15 @@ const Order = () => {
           <div className="h-15 w-15 relative flex shrink-0 items-center justify-center overflow-hidden rounded-full">
             <img
               src={
-                user.profilePic &&
-                user.profilePic.startsWith("https://ui-avatars.com/api/?name=")
-                  ? user.profilePic
-                  : `${backendImgURL}/${user.profilePic || UserIcon}`
+                user?.profilePic
+                  ? user.profilePic.startsWith(
+                      "https://ui-avatars.com/api/?name="
+                    )
+                    ? user.profilePic
+                    : `${backendImgURL}/${user.profilePic}`
+                  : theme === "dark"
+                    ? UserWhiteIcon
+                    : UserIcon
               }
               alt="User Profile"
               className="aspect-square h-full w-full object-cover"

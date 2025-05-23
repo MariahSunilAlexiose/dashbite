@@ -12,6 +12,7 @@ import {
   ShoppingCartBlackIcon,
   ShoppingCartWhiteIcon,
   UserIcon,
+  UserWhiteIcon,
   XMarkIcon,
   XMarkWhiteIcon,
 } from "@icons"
@@ -83,12 +84,15 @@ const MobileNavBar = ({
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
                   <img
                     src={
-                      user.profilePic &&
-                      user.profilePic.startsWith(
-                        "https://ui-avatars.com/api/?name="
-                      )
-                        ? user.profilePic
-                        : `${url}/images/${user.profilePic || UserIcon}`
+                      user?.profilePic
+                        ? user.profilePic.startsWith(
+                            "https://ui-avatars.com/api/?name="
+                          )
+                          ? user.profilePic
+                          : `${url}/images/${user.profilePic}`
+                        : theme === "dark"
+                          ? UserWhiteIcon
+                          : UserIcon
                     }
                     alt="User Profile"
                     className="aspect-square h-full w-full object-cover"
@@ -310,12 +314,15 @@ const Navbar = () => {
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
                     <img
                       src={
-                        user.profilePic &&
-                        user.profilePic.startsWith(
-                          "https://ui-avatars.com/api/?name="
-                        )
-                          ? user.profilePic
-                          : `${url}/images/${user.profilePic || UserIcon}`
+                        user?.profilePic
+                          ? user.profilePic.startsWith(
+                              "https://ui-avatars.com/api/?name="
+                            )
+                            ? user.profilePic
+                            : `${url}/images/${user.profilePic}`
+                          : theme === "dark"
+                            ? UserWhiteIcon
+                            : UserIcon
                       }
                       alt="User Profile"
                       className="aspect-square h-full w-full object-cover"

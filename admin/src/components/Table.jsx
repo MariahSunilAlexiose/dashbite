@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button } from "@cmp"
-import { PencilIcon, TrashIcon, UserIcon } from "@icons"
-import { useToast } from "@providers"
+import { PencilIcon, TrashIcon, UserIcon, UserWhiteIcon } from "@icons"
+import { useTheme, useToast } from "@providers"
 import axios from "axios"
 import PropTypes from "prop-types"
 
@@ -41,6 +41,8 @@ const handleDelete = async ({ addToast, ID, ID2, tableName }) => {
 const Table = ({ tableName, data, pageID, extraData }) => {
   const { addToast } = useToast()
   const navigate = useNavigate()
+  const { theme } = useTheme()
+
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(5)
   const lastItemIndex = currentPage * itemsPerPage
@@ -147,11 +149,15 @@ const Table = ({ tableName, data, pageID, extraData }) => {
                     <div className="flex items-center justify-center">
                       <img
                         src={
-                          row[header].startsWith(
-                            "https://ui-avatars.com/api/?name="
-                          )
-                            ? row[header]
-                            : `${backendImgURL}/${row[header] || UserIcon}`
+                          row[header]
+                            ? row[header].startsWith(
+                                "https://ui-avatars.com/api/?name="
+                              )
+                              ? row[header]
+                              : `${backendImgURL}/${row[header]}`
+                            : theme === "dark"
+                              ? UserWhiteIcon
+                              : UserIcon
                         }
                         alt="User Profile"
                         className="h-15 w-15 aspect-square rounded-full object-cover"

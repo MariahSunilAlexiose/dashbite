@@ -2,16 +2,18 @@ import React, { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { StoreContext } from "@context"
-import { CameraIcon, UserIcon } from "@icons"
-import { useToast } from "@providers"
+import { CameraIcon, UserIcon, UserWhiteIcon } from "@icons"
+import { useTheme, useToast } from "@providers"
 import axios from "axios"
 
 import { fetchEndpoint, logout } from "@/constants"
 
 const AccountCard = () => {
-  const { addToast } = useToast()
   const navigate = useNavigate()
+  const { addToast } = useToast()
+  const { theme } = useTheme()
   const { setToken, url, token } = useContext(StoreContext)
+
   const isActive = (path) => location.pathname === path
   const [user, setUser] = useState({})
 
@@ -59,10 +61,15 @@ const AccountCard = () => {
           <div className="h-15 w-15 relative flex shrink-0 items-center justify-center overflow-hidden rounded-full">
             <img
               src={
-                user.profilePic &&
-                user.profilePic.startsWith("https://ui-avatars.com/api/?name=")
-                  ? user.profilePic
-                  : `${url}/images/${user.profilePic || UserIcon}`
+                user?.profilePic
+                  ? user.profilePic.startsWith(
+                      "https://ui-avatars.com/api/?name="
+                    )
+                    ? user.profilePic
+                    : `${url}/images/${user.profilePic}`
+                  : theme === "dark"
+                    ? UserWhiteIcon
+                    : UserIcon
               }
               alt="User Profile"
               className="aspect-square h-full w-full object-cover"

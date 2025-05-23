@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-import { UserIcon } from "@icons"
-import { useToast } from "@providers"
+import { UserIcon, UserWhiteIcon } from "@icons"
+import { useTheme, useToast } from "@providers"
 
 import { Table } from "@/components"
 import { backendImgURL, fetchEndpoint } from "@/constants"
 
 const User = () => {
   const { userID } = useParams()
+  const { addToast } = useToast()
+  const { theme } = useTheme()
+
   const [orders, setOrders] = useState({})
   const [user, setUser] = useState({})
   const [shippingAddress, setShippingAddress] = useState({})
   const [billingAddress, setBillingAddress] = useState({})
-  const { addToast } = useToast()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,10 +76,15 @@ const User = () => {
           <div className="h-15 w-15 relative flex shrink-0 items-center justify-center overflow-hidden rounded-full">
             <img
               src={
-                user.profilePic &&
-                user.profilePic.startsWith("https://ui-avatars.com/api/?name=")
-                  ? user.profilePic
-                  : `${backendImgURL}/${user.profilePic || UserIcon}`
+                user?.profilePic
+                  ? user.profilePic.startsWith(
+                      "https://ui-avatars.com/api/?name="
+                    )
+                    ? user.profilePic
+                    : `${backendImgURL}/${user.profilePic}`
+                  : theme === "dark"
+                    ? UserWhiteIcon
+                    : UserIcon
               }
               alt="User Profile"
               className="aspect-square h-full w-full object-cover"
