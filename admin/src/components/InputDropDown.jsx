@@ -69,6 +69,7 @@ const InputDropDown = ({
                     option.name &&
                     option.name.toLowerCase().includes(searchTerm.toLowerCase())
                 )
+                .sort((a, b) => a.name.localeCompare(b.name))
                 .map((option, index) => (
                   <div
                     key={index}

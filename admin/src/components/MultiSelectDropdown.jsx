@@ -113,21 +113,23 @@ const MultiSelectDropDown = ({ options, onChange, defaultValue = [] }) => {
           <div className="max-h-[300px] overflow-y-auto overflow-x-hidden">
             <div className="overflow-hidden p-1">
               {options && options.length ? (
-                options.map((option) => (
-                  <div
-                    key={option._id}
-                    className={`hover:bg-border relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none ${
-                      selectedOptions.some(
-                        (selected) => selected._id === option._id
-                      )
-                        ? "bg-blue-40 text-white"
-                        : ""
-                    }`}
-                    onClick={() => handleSelect(option)}
-                  >
-                    {option.name}
-                  </div>
-                ))
+                options
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((option) => (
+                    <div
+                      key={option._id}
+                      className={`hover:bg-border relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none ${
+                        selectedOptions.some(
+                          (selected) => selected._id === option._id
+                        )
+                          ? "bg-blue-40 text-white"
+                          : ""
+                      }`}
+                      onClick={() => handleSelect(option)}
+                    >
+                      {option.name}
+                    </div>
+                  ))
               ) : (
                 <div className="py-6 text-center text-sm">
                   No options found.

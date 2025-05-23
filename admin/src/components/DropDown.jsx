@@ -58,19 +58,21 @@ const DropDown = ({ options, onChange, defaultValue, label }) => {
           <div className="max-h-[300px] overflow-y-auto overflow-x-hidden">
             <div className="overflow-hidden p-1">
               {options.length > 0 ? (
-                options.map((option, index) => (
-                  <div
-                    key={index}
-                    className="hover:bg-accent/40 relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none disabled:pointer-events-none disabled:opacity-50"
-                    onClick={() => {
-                      setOpen(false)
-                      onChange(option._id)
-                      setValue(option.name)
-                    }}
-                  >
-                    {option.name}
-                  </div>
-                ))
+                [...options]
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((option, index) => (
+                    <div
+                      key={index}
+                      className="hover:bg-accent/40 relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none disabled:pointer-events-none disabled:opacity-50"
+                      onClick={() => {
+                        setOpen(false)
+                        onChange(option._id)
+                        setValue(option.name)
+                      }}
+                    >
+                      {option.name}
+                    </div>
+                  ))
               ) : (
                 <div className="text-muted py-6 text-center text-sm">
                   No options found...

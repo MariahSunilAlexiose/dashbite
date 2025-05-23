@@ -64,6 +64,7 @@ const InputDropDown = ({
           {open && options && (
             <div className="overflow-hidden p-1">
               {options
+                .sort((a, b) => a.name.localeCompare(b.name))
                 .filter(
                   (option) =>
                     option.name &&

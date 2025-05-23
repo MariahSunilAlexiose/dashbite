@@ -100,19 +100,21 @@ const InputDropdownWithAdd = ({
         <div className="max-h-[300px] overflow-y-auto overflow-x-hidden">
           {open && options && (
             <div className="overflow-hidden p-1">
-              {options.map((option) => (
-                <div
-                  key={option}
-                  className={`hover:bg-border relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none ${
-                    selectedOptions.includes(option)
-                      ? "bg-blue-40 text-white"
-                      : ""
-                  }`}
-                  onClick={() => handleSelectOption(option)}
-                >
-                  {option}
-                </div>
-              ))}
+              {options
+                .sort((a, b) => a.localeCompare(b))
+                .map((option) => (
+                  <div
+                    key={option}
+                    className={`hover:bg-border relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none ${
+                      selectedOptions.includes(option)
+                        ? "bg-blue-40 text-white"
+                        : ""
+                    }`}
+                    onClick={() => handleSelectOption(option)}
+                  >
+                    {option}
+                  </div>
+                ))}
               {options.length === 0 && (
                 <div className="py-6 text-center text-sm">
                   No options found. Press **Enter** to add.
