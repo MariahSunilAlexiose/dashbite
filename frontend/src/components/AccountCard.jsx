@@ -75,7 +75,7 @@ const AccountCard = () => {
               className="aspect-square h-full w-full object-cover"
             />
           </div>
-          <div className="bg-gray-20 hover:bg-gray-20 left-13 absolute top-10 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full">
+          <div className="bg-gray-20 hover:bg-gray-20 absolute right-10 top-10 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full">
             <input
               id="profilePictureUpload"
               type="file"
@@ -108,7 +108,7 @@ const AccountCard = () => {
         Address
       </p>
       <p
-        className={`mt-3 cursor-pointer ${isActive("/reviews") ? "text-primary underline-offset-5 underline" : "hover:text-primary"}`}
+        className={`mt-3 cursor-pointer ${isActive("/myreviews") ? "text-primary underline-offset-5 underline" : "hover:text-primary"}`}
         onClick={() => navigate("/myreviews")}
       >
         My Reviews
