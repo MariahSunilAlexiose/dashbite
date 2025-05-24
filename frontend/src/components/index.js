@@ -20,12 +20,14 @@ import RadioInput from "./RadioInput"
 import RestaurantTabs from "./RestaurantTabs"
 import ReviewsTable from "./ReviewsTable"
 import Separator from "./Separator"
+import Skeleton from "./Skeleton"
 import TextArea from "./TextArea"
 import ThemeToggle from "./ThemeToggle"
 import Toast from "./Toast"
 import Toasts from "./Toasts"
 
 export {
+  Skeleton,
   InputDropDown,
   ReviewsTable,
   TextArea,

@@ -8,8 +8,9 @@ import PropTypes from "prop-types"
 import { getRatingImage } from "@/constants"
 
 const Card = ({ id, title, image, rating, price }) => {
-  const navigate = useNavigate()
   const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
+  const navigate = useNavigate()
+
   const cartItemCount =
     cartItems && cartItems[id] !== undefined ? cartItems[id] : 0
   return (
