@@ -42,7 +42,7 @@ const Signup = () => {
     <div className="flex items-center justify-center">
       <div className="relative m-6 flex flex-col space-y-8 rounded-2xl shadow-2xl md:flex-row md:space-y-0">
         <div className="bg-accent flex flex-col justify-center rounded-l-2xl p-8 md:p-14">
-          <h2 className="text-5xl font-bold">Welcome</h2>
+          <h2 className="text-5xl font-bold">Getting Started</h2>
           <p className="text-muted mb-2 mt-0 font-light">
             Please enter your details
           </p>
@@ -74,9 +74,7 @@ const Signup = () => {
             />
           </div>
           <div className="flex w-full justify-between py-4">
-            <div className="mr-24">
-              <Checkbox label="I agree to the Terms & Conditions" />
-            </div>
+            <Checkbox label="I agree to the Terms & Conditions" />
           </div>
           <Button
             variant="ghost"

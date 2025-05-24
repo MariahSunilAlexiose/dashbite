@@ -33,6 +33,7 @@ const Cart = () => {
                 placeholder="Coupon Code"
                 icon={TicketIcon}
                 iconName="Ticket Icon"
+                className="pl-10"
               />
             </div>
           </div>
