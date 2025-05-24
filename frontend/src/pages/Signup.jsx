@@ -8,19 +8,23 @@ import { useToast } from "@providers"
 import axios from "axios"
 
 const Signup = () => {
+  const { url, setToken } = useContext(StoreContext)
   const { addToast } = useToast()
   const navigate = useNavigate()
-  const { url, setToken } = useContext(StoreContext)
+
+  const [checked, setChecked] = useState(false)
   const [data, setData] = useState({
     name: "",
     email: "",
     password: "",
   })
+
   const onChangeHandler = (e) => {
     const name = e.target.name
     const value = e.target.value
     setData((data) => ({ ...data, [name]: value }))
   }
+
   const onSignup = async (e) => {
     e.preventDefault()
     try {
@@ -74,12 +78,24 @@ const Signup = () => {
             />
           </div>
           <div className="flex w-full justify-between py-4">
-            <Checkbox label="I agree to the Terms & Conditions" />
+            <Checkbox
+              label="I agree to the Terms & Conditions"
+              checked={checked}
+              setChecked={setChecked}
+            />
           </div>
           <Button
             variant="ghost"
             className="bg-foreground hover:bg-blue-80 text-background hover:text-background! dark:hover:bg-blue-30"
-            onClick={(e) => onSignup(e)}
+            onClick={(e) => {
+              if (!checked)
+                return addToast(
+                  "error",
+                  "Error",
+                  "Please agree to the Terms & Conditions!"
+                )
+              onSignup(e)
+            }}
           >
             Sign up
           </Button>

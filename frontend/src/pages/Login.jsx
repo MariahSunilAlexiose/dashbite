@@ -8,18 +8,22 @@ import { useToast } from "@providers"
 import axios from "axios"
 
 const Login = () => {
+  const { url, setToken } = useContext(StoreContext)
   const { addToast } = useToast()
   const navigate = useNavigate()
-  const { url, setToken } = useContext(StoreContext)
+
+  const [checked, setChecked] = useState(false)
   const [data, setData] = useState({
     email: "",
     password: "",
   })
+
   const onChangeHandler = (e) => {
     const name = e.target.name
     const value = e.target.value
     setData((data) => ({ ...data, [name]: value }))
   }
+
   const onLogin = async (e) => {
     e.preventDefault()
     try {
@@ -39,6 +43,7 @@ const Login = () => {
       addToast("error", "Error", "Failed to login!")
     }
   }
+
   return (
     <div className="flex items-center justify-center">
       <div className="relative m-6 flex flex-col space-y-8 rounded-2xl shadow-2xl md:flex-row md:space-y-0">
@@ -69,7 +74,11 @@ const Login = () => {
           </div>
           <div className="flex w-full justify-between py-4">
             <div className="mr-24">
-              <Checkbox label="Remember me" />
+              <Checkbox
+                label="Remember me"
+                checked={checked}
+                setChecked={setChecked}
+              />
             </div>
             <span className="cursor-pointer font-bold">Forgot password?</span>
           </div>

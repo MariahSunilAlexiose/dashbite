@@ -1,11 +1,10 @@
-import React, { useState } from "react"
+import React from "react"
 
 import PropTypes from "prop-types"
 
 import Label from "./Label"
 
-const Checkbox = ({ id, label }) => {
-  const [checked, setChecked] = useState(false)
+const Checkbox = ({ id, label, checked, setChecked }) => {
   return (
     <div className="flex items-center space-x-3" id={id}>
       <input
@@ -28,6 +27,8 @@ const Checkbox = ({ id, label }) => {
 Checkbox.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  setChecked: PropTypes.func.isRequired,
 }
 
 export default Checkbox
