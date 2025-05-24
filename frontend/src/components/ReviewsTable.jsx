@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react"
 
 import { Button, Input, InputDropDown, Label, Modal, TextArea } from "@cmp"
-import { StoreContext } from "@context"
+import { dark, StoreContext, ThemeContext } from "@context"
 import { TrashWhiteIcon } from "@icons"
-import { UploadAreaImg } from "@img"
+import { UploadAreaDarkImg, UploadAreaImg } from "@img"
 import PropTypes from "prop-types"
 
 import { fetchEndpoint, formatDate } from "@/constants"
@@ -20,6 +20,7 @@ const ReviewsTable = ({
   handleSave,
   handleDelete,
 }) => {
+  const { theme } = useContext(ThemeContext)
   const { url } = useContext(StoreContext)
   const [images, setImages] = useState([])
   const [restaurants, setRestaurants] = useState([])
@@ -163,7 +164,11 @@ const ReviewsTable = ({
                             ))
                           ) : (
                             <img
-                              src={UploadAreaImg}
+                              src={
+                                theme === dark
+                                  ? UploadAreaDarkImg
+                                  : UploadAreaImg
+                              }
                               alt="Upload Area Placeholder"
                               className="w-32"
                             />

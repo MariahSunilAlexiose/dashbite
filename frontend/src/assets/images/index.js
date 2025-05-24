@@ -16,6 +16,7 @@ import ChocolateCake from "./chocolate_cake.jpg"
 import Coffee from "./coffee.jpg"
 import HeaderBlack from "./dark_mode/header.jpg"
 import LogoWhite from "./dark_mode/logo.png"
+import UploadAreaDarkImg from "./dark_mode/upload_area.png"
 import Desserts from "./desserts.jpg"
 import FishChips from "./fish_and_chips.jpg"
 import FrenchToast from "./french_toast.jpg"
@@ -56,6 +57,7 @@ import VeggiePizza from "./veggie_pizza.jpg"
 import Waffles from "./waffles.jpg"
 
 export {
+  UploadAreaDarkImg,
   UploadAreaImg,
   LoginSignup,
   PlayStore,

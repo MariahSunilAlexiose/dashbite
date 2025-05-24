@@ -2,21 +2,21 @@ import React, { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { ProgressBar, RestaurantTabs, Separator } from "@cmp"
-import { dark, StoreContext } from "@context"
+import { dark, StoreContext, ThemeContext } from "@context"
 import {
   ChevronRightIcon,
   ChevronRightWhiteIcon,
-  DarkMapPinIcon,
   MapPinIcon,
+  MapPinWhiteIcon,
   StarIcon,
 } from "@icons"
-import { useTheme, useToast } from "@providers"
+import { useToast } from "@providers"
 
 import { fetchEndpoint, getRatingImage } from "@/constants"
 
 const Restaurant = () => {
   const { restaurantID } = useParams()
-  const { theme } = useTheme()
+  const { theme } = useContext(ThemeContext)
   const { url } = useContext(StoreContext)
   const { addToast } = useToast()
   const [restaurant, setRestaurant] = useState({})
@@ -106,7 +106,7 @@ const Restaurant = () => {
           {/* location */}
           <div className="flex items-center gap-1">
             <img
-              src={theme === dark ? DarkMapPinIcon : MapPinIcon}
+              src={theme === dark ? MapPinWhiteIcon : MapPinIcon}
               alt="Map Pin Icon"
               className="h-4 w-4"
             />

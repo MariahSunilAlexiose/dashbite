@@ -11,7 +11,7 @@ import Bars3WhiteIcon from "./dark_mode/bars-3.svg"
 import ChevronLeftWhiteIcon from "./dark_mode/chevron-left.svg"
 import ChevronRightWhiteIcon from "./dark_mode/chevron-right.svg"
 import MagnifyingGlassWhiteIcon from "./dark_mode/magnifying-glass.svg"
-import DarkMapPinIcon from "./dark_mode/map-pin.svg"
+import MapPinWhiteIcon from "./dark_mode/map-pin.svg"
 import ShoppingCartWhiteIcon from "./dark_mode/shopping-cart.svg"
 import TrashWhiteIcon from "./dark_mode/trash.svg"
 import UserWhiteIcon from "./dark_mode/user.svg"
@@ -49,7 +49,7 @@ export {
   TrashWhiteIcon,
   GrayStarIcon,
   MapPinIcon,
-  DarkMapPinIcon,
+  MapPinWhiteIcon,
   ChevronLeftWhiteIcon,
   ChevronRightWhiteIcon,
   StarIcon,

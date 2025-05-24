@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react"
 
 import { Button, Input, Label, TextArea } from "@cmp"
-import { StoreContext } from "@context"
+import { dark, StoreContext, ThemeContext } from "@context"
 import {
   GrayStarIcon,
   StarIcon,
@@ -9,17 +9,17 @@ import {
   UserIcon,
   UserWhiteIcon,
 } from "@icons"
-import { UploadAreaImg } from "@img"
-import { useTheme, useToast } from "@providers"
+import { UploadAreaDarkImg, UploadAreaImg } from "@img"
+import { useToast } from "@providers"
 import axios from "axios"
 import PropTypes from "prop-types"
 
 import { formatDate, getRatingImage } from "@/constants"
 
 const Reviews = ({ reviews, page, pageID }) => {
-  const { theme } = useTheme()
-  const { addToast } = useToast()
+  const { theme } = useContext(ThemeContext)
   const { url, token } = useContext(StoreContext)
+  const { addToast } = useToast()
 
   const [images, setImages] = useState([])
   const [formData, setFormData] = useState({
@@ -149,7 +149,7 @@ const Reviews = ({ reviews, page, pageID }) => {
               ))
             ) : (
               <img
-                src={UploadAreaImg}
+                src={theme === dark ? UploadAreaDarkImg : UploadAreaImg}
                 alt="Upload Area Placeholder"
                 className="w-32"
               />
@@ -175,7 +175,7 @@ const Reviews = ({ reviews, page, pageID }) => {
 
         {/* Add Button */}
         <div className="flex justify-end">
-          <Button variant="badge" onClick={(e) => handleSubmit(e)}>
+          <Button variant="primary" onClick={(e) => handleSubmit(e)}>
             Add Review
           </Button>
         </div>
