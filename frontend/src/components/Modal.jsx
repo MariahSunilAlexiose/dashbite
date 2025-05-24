@@ -1,14 +1,16 @@
-import React from "react"
+import React, { useContext } from "react"
 
-import { XMarkIcon } from "@icons"
+import { dark, ThemeContext } from "@context"
+import { XMarkIcon, XMarkWhiteIcon } from "@icons"
 import PropTypes from "prop-types"
 
 import { Button } from "."
 
 const Modal = ({ title, children, onClose }) => {
+  const { theme } = useContext(ThemeContext)
   return (
-    <div className="z-1 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative w-96 rounded-lg bg-white p-6">
+    <div className="z-2 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-background relative w-96 rounded-lg p-6">
         <div className="flex justify-between">
           <h2 className="mb-4 text-lg font-bold">{title}</h2>
           <Button
@@ -19,9 +21,9 @@ const Modal = ({ title, children, onClose }) => {
           >
             <span className="sr-only">Dismiss</span>
             <img
-              src={XMarkIcon}
+              src={theme === dark ? XMarkWhiteIcon : XMarkIcon}
               alt="Close Icon"
-              className="h-5 min-h-5 w-5 min-w-5 text-white"
+              className="h-5 min-h-5 w-5 min-w-5"
               aria-hidden="true"
             />
           </Button>
