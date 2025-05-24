@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button, ThemeToggle } from "@cmp"
@@ -202,6 +202,7 @@ const Navbar = () => {
   const navigate = useNavigate()
   const { url, cartItems, token, setToken } = useContext(StoreContext)
   const { theme } = useContext(ThemeContext)
+  const dropdownRef = useRef(null)
 
   const [mobileMenu, setMobileMenu] = useState(false)
   const [activeLink, setActiveLink] = useState("")
@@ -221,6 +222,17 @@ const Navbar = () => {
   useEffect(() => {
     fetchUser()
   }, [token])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setPopover(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   return (
     <header>
@@ -338,7 +350,10 @@ const Navbar = () => {
                   />
                 </div>
                 {popover && (
-                  <div className="bg-background absolute -left-8 top-full z-10 mt-3 max-w-md overflow-hidden rounded-3xl shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in">
+                  <div
+                    ref={dropdownRef}
+                    className="bg-background absolute -left-8 top-full z-10 mt-3 max-w-md overflow-hidden rounded-3xl shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+                  >
                     <div className="p-4">
                       {popoverItems.map((item) => (
                         <div
