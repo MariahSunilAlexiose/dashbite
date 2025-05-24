@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
 import { Separator } from "@cmp"
-import { dark, StoreContext } from "@context"
+import { dark, StoreContext, ThemeContext } from "@context"
 import {
   ChevronRightIcon,
   ChevronRightWhiteIcon,
@@ -11,7 +11,7 @@ import {
   StarIcon,
   TagIcon,
 } from "@icons"
-import { useTheme, useToast } from "@providers"
+import { useToast } from "@providers"
 import { Reviews } from "@sections"
 
 import { fetchEndpoint } from "@/constants"
@@ -20,7 +20,7 @@ const Dish = () => {
   const { dishID } = useParams()
   const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
   const navigate = useNavigate()
-  const { theme } = useTheme()
+  const { theme } = useContext(ThemeContext)
   const { addToast } = useToast()
   const [dish, setDish] = useState({})
   const [reviews, setReviews] = useState([])

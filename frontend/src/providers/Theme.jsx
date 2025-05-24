@@ -6,45 +6,32 @@ import PropTypes from "prop-types"
 export function useTheme() {
   const [theme, setTheme] = useState(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("theme") === "dark" ? dark : light
+      return localStorage.getItem("theme") || light
     }
     return light
   })
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === dark ? light : dark))
-  }
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === dark)
+    document.documentElement.setAttribute("data-theme", theme)
+  }, [theme])
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+
     const setSystemTheme = () => {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? dark
-        : light
+      const systemTheme = mediaQuery.matches ? dark : light
       setTheme(systemTheme)
+      localStorage.setItem("theme", systemTheme)
     }
 
-    setSystemTheme() // Set theme based on system preference on initial load
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    setSystemTheme()
     mediaQuery.addEventListener("change", setSystemTheme)
 
-    // Cleanup event listener on component unmount
     return () => mediaQuery.removeEventListener("change", setSystemTheme)
   }, [])
 
-  useEffect(() => {
-    if (theme === dark) {
-      document.documentElement.classList.add("dark")
-      document.documentElement.setAttribute("data-theme", "dark")
-      localStorage.setItem("theme", dark)
-    } else {
-      document.documentElement.classList.remove("dark")
-      document.documentElement.setAttribute("data-theme", "light")
-      localStorage.setItem("theme", light)
-    }
-  }, [theme])
-
-  return { theme, setTheme, toggleTheme }
+  return { theme, setTheme }
 }
 
 ThemeProvider.propTypes = {
@@ -52,10 +39,16 @@ ThemeProvider.propTypes = {
 }
 
 export function ThemeProvider({ children }) {
-  const { theme, setTheme, toggleTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
+
+  const toggleTheme = () => {
+    const newTheme = theme === dark ? light : dark
+    setTheme(newTheme)
+    localStorage.setItem("theme", newTheme)
+  }
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   )

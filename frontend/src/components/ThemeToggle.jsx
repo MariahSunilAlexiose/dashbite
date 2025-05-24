@@ -1,10 +1,10 @@
-import React from "react"
+import React, { useContext } from "react"
 
-import { dark } from "@context"
+import { dark, ThemeContext } from "@context"
 import { MoonIcon, SunIcon } from "@icons"
-import PropTypes from "prop-types"
 
-const ThemeToggle = ({ theme, toggleTheme }) => {
+const ThemeToggle = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext)
   return (
     <div
       onClick={toggleTheme}
@@ -19,11 +19,6 @@ const ThemeToggle = ({ theme, toggleTheme }) => {
       />
     </div>
   )
-}
-
-ThemeToggle.propTypes = {
-  theme: PropTypes.string.isRequired,
-  toggleTheme: PropTypes.func.isRequired,
 }
 
 export default ThemeToggle

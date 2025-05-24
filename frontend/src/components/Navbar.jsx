@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button, ThemeToggle } from "@cmp"
-import { dark, light, StoreContext } from "@context"
+import { dark, light, StoreContext, ThemeContext } from "@context"
 import {
   Bars3Icon,
   Bars3WhiteIcon,
@@ -17,7 +17,6 @@ import {
   XMarkWhiteIcon,
 } from "@icons"
 import { LogoBlue, LogoWhite } from "@img"
-import { useTheme } from "@providers"
 import PropTypes from "prop-types"
 
 import { fetchEndpoint, logout, navbarLinks, popoverItems } from "@/constants"
@@ -202,7 +201,7 @@ MobileNavBar.propTypes = {
 const Navbar = () => {
   const navigate = useNavigate()
   const { url, cartItems, token, setToken } = useContext(StoreContext)
-  const { theme, toggleTheme } = useTheme()
+  const { theme } = useContext(ThemeContext)
 
   const [mobileMenu, setMobileMenu] = useState(false)
   const [activeLink, setActiveLink] = useState("")
@@ -387,7 +386,7 @@ const Navbar = () => {
               Login
             </Button>
           )}
-          <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+          <ThemeToggle />
         </div>
       </nav>
       {mobileMenu && (

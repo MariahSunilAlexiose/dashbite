@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { StoreContext } from "@context"
+import { StoreContext, ThemeContext } from "@context"
 import { CameraIcon, UserIcon, UserWhiteIcon } from "@icons"
-import { useTheme, useToast } from "@providers"
+import { useToast } from "@providers"
 import axios from "axios"
 
 import { fetchEndpoint, logout } from "@/constants"
@@ -11,7 +11,7 @@ import { fetchEndpoint, logout } from "@/constants"
 const AccountCard = () => {
   const navigate = useNavigate()
   const { addToast } = useToast()
-  const { theme } = useTheme()
+  const { theme } = useContext(ThemeContext)
   const { setToken, url, token } = useContext(StoreContext)
 
   const isActive = (path) => location.pathname === path
