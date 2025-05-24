@@ -6,8 +6,7 @@ const ButtonVariants = {
   variant: {
     default: "bg-muted text-foreground shadow-sm hover:bg-muted/80",
     primary: "bg-primary text-white shadow hover:bg-primary/85",
-    destructive:
-      "bg-destructive text-background shadow-sm hover:bg-destructive/85",
+    destructive: "bg-destructive text-white shadow-sm hover:bg-destructive/85",
     outline:
       "border rounded border-muted bg-background shadow-sm hover:bg-accent hover:text-foreground",
     accent: "bg-accent text-foreground shadow-sm hover:bg-accent/85",
