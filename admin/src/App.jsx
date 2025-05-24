@@ -26,6 +26,7 @@ function App() {
       <Sidebar />
       <div className="flex-1 px-5 pt-6 lg:px-20">
         <Routes>
+          <Route path="/" element={<Categories />} />
           <Route path="/dishes" element={<Dishes />} />
           <Route path="/dishes/:dishID" element={<Dish />} />
           <Route path="/orders" element={<Orders />} />

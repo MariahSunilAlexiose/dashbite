@@ -52,7 +52,7 @@ const items = [
     iconDark: DinnerWhiteIcon,
     iconName: "Utensils Crossed Icon",
     text: "Dishes",
-    alert: true,
+    // alert: true,
     link: "/dishes",
   },
   {
@@ -88,9 +88,10 @@ export default function Sidebar() {
 
   useEffect(() => {
     // Update activeIndex when URL changes
-    const index = items.findIndex((item) =>
+    let index = items.findIndex((item) =>
       location.pathname.startsWith(item.link)
     )
+    if (location.pathname === "/") index = 0
     setActiveIndex(index)
   }, [location.pathname, items])
 
