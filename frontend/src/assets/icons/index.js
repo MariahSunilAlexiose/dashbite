@@ -13,6 +13,7 @@ import ChevronRightWhiteIcon from "./dark_mode/chevron-right.svg"
 import MagnifyingGlassWhiteIcon from "./dark_mode/magnifying-glass.svg"
 import MapPinWhiteIcon from "./dark_mode/map-pin.svg"
 import ShoppingCartWhiteIcon from "./dark_mode/shopping-cart.svg"
+import TagWhiteIcon from "./dark_mode/tag.svg"
 import TrashWhiteIcon from "./dark_mode/trash.svg"
 import UserWhiteIcon from "./dark_mode/user.svg"
 import XMarkWhiteIcon from "./dark_mode/x-mark.svg"
@@ -44,6 +45,7 @@ import UserIcon from "./user.svg"
 import XMarkIcon from "./x-mark.svg"
 
 export {
+  TagWhiteIcon,
   UserWhiteIcon,
   ChevronUpDownIcon,
   TrashWhiteIcon,

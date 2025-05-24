@@ -10,6 +10,7 @@ import {
   PlusIcon,
   StarIcon,
   TagIcon,
+  TagWhiteIcon,
 } from "@icons"
 import { useToast } from "@providers"
 import { Reviews } from "@sections"
@@ -19,9 +20,10 @@ import { fetchEndpoint } from "@/constants"
 const Dish = () => {
   const { dishID } = useParams()
   const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext)
-  const navigate = useNavigate()
   const { theme } = useContext(ThemeContext)
+  const navigate = useNavigate()
   const { addToast } = useToast()
+
   const [dish, setDish] = useState({})
   const [reviews, setReviews] = useState([])
   const cartItemCount =
@@ -100,7 +102,11 @@ const Dish = () => {
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-1">
-                <img src={TagIcon} alt="Tag Icon" className="h-4 w-4" />
+                <img
+                  src={theme === dark ? TagWhiteIcon : TagIcon}
+                  alt="Tag Icon"
+                  className="h-4 w-4"
+                />
                 <p className="m-0 text-sm">{dish.category?.name}</p>
               </div>
               <div className="flex gap-10">
