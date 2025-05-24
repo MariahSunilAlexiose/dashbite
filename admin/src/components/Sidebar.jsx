@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { ThemeToggle } from "@cmp"
-import { dark, SidebarContext } from "@context"
+import { dark, SidebarContext, ThemeContext } from "@context"
 import {
   ChevronFirstIcon,
   ChevronFirstWhiteIcon,
@@ -23,7 +23,6 @@ import {
   UtensilsCrossedIcon,
   UtensilsCrossedWhiteIcon,
 } from "@icons"
-import { useTheme } from "@providers"
 import PropTypes from "prop-types"
 
 const items = [
@@ -74,7 +73,7 @@ const items = [
 
 export default function Sidebar() {
   const navigate = useNavigate()
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme } = useContext(ThemeContext)
   const [expanded, setExpanded] = useState(false)
   const [activeIndex, setActiveIndex] = useState(null)
 

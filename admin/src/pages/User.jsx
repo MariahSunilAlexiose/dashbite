@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
+import { ThemeContext } from "@context"
 import { UserIcon, UserWhiteIcon } from "@icons"
-import { useTheme, useToast } from "@providers"
+import { useToast } from "@providers"
 
 import { Table } from "@/components"
 import { backendImgURL, fetchEndpoint } from "@/constants"
@@ -10,7 +11,7 @@ import { backendImgURL, fetchEndpoint } from "@/constants"
 const User = () => {
   const { userID } = useParams()
   const { addToast } = useToast()
-  const { theme } = useTheme()
+  const { theme } = useContext(ThemeContext)
 
   const [orders, setOrders] = useState({})
   const [user, setUser] = useState({})

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button } from "@cmp"
+import { ThemeContext } from "@context"
 import { PencilIcon, TrashIcon, UserIcon, UserWhiteIcon } from "@icons"
-import { useTheme, useToast } from "@providers"
+import { useToast } from "@providers"
 import axios from "axios"
 import PropTypes from "prop-types"
 
@@ -41,7 +42,7 @@ const handleDelete = async ({ addToast, ID, ID2, tableName }) => {
 const Table = ({ tableName, data, pageID, extraData }) => {
   const { addToast } = useToast()
   const navigate = useNavigate()
-  const { theme } = useTheme()
+  const { theme } = useContext(ThemeContext)
 
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(5)

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
+import { ThemeContext } from "@context"
 import { PencilIcon, UserIcon, UserWhiteIcon } from "@icons"
-import { useTheme, useToast } from "@providers"
+import { useToast } from "@providers"
 
 import { Button, Table } from "@/components"
 import { backendImgURL, fetchEndpoint, formatDate } from "@/constants"
@@ -10,7 +11,7 @@ import { backendImgURL, fetchEndpoint, formatDate } from "@/constants"
 const Order = () => {
   const navigate = useNavigate()
   const { orderID } = useParams()
-  const { theme } = useTheme()
+  const { theme } = useContext(ThemeContext)
 
   const [order, setOrder] = useState({})
   const [user, setUser] = useState({})
