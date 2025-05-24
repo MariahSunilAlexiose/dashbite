@@ -1,11 +1,33 @@
 import React from "react"
 
-import { XMarkIcon } from "@icons"
+import {
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
+  InformationCircleIcon,
+  XMarkIcon,
+} from "@icons"
 import PropTypes from "prop-types"
 
-import { ToastVariants } from "@/constants"
-
 import { Button } from "."
+
+const ToastVariants = {
+  success: {
+    styles: "bg-green-300 text-green-800",
+    title: "Success",
+    description: "This action has been successfully implemented!",
+    icon: { img: CheckCircleIcon, name: "Check Circle Icon" },
+  },
+  error: {
+    styles: "bg-red-300 text-red-800",
+    title: "Action Failed",
+    description: "This action has failed!",
+    icon: { img: ExclamationTriangleIcon, name: "Exclamation Circle Icon" },
+  },
+  info: {
+    styles: "bg-blue-300 text-blue-800",
+    icon: { img: InformationCircleIcon, name: "Information Circle Icon" },
+  },
+}
 
 const Toast = ({ id, type, title, description, removeToast }) => {
   return (

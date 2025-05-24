@@ -1,8 +1,42 @@
 import React from "react"
 
-import { CopyrightIcon } from "@icons"
+import { CopyrightIcon, FacebookIcon, LinkedinIcon, TwitterXIcon } from "@icons"
 
-import { footerLinks, icons } from "../constants"
+const footerLinks = [
+  {
+    title: "Company",
+    links: [
+      { name: "About us", href: "/" },
+      { name: "Contact Us", href: "/" },
+      { name: "Careers", href: "/" },
+      { name: "Press", href: "/" },
+    ],
+  },
+  {
+    title: "Help",
+    links: [
+      { name: "FAQs", href: "/" },
+      { name: "How it works", href: "/" },
+      { name: "Privacy policy", href: "/" },
+    ],
+  },
+  {
+    title: "Get in touch",
+    links: [
+      {
+        name: "customerservice@dashbite.com",
+        href: "mailto:customerservice@dashbite.com",
+      },
+      { name: "1-800-267-8097", href: "tel:18002678097" },
+    ],
+  },
+]
+
+const icons = [
+  { image: LinkedinIcon, alt: "Linkedin Icon" },
+  { image: TwitterXIcon, alt: "Twitter X Icon" },
+  { image: FacebookIcon, alt: "Facebook Icon" },
+]
 
 const Footer = () => {
   return (
@@ -19,7 +53,7 @@ const Footer = () => {
             restaurants and customers seamlessly.
           </p>
           <div className="mt-8 flex items-center gap-5">
-            {icons.map((icon: { alt: string; image: string }) => (
+            {icons.map((icon) => (
               <div
                 className="flex h-12 w-12 cursor-pointer items-center justify-center hover:-translate-y-1 hover:transition"
                 key={icon.alt}
@@ -37,7 +71,7 @@ const Footer = () => {
         </div>
 
         <div className="flex flex-1 flex-wrap justify-between gap-20 lg:gap-10">
-          {footerLinks.map((section: { title: string; links: any[] }) => (
+          {footerLinks.map((section) => (
             <div key={section.title}>
               <p className="text-muted mb-6 text-base uppercase">
                 {section.title}

@@ -8,13 +8,71 @@ import {
   ChevronFirstWhiteIcon,
   ChevronLastIcon,
   ChevronLastWhiteIcon,
+  CuisineIcon,
+  CuisineWhiteIcon,
+  DinnerIcon,
+  DinnerWhiteIcon,
   Logo,
   LogoWhite,
+  ShoppingCartIcon,
+  ShoppingCartWhiteIcon,
+  TagIcon,
+  TagWhiteIcon,
+  UserIcon,
+  UserWhiteIcon,
+  UtensilsCrossedIcon,
+  UtensilsCrossedWhiteIcon,
 } from "@icons"
 import { useTheme } from "@providers"
 import PropTypes from "prop-types"
 
-export default function Sidebar({ items }) {
+const items = [
+  {
+    icon: TagIcon,
+    iconDark: TagWhiteIcon,
+    iconName: "Tag Icon",
+    text: "Categories",
+    link: "/categories",
+  },
+  {
+    icon: CuisineIcon,
+    iconDark: CuisineWhiteIcon,
+    iconName: "Cuisine Icon",
+    text: "Cuisines",
+    link: "/cuisines",
+  },
+  {
+    icon: UtensilsCrossedIcon,
+    iconDark: UtensilsCrossedWhiteIcon,
+    iconName: "Restaurant Icon",
+    text: "Restaurants",
+    link: "/restaurants",
+  },
+  {
+    icon: DinnerIcon,
+    iconDark: DinnerWhiteIcon,
+    iconName: "Utensils Crossed Icon",
+    text: "Dishes",
+    alert: true,
+    link: "/dishes",
+  },
+  {
+    icon: ShoppingCartIcon,
+    iconDark: ShoppingCartWhiteIcon,
+    iconName: "Shopping Cart Icon",
+    text: "Orders",
+    link: "/orders",
+  },
+  {
+    icon: UserIcon,
+    iconDark: UserWhiteIcon,
+    iconName: "User Icon",
+    text: "Users",
+    link: "/users",
+  },
+]
+
+export default function Sidebar() {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
   const [expanded, setExpanded] = useState(false)
@@ -178,22 +236,6 @@ const SidebarItem = ({
       )}
     </li>
   )
-}
-
-Sidebar.propTypes = {
-  theme: PropTypes.string,
-  active: PropTypes.bool,
-  onClick: PropTypes.func,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      icon: PropTypes.node.isRequired,
-      iconDark: PropTypes.node,
-      iconName: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-      link: PropTypes.string.isRequired,
-      alert: PropTypes.bool,
-    })
-  ).isRequired,
 }
 
 SidebarItem.propTypes = {

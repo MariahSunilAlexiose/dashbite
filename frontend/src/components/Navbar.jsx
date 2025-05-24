@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom"
 import { Button, ThemeToggle } from "@cmp"
 import { dark, light, StoreContext, ThemeContext } from "@context"
 import {
+  ArrowLeftStartOnRectangleIcon,
   Bars3Icon,
   Bars3WhiteIcon,
   ChevronDownIcon,
   MagnifyingGlassBlackIcon,
   MagnifyingGlassWhiteIcon,
+  ShoppingBagIcon,
   ShoppingCartBlackIcon,
   ShoppingCartWhiteIcon,
   UserIcon,
@@ -19,7 +21,20 @@ import {
 import { LogoBlue, LogoWhite } from "@img"
 import PropTypes from "prop-types"
 
-import { fetchEndpoint, logout, navbarLinks, popoverItems } from "@/constants"
+import { fetchEndpoint, logout } from "@/constants"
+
+const navbarLinks = [
+  { href: "#", label: "Home" },
+  { href: "#", label: "Menu" },
+  { href: "#", label: "About" },
+  { href: "#", label: "Contact" },
+]
+
+const popoverItems = [
+  { href: "/profile", name: "Profile", icon: UserIcon },
+  { href: "/myorders", name: "Orders", icon: ShoppingBagIcon },
+  { href: "#", name: "Logout", icon: ArrowLeftStartOnRectangleIcon },
+]
 
 const MobileNavBar = ({
   setMobileMenu,

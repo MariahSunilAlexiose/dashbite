@@ -19,13 +19,11 @@ import {
   Users,
 } from "@pages"
 
-import { sidebarItems } from "@/constants"
-
 function App() {
   return (
     <div className="flex h-full">
       <Toasts />
-      <Sidebar items={sidebarItems} />
+      <Sidebar />
       <div className="flex-1 px-5 pt-6 lg:px-20">
         <Routes>
           <Route path="/dishes" element={<Dishes />} />

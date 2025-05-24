@@ -1,106 +1,15 @@
 import {
-  CheckCircleIcon,
-  CuisineIcon,
-  CuisineWhiteIcon,
-  DinnerIcon,
-  DinnerWhiteIcon,
-  ExclamationTriangleIcon,
-  InformationCircleIcon,
   Rating1Icon,
   Rating2Icon,
   Rating3Icon,
   Rating4Icon,
   Rating5Icon,
-  ShoppingCartIcon,
-  ShoppingCartWhiteIcon,
-  TagIcon,
-  TagWhiteIcon,
-  UserIcon,
-  UserWhiteIcon,
-  UtensilsCrossedIcon,
-  UtensilsCrossedWhiteIcon,
 } from "@icons"
 import axios from "axios"
 
 export const backendURL = "http://localhost:4000/api"
 
 export const backendImgURL = "http://localhost:4000/images"
-
-export const sidebarItems = [
-  {
-    icon: TagIcon,
-    iconDark: TagWhiteIcon,
-    iconName: "Tag Icon",
-    text: "Categories",
-    link: "/categories",
-  },
-  {
-    icon: CuisineIcon,
-    iconDark: CuisineWhiteIcon,
-    iconName: "Cuisine Icon",
-    text: "Cuisines",
-    link: "/cuisines",
-  },
-  {
-    icon: UtensilsCrossedIcon,
-    iconDark: UtensilsCrossedWhiteIcon,
-    iconName: "Restaurant Icon",
-    text: "Restaurants",
-    link: "/restaurants",
-  },
-  {
-    icon: DinnerIcon,
-    iconDark: DinnerWhiteIcon,
-    iconName: "Utensils Crossed Icon",
-    text: "Dishes",
-    alert: true,
-    link: "/dishes",
-  },
-  {
-    icon: ShoppingCartIcon,
-    iconDark: ShoppingCartWhiteIcon,
-    iconName: "Shopping Cart Icon",
-    text: "Orders",
-    link: "/orders",
-  },
-  {
-    icon: UserIcon,
-    iconDark: UserWhiteIcon,
-    iconName: "User Icon",
-    text: "Users",
-    link: "/users",
-  },
-]
-
-export const categories = [
-  "Breakfast",
-  "Beverages",
-  "Pizza",
-  "Burgers",
-  "Seafood",
-  "Snacks",
-  "Soups",
-  "Desserts",
-]
-
-export const ToastVariants = {
-  success: {
-    styles: "bg-green-300 text-green-800",
-    title: "Success",
-    description: "This action has been successfully implemented!",
-    icon: { img: CheckCircleIcon, name: "Check Circle Icon" },
-  },
-  error: {
-    styles: "bg-red-300 text-red-800",
-    title: "Action Failed",
-    description: "This action has failed!",
-    icon: { img: ExclamationTriangleIcon, name: "Exclamation Circle Icon" },
-  },
-  info: {
-    styles: "bg-blue-300 text-blue-800",
-    icon: { img: InformationCircleIcon, name: "Information Circle Icon" },
-  },
-}
 
 export const keyMapping = {
   categoryName: "Category",
@@ -114,9 +23,6 @@ export const keyMapping = {
   restaurantName: "Restaurant",
   username: "User",
   servingSize: "Serving Size",
-  profilePic: "",
-  images: "",
-  image: "",
 }
 
 export const ratings = [
